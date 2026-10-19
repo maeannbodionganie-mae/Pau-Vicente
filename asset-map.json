@@ -1,0 +1,432 @@
+{
+  "pau-hero": {
+    "original": "01-24 CCA_2006.jpg",
+    "width": 2592,
+    "height": 3888,
+    "webp": [
+      {
+        "src": "assets/photos/pau-hero-480.webp",
+        "width": 480,
+        "height": 720
+      },
+      {
+        "src": "assets/photos/pau-hero-800.webp",
+        "width": 800,
+        "height": 1200
+      },
+      {
+        "src": "assets/photos/pau-hero-1200.webp",
+        "width": 1200,
+        "height": 1800
+      },
+      {
+        "src": "assets/photos/pau-hero-1800.webp",
+        "width": 1800,
+        "height": 2700
+      }
+    ],
+    "fallback": "assets/photos/pau-hero.jpg",
+    "fallback_width": 1600,
+    "fallback_height": 2400
+  },
+  "pau-about": {
+    "original": "01-24 CCA_2050.jpg",
+    "width": 4160,
+    "height": 6240,
+    "webp": [
+      {
+        "src": "assets/photos/pau-about-480.webp",
+        "width": 480,
+        "height": 720
+      },
+      {
+        "src": "assets/photos/pau-about-800.webp",
+        "width": 800,
+        "height": 1200
+      },
+      {
+        "src": "assets/photos/pau-about-1200.webp",
+        "width": 1200,
+        "height": 1800
+      },
+      {
+        "src": "assets/photos/pau-about-1800.webp",
+        "width": 1800,
+        "height": 2700
+      }
+    ],
+    "fallback": "assets/photos/pau-about.jpg",
+    "fallback_width": 1600,
+    "fallback_height": 2400
+  },
+  "corporate-events": {
+    "original": "50091154_2306624319349027_4347052703701008384_n.jpg",
+    "width": 1080,
+    "height": 810,
+    "webp": [
+      {
+        "src": "assets/photos/corporate-events-480.webp",
+        "width": 480,
+        "height": 360
+      },
+      {
+        "src": "assets/photos/corporate-events-800.webp",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "src": "assets/photos/corporate-events-1080.webp",
+        "width": 1080,
+        "height": 810
+      }
+    ],
+    "fallback": "assets/photos/corporate-events.jpg",
+    "fallback_width": 1080,
+    "fallback_height": 810
+  },
+  "corporate-team": {
+    "original": "79005072_2902199466458173_7132310373494947840_n.jpg",
+    "width": 1080,
+    "height": 810,
+    "webp": [
+      {
+        "src": "assets/photos/corporate-team-480.webp",
+        "width": 480,
+        "height": 360
+      },
+      {
+        "src": "assets/photos/corporate-team-800.webp",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "src": "assets/photos/corporate-team-1080.webp",
+        "width": 1080,
+        "height": 810
+      }
+    ],
+    "fallback": "assets/photos/corporate-team.jpg",
+    "fallback_width": 1080,
+    "fallback_height": 810
+  },
+  "corporate-portrait": {
+    "original": "490246748_10021347164543332_4215346027297310950_n.jpg",
+    "width": 1080,
+    "height": 1080,
+    "webp": [
+      {
+        "src": "assets/photos/corporate-portrait-480.webp",
+        "width": 480,
+        "height": 480
+      },
+      {
+        "src": "assets/photos/corporate-portrait-800.webp",
+        "width": 800,
+        "height": 800
+      },
+      {
+        "src": "assets/photos/corporate-portrait-1080.webp",
+        "width": 1080,
+        "height": 1080
+      }
+    ],
+    "fallback": "assets/photos/corporate-portrait.jpg",
+    "fallback_width": 1080,
+    "fallback_height": 1080
+  },
+  "first-client-call": {
+    "original": "Meeting Paul and Brynne.jpg",
+    "width": 1920,
+    "height": 1080,
+    "webp": [
+      {
+        "src": "assets/photos/first-client-call-480.webp",
+        "width": 480,
+        "height": 270
+      },
+      {
+        "src": "assets/photos/first-client-call-800.webp",
+        "width": 800,
+        "height": 450
+      },
+      {
+        "src": "assets/photos/first-client-call-1200.webp",
+        "width": 1200,
+        "height": 675
+      },
+      {
+        "src": "assets/photos/first-client-call-1800.webp",
+        "width": 1800,
+        "height": 1012
+      }
+    ],
+    "fallback": "assets/photos/first-client-call.jpg",
+    "fallback_width": 1800,
+    "fallback_height": 1013
+  },
+  "freelance-beginnings": {
+    "original": "156246081_4111134105564697_8182093901843224702_n.jpg",
+    "width": 960,
+    "height": 720,
+    "webp": [
+      {
+        "src": "assets/photos/freelance-beginnings-480.webp",
+        "width": 480,
+        "height": 360
+      },
+      {
+        "src": "assets/photos/freelance-beginnings-800.webp",
+        "width": 800,
+        "height": 600
+      },
+      {
+        "src": "assets/photos/freelance-beginnings-960.webp",
+        "width": 960,
+        "height": 720
+      }
+    ],
+    "fallback": "assets/photos/freelance-beginnings.jpg",
+    "fallback_width": 960,
+    "fallback_height": 720
+  },
+  "mentoring-kylee": {
+    "original": "Meet with Kylee.jpg",
+    "width": 1267,
+    "height": 723,
+    "webp": [
+      {
+        "src": "assets/photos/mentoring-kylee-480.webp",
+        "width": 480,
+        "height": 274
+      },
+      {
+        "src": "assets/photos/mentoring-kylee-800.webp",
+        "width": 800,
+        "height": 457
+      },
+      {
+        "src": "assets/photos/mentoring-kylee-1200.webp",
+        "width": 1200,
+        "height": 685
+      },
+      {
+        "src": "assets/photos/mentoring-kylee-1267.webp",
+        "width": 1267,
+        "height": 723
+      }
+    ],
+    "fallback": "assets/photos/mentoring-kylee.jpg",
+    "fallback_width": 1267,
+    "fallback_height": 723
+  },
+  "mentoring-taylin": {
+    "original": "Meet with Taylin.jpeg",
+    "width": 1280,
+    "height": 505,
+    "webp": [
+      {
+        "src": "assets/photos/mentoring-taylin-480.webp",
+        "width": 480,
+        "height": 189
+      },
+      {
+        "src": "assets/photos/mentoring-taylin-800.webp",
+        "width": 800,
+        "height": 316
+      },
+      {
+        "src": "assets/photos/mentoring-taylin-1200.webp",
+        "width": 1200,
+        "height": 473
+      },
+      {
+        "src": "assets/photos/mentoring-taylin-1280.webp",
+        "width": 1280,
+        "height": 505
+      }
+    ],
+    "fallback": "assets/photos/mentoring-taylin.jpg",
+    "fallback_width": 1280,
+    "fallback_height": 505
+  },
+  "cross-core-team": {
+    "original": "01-24 CCA_2511.jpg",
+    "width": 4085,
+    "height": 6127,
+    "webp": [
+      {
+        "src": "assets/photos/cross-core-team-480.webp",
+        "width": 480,
+        "height": 720
+      },
+      {
+        "src": "assets/photos/cross-core-team-800.webp",
+        "width": 800,
+        "height": 1200
+      },
+      {
+        "src": "assets/photos/cross-core-team-1200.webp",
+        "width": 1200,
+        "height": 1800
+      },
+      {
+        "src": "assets/photos/cross-core-team-1800.webp",
+        "width": 1800,
+        "height": 2700
+      }
+    ],
+    "fallback": "assets/photos/cross-core-team.jpg",
+    "fallback_width": 1600,
+    "fallback_height": 2400
+  },
+  "cross-core-gathering": {
+    "original": "IMG_9013.jpg",
+    "width": 6024,
+    "height": 4020,
+    "webp": [
+      {
+        "src": "assets/photos/cross-core-gathering-480.webp",
+        "width": 480,
+        "height": 320
+      },
+      {
+        "src": "assets/photos/cross-core-gathering-800.webp",
+        "width": 800,
+        "height": 534
+      },
+      {
+        "src": "assets/photos/cross-core-gathering-1200.webp",
+        "width": 1200,
+        "height": 801
+      },
+      {
+        "src": "assets/photos/cross-core-gathering-1800.webp",
+        "width": 1800,
+        "height": 1201
+      }
+    ],
+    "fallback": "assets/photos/cross-core-gathering.jpg",
+    "fallback_width": 1800,
+    "fallback_height": 1201
+  },
+  "cross-core-community": {
+    "original": "IMG_0315.CR3",
+    "width": 6024,
+    "height": 4020,
+    "webp": [
+      {
+        "src": "assets/photos/cross-core-community-480.webp",
+        "width": 480,
+        "height": 320
+      },
+      {
+        "src": "assets/photos/cross-core-community-800.webp",
+        "width": 800,
+        "height": 534
+      },
+      {
+        "src": "assets/photos/cross-core-community-1200.webp",
+        "width": 1200,
+        "height": 801
+      },
+      {
+        "src": "assets/photos/cross-core-community-1800.webp",
+        "width": 1800,
+        "height": 1201
+      }
+    ],
+    "fallback": "assets/photos/cross-core-community.jpg",
+    "fallback_width": 1800,
+    "fallback_height": 1201
+  },
+  "pau-speaking-style": {
+    "original": "01-24 CCA_2013.jpg",
+    "width": 2592,
+    "height": 3888,
+    "webp": [
+      {
+        "src": "assets/photos/pau-speaking-style-480.webp",
+        "width": 480,
+        "height": 720
+      },
+      {
+        "src": "assets/photos/pau-speaking-style-800.webp",
+        "width": 800,
+        "height": 1200
+      },
+      {
+        "src": "assets/photos/pau-speaking-style-1200.webp",
+        "width": 1200,
+        "height": 1800
+      },
+      {
+        "src": "assets/photos/pau-speaking-style-1800.webp",
+        "width": 1800,
+        "height": 2700
+      }
+    ],
+    "fallback": "assets/photos/pau-speaking-style.jpg",
+    "fallback_width": 1600,
+    "fallback_height": 2400
+  },
+  "pau-why": {
+    "original": "01-24 CCA_2078.jpg",
+    "width": 4160,
+    "height": 6240,
+    "webp": [
+      {
+        "src": "assets/photos/pau-why-480.webp",
+        "width": 480,
+        "height": 720
+      },
+      {
+        "src": "assets/photos/pau-why-800.webp",
+        "width": 800,
+        "height": 1200
+      },
+      {
+        "src": "assets/photos/pau-why-1200.webp",
+        "width": 1200,
+        "height": 1800
+      },
+      {
+        "src": "assets/photos/pau-why-1800.webp",
+        "width": 1800,
+        "height": 2700
+      }
+    ],
+    "fallback": "assets/photos/pau-why.jpg",
+    "fallback_width": 1600,
+    "fallback_height": 2400
+  },
+  "pau-contact": {
+    "original": "01-24 CCA_2042.jpg",
+    "width": 4160,
+    "height": 6240,
+    "webp": [
+      {
+        "src": "assets/photos/pau-contact-480.webp",
+        "width": 480,
+        "height": 720
+      },
+      {
+        "src": "assets/photos/pau-contact-800.webp",
+        "width": 800,
+        "height": 1200
+      },
+      {
+        "src": "assets/photos/pau-contact-1200.webp",
+        "width": 1200,
+        "height": 1800
+      },
+      {
+        "src": "assets/photos/pau-contact-1800.webp",
+        "width": 1800,
+        "height": 2700
+      }
+    ],
+    "fallback": "assets/photos/pau-contact.jpg",
+    "fallback_width": 1600,
+    "fallback_height": 2400
+  }
+}
