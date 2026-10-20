@@ -47,20 +47,35 @@ module.exports = async function handler(req, res) {
   const forced=engine.guard(question);
   if(forced || !configured())return res.status(200).json({...status(),...engine.render(forced||engine.plan(question),knowledge)});
   try {
-    const model=process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+    const model=process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
     if(!/^[a-z0-9.-]{1,80}$/.test(model))throw new Error('Invalid model setting');
-    const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{
-      method:'POST',signal:AbortSignal.timeout(18000),
+    const models=[model,model==='gemini-3.5-flash-lite'?'gemini-3.8-flash':'gemini-3.5-flash-lite'];
+    let response,usedModel;
+    for(let attempt=0;attempt<models.length;attempt++){
+      try{
+        response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${models[attempt]}:generateContent`,{
+      method:'POST',signal:AbortSignal.timeout(9000),
       headers:{'Content-Type':'application/json','x-goog-api-key':process.env.GEMINI_API_KEY},
       body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents:[{role:'user',parts:[{text:JSON.stringify({previousQuestions:body.history||[],currentQuestion:question})}]}],generationConfig:{responseMimeType:'application/json',responseJsonSchema:schema,maxOutputTokens:2048,temperature:0.1}})
-    });
-    if(!response.ok)throw new Error(`gemini_http_${response.status}`);
+        });
+      }catch(error){
+        if(attempt===0&&(['TimeoutError','AbortError'].includes(error?.name)||error instanceof TypeError)){
+          await new Promise(resolve=>setTimeout(resolve,600));continue;
+        }
+        throw error;
+      }
+      if(response.ok){usedModel=models[attempt];break;}
+      if(attempt===0&&[500,502,503,504].includes(response.status)){
+        await new Promise(resolve=>setTimeout(resolve,600));continue;
+      }
+      throw new Error(`gemini_http_${response.status}`);
+    }
     const data=await response.json();
     const candidate=data.candidates?.[0];
     if(candidate?.finishReason!=='STOP')throw new Error('Incomplete provider response');
     const plan=JSON.parse(candidate.content.parts.filter(p=>!p.thought&&typeof p.text==='string').map(p=>p.text).join(''));
     if(!schema.properties.kind.enum.includes(plan.kind)||!schema.properties.lead.enum.includes(plan.lead)||!Array.isArray(plan.ids)||plan.ids.length>3||plan.ids.some(id=>!schema.properties.ids.items.enum.includes(id)))throw new Error('Invalid routing plan');
-    return res.status(200).json({...engine.render(plan,knowledge,'gemini'),...status()});
+    return res.status(200).json({...engine.render(plan,knowledge,'gemini'),...status(),model:usedModel});
   } catch (error) {
     // Do not return provider errors, request contents, credentials or internal reasoning.
     const diagnostic=/^gemini_http_[0-9]{3}$/.test(error?.message||'')?error.message:

@@ -44,6 +44,11 @@ async function request(body,options={}){
     const ai=await request({message:'Our youth group wants to explore resilience. What fits?',history:['What topics does Pau offer?']});
     assert.equal(ai.data.mode,'gemini');assert.equal(count,1);assert.equal(ai.data.sources[0].id,'leadership');
     assert(!ai.data.answer.includes('FABRICATED'));assert(!JSON.stringify(ai.data).includes('hidden reasoning'));assert(!JSON.stringify(ai.data).includes('unit-test'));
+    assert.equal(ai.data.model,'gemini-3.5-flash-lite');
+    let attempts=0;
+    global.fetch=async()=>++attempts===1?{ok:false,status:503}:{ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'{"kind":"answer","lead":"general","ids":["profile"]}'}]}}]})};
+    const recovered=await request({message:'Who is Pau Vicente?'});
+    assert.equal(attempts,2);assert.equal(recovered.data.mode,'gemini');assert.equal(recovered.data.model,'gemini-3.8-flash');
     global.fetch=async()=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'{"kind":"answer","lead":"general","ids":["fake-fact"]}'}]}}]})});
     const invalid=await request({message:'What is Pau’s background?'});assert.equal(invalid.data.mode,'portfolio-guide');assert.match(invalid.data.notice,/temporarily unavailable/);
     global.fetch=async()=>{throw new Error('sensitive-provider-diagnostic');};
