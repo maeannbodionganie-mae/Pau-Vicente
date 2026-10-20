@@ -22,8 +22,8 @@ The presentation now follows a speaker’s invitation journey: meet Pau, underst
 
 ## Color and typography
 
-- Ivory `#F7F3EC`, oat `#EEE8DE`, beige `#E4D8C8`, and deeper taupe `#D5C5B2` create section rhythm.
-- Charcoal `#25241F`, dark taupe `#535248`, and a restrained caramel `#6F4C20` maintain text contrast.
+- Updated October 20 to match the owner's supplied screenshot: main/hero espresso `#2B201A`, deeper brown `#241B16`, and secondary brown surfaces `#33261F` and `#3C2C23`.
+- Main ivory text `#E8DFD0`, secondary text `#C7BCAA`, accent `#DDC3A1`, and cream buttons `#EADECE` keep the screenshot's warm dark appearance. The reference background, heading and button colors were sampled directly from the supplied image; no beige page background remains. The floating Pau chat uses the same shared tokens.
 - Instrument Serif and DM Sans remain locally hosted; no new visitor-facing dependencies were added.
 - Main story paragraphs use 15px text with generous line spacing on desktop and small mobile screens. Documentary images retain their proportions.
 
@@ -69,7 +69,7 @@ Image-editing prompt used: “Remove only the golden yellow studio background fr
 - Photo mapping, responsive source paths, dimensions, 14 lazy images and one eager/high-priority hero passed.
 - All section anchors and public email, phone, Facebook, LinkedIn, and Instagram destinations passed static checks.
 - The email inquiry retains all seven organizer fields. No backend, fake success state, or booking service was added.
-- Fourteen text/background pairs pass WCAG AA normal-text contrast.
+- The current palette's text/background pairs pass WCAG AA normal-text contrast.
 - CSS parsing, JavaScript syntax, Git whitespace, visible content without animation, focus styles, and reduced-motion rules passed.
 - Navigation DOM harness passed: open/close, Escape and focus return, links, outside clicks, focus exit, the 901px desktop reset, animation stop for reduced motion, and active section updates.
 - The generated page is reproducible through `scripts/render.py`.

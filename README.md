@@ -36,7 +36,7 @@ The Python validator uses Git history at `a15d58d` to verify story and list pres
 
 The full source document and all four Pinterest reference images were reviewed. Every story chapter, topic, subtopic, outcome, audience group, and session format is included. All photographs come from the Drive file links in the supplied document.
 
-The studio photography and white blazer informed the warm ivory, oat, taupe, charcoal, and restrained caramel palette. Instrument Serif and DM Sans are hosted locally. Design references informed the typography, spacing, and photographic compositions; their portraits, branding, decorative artwork, testimonials, and example claims are not reused.
+The current palette follows the owner-supplied October 20 screenshot: deep espresso `#2B201A` as the main and hero background, warm ivory `#E8DFD0` text, muted cream `#EADECE` buttons, and related dark brown section surfaces. The chat shares the same palette. The studio photography and white blazer remain unchanged. Instrument Serif and DM Sans are hosted locally. Design references informed the typography, spacing, and photographic compositions; their portraits, branding, decorative artwork, testimonials, and example claims are not reused.
 
 The original `IMG_0315.CR3` remains unchanged at its supplied Drive source and was decoded with camera white balance into an sRGB JPEG, then optimized for the website. A byte-identical downloaded original is retained outside the web source. The RAW file is never served in `dist/` or included in the publication repository. All original photographs remain unchanged at their supplied Drive sources. WebP sizes and JPEG fallbacks preserve image proportions and use orientation-aware conversion.
 
@@ -54,6 +54,6 @@ Semantic landmarks, a skip link, descriptive alternative text, keyboard-visible 
 
 ## Validation
 
-The editorial redesign passes checks for all four complete story chapters, 19 speaking subtopics, nine audience categories, seven formats, six outcomes, all 15 photo assignments, local asset paths, anchors, inquiry fields, public contacts, image dimensions, CSS parsing, JavaScript syntax, and 14 text/background contrast pairs. A DOM harness checks the mobile menu, focus return, responsive reset, reveal behavior, reduced motion, and active navigation.
+The editorial redesign passes checks for all four complete story chapters, 19 speaking subtopics, nine audience categories, seven formats, six outcomes, all 15 photo assignments, local asset paths, anchors, inquiry fields, public contacts, image dimensions, CSS parsing, JavaScript syntax, and the current palette's text/background contrast pairs. A DOM harness checks the mobile menu, focus return, responsive reset, reveal behavior, reduced motion, and active navigation.
 
 The processed hero and assistant avatar were visually inspected. Real-browser page screenshots at 320, 390, 768, 1024, and 1440 pixels could not be captured because the supported browser-preview plugin is unavailable in this environment. Those viewport layouts and real browser keyboard behavior still need visual inspection. Core Web Vitals and actual email delivery have not been measured. The editorial redesign was deployed to the existing public GitHub/Vercel site; assistant release status is tracked in Git history and Vercel deployment checks.

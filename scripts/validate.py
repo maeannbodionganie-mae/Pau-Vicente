@@ -118,15 +118,20 @@ def luminance(color):
     linear = [v / 12.92 if v <= .04045 else ((v + .055) / 1.055) ** 2.4 for v in channels]
     return sum(v * weight for v, weight in zip(linear, [.2126, .7152, .0722]))
 
-for foreground, background in [('25241f','f7f3ec'),('535248','f7f3ec'),
-        ('6f4c20','f7f3ec'),('6f4c20','eee8de'),('6f4c20','e4d8c8'),
-        ('6f4c20','d5c5b2'),('535248','d5c5b2'),('514a40','e0d1bd'),
-        ('705036','e4d8c8'),('f7f3ec','25241f'),('f7f3ec','6f4c20'),
-        ('d8d5cb','33352e'),('d8bd94','33352e'),('e3cdb0','33352e')]:
+palette = dict(re.findall(r'--([a-z-]+):#([0-9a-f]{6})\b', css))
+assert palette['paper'] == '2b201a' and palette['sand'] == '2b201a'
+assert palette['ink'] == 'e8dfd0' and palette['button'] == 'eadece'
+contrast_pairs = {(palette[text], palette[surface])
+                  for text in ['ink', 'body', 'accent']
+                  for surface in ['paper', 'oat', 'sand', 'stone']}
+contrast_pairs.update((palette[text], '241b16') for text in ['ink', 'body', 'accent'])
+contrast_pairs.update([(palette['button-ink'], palette['button']),
+                       (palette['button-ink'], palette['accent'])])
+for foreground, background in contrast_pairs:
     light, dark = sorted([luminance(foreground), luminance(background)], reverse=True)
     ratio = (light + .05) / (dark + .05)
     assert ratio >= 4.5, (foreground, background, ratio)
-passed('14 text/background contrast pairs meet WCAG AA for normal text')
+passed(f'{len(contrast_pairs)} current text/background pairs meet WCAG AA; espresso reference colors match')
 
 errors = []
 def inspect_rules(rules):
