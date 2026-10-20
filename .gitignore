@@ -3,3 +3,7 @@ node_modules/
 *.log
 originals/
 *.CR3
+.env
+.env.*
+!.env.example
+.vercel/

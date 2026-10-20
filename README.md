@@ -25,6 +25,8 @@ python3 -m pip install -r scripts/requirements-qa.txt
 python3 scripts/validate.py
 node --check dist/assets/main.js
 node scripts/check-interactions.cjs
+node scripts/check-pau-api.cjs
+node scripts/check-pau-ui.cjs
 git diff --check
 ```
 
@@ -40,7 +42,11 @@ The original `IMG_0315.CR3` remains unchanged at its supplied Drive source and w
 
 ## Contact
 
-The final inquiry button opens an email with event details for the organizer to fill in and send. There is no submission form, backend, booking calendar, or delivery confirmation. The email address, phone number, and social profiles are the public contact details explicitly supplied in the brief. Private administrative information has not been included.
+The final inquiry button opens an email with event details for the organizer to fill in and send. There is no inquiry-delivery integration, booking calendar, or delivery confirmation. The email address, phone number, and social profiles are the public contact details explicitly supplied in the brief. Private administrative information has not been included.
+
+## Pau assistant
+
+The draggable lower-right illustrated avatar opens a portfolio guide. It uses only reviewed public facts and declines unrelated questions. A server-side Gemini routing integration is ready for configuration; without a key it is explicitly a deterministic portfolio guide. Graphify is not connected pending identification of the intended service. See `PAU_ASSISTANT.md` for setup, safeguards, asset provenance, and verification limits.
 
 ## Accessibility
 
@@ -50,4 +56,4 @@ Semantic landmarks, a skip link, descriptive alternative text, keyboard-visible 
 
 The editorial redesign passes checks for all four complete story chapters, 19 speaking subtopics, nine audience categories, seven formats, six outcomes, all 15 photo assignments, local asset paths, anchors, inquiry fields, public contacts, image dimensions, CSS parsing, JavaScript syntax, and 14 text/background contrast pairs. A DOM harness checks the mobile menu, focus return, responsive reset, reveal behavior, reduced motion, and active navigation.
 
-The processed hero was visually inspected on the actual beige background. Real-browser page screenshots at 320, 390, 768, 1024, and 1440 pixels could not be captured because the supported browser-preview plugin is unavailable in this environment. Those viewport layouts and real browser keyboard behavior still need visual inspection. Core Web Vitals and actual email delivery have not been measured. No production deployment is claimed for this branch.
+The processed hero and assistant avatar were visually inspected. Real-browser page screenshots at 320, 390, 768, 1024, and 1440 pixels could not be captured because the supported browser-preview plugin is unavailable in this environment. Those viewport layouts and real browser keyboard behavior still need visual inspection. Core Web Vitals and actual email delivery have not been measured. The editorial redesign was deployed to the existing public GitHub/Vercel site; assistant release status is tracked in Git history and Vercel deployment checks.

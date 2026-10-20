@@ -21,6 +21,9 @@
   <link rel="stylesheet" href="assets/fonts/body.css">
   <link rel="stylesheet" href="assets/style.css">
   <script src="assets/main.js" defer></script>
+  <link rel="stylesheet" href="assets/pau-assistant.css">
+  <script src="assets/pau-engine.js" defer></script>
+  <script src="assets/pau-assistant.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -91,5 +94,23 @@
     <section class="contact" id="contact" aria-labelledby="contact-title"><div class="shell contact-layout"><div class="contact-heading" data-reveal><p class="eyebrow">08 / Let’s work together</p><h2 id="contact-title">Let’s create a<br>conversation<br><em>that matters.</em></h2></div><figure class="contact-photo" data-reveal>{{image:pau-contact|Pau standing in profile in a light blazer against the golden studio backdrop.|(max-width: 600px) 78vw, 32vw|photo}}<figcaption>Lead with Love. Grow with Purpose.</figcaption></figure><div class="contact-copy" data-reveal><p>Planning an event for your school, community, organization, or team? Let’s explore how a conversation about freelancing, branding, or leadership can serve your audience.</p><div class="actions"><a class="button" href="{{inquiry}}">Invite Pau to Speak <span aria-hidden="true">↗</span></a><a class="text-link" href="mailto:pauline.vicente14@gmail.com">Send an Email <span aria-hidden="true">↗</span></a></div><p class="contact-note">Tell me about your audience, your event, and what you hope they’ll take away.</p><dl class="contact-details"><div><dt>Email</dt><dd><a href="mailto:pauline.vicente14@gmail.com">pauline.vicente14@gmail.com</a></dd></div><div><dt>Mobile</dt><dd><a href="tel:+639153412728">09153412728</a></dd></div></dl><div class="social-links" aria-label="Pau’s social profiles"><a href="https://www.facebook.com/paulinemelissar.v/" target="_blank" rel="noopener noreferrer">Facebook <span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/pauline-vicente-b86849234/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a href="https://www.instagram.com/pau.melissaa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram, @pau.melissaa">Instagram <span aria-hidden="true">↗</span></a></div></div></div></section>
   </main>
   <footer class="site-footer shell"><div class="footer-content"><a class="brand" href="#home">Pau Vicente<span aria-hidden="true">.</span></a><p>Speaker. Coach. A fellow learner.</p><a class="text-link" href="#home">Back to top <span aria-hidden="true">↑</span></a></div><div class="footer-bottom"><span>© <span id="copyright-year">2026</span> Pau Vicente</span><span>Lead with Love. Grow with Purpose.</span></div></footer>
+  <aside id="pau-assistant" class="pau-assistant" hidden aria-label="Pau portfolio assistant">
+    <button id="pau-launcher" class="pau-launcher" type="button" aria-label="Chat with Pau, portfolio assistant. Drag to move, or use Alt and arrow keys." aria-controls="pau-chat" aria-expanded="false" aria-describedby="pau-drag-help">
+      <img src="assets/pau-avatar.webp" width="96" height="96" alt="" decoding="async" draggable="false">
+      <span class="pau-launcher-label">Ask Pau <span aria-hidden="true">↗</span></span>
+    </button>
+    <p id="pau-drag-help" class="pau-sr-only">Drag the avatar to move it. Use Alt and arrow keys to move with a keyboard. Reset its position in the chat header.</p>
+    <section id="pau-chat" class="pau-chat" role="dialog" aria-modal="false" aria-labelledby="pau-chat-title" hidden>
+      <header class="pau-chat-header"><div><p class="pau-kicker">A little guidance, with purpose</p><h2 id="pau-chat-title">Hello, I’m <em>Pau.</em></h2></div><button id="pau-close" class="pau-icon-button" type="button" aria-label="Close chat">×</button></header>
+      <div class="pau-chat-toolbar"><span id="pau-mode">Portfolio guide</span><div><button id="pau-reset-position" type="button">Reset position</button><button id="pau-clear" type="button">Clear chat</button></div></div>
+      <p class="pau-intro">Pau’s digital portfolio assistant. Ask about her experience, speaking topics, or your event’s fit.</p>
+      <div id="pau-messages" class="pau-messages" role="log" aria-label="Conversation with Pau" aria-live="polite" aria-relevant="additions"></div>
+      <div id="pau-suggestions" class="pau-suggestions" aria-label="Suggested questions"><button type="button" data-question="What qualifies Pau as a speaker?">Why invite Pau?</button><button type="button" data-question="Which talk suits college students starting freelancing?">Find a talk</button><button type="button" data-question="How can I invite Pau to our event?">Plan an event</button></div>
+      <p id="pau-status" class="pau-status" role="status"></p>
+      <form id="pau-form" class="pau-form"><label for="pau-question" class="pau-sr-only">Your question about Pau</label><input id="pau-question" name="question" type="text" maxlength="1000" autocomplete="off" placeholder="Ask something about Pau…" required><button type="submit" id="pau-send" aria-label="Send question">Send <span aria-hidden="true">↗</span></button></form>
+      <p class="pau-privacy" id="pau-privacy">Uses approved portfolio facts. Chat stays in this tab; please avoid sharing sensitive information.</p>
+      <a id="pau-contact" class="pau-contact" href="#contact">Speak directly with Pau <span aria-hidden="true">↗</span></a>
+    </section>
+  </aside>
 </body>
 </html>

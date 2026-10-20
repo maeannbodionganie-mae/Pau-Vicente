@@ -90,4 +90,4 @@ New assets: `dist/assets/photos/pau-hero-editorial-480.webp`, `pau-hero-editoria
 
 New checks and notes: `scripts/validate.py`, `scripts/check-interactions.cjs`, `scripts/requirements-qa.txt`, and this document.
 
-The Vercel `dist/` root and existing hosting metadata remain intact. This work is committed locally on `redesign/editorial-speaker`. It has not been pushed or deployed, following the latest supplied brief.
+The Vercel `dist/` root and existing hosting metadata remain intact. The editorial redesign was subsequently pushed to public `main` and deployed through the existing GitHub/Vercel integration at `https://pau-vicente-speaker.vercel.app/`. The later Pau assistant addition is documented separately in `PAU_ASSISTANT.md`.

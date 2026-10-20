@@ -20,6 +20,7 @@ baseline = BeautifulSoup(subprocess.check_output(
     ['git', 'show', 'a15d58d:dist/index.html'], cwd=ROOT, text=True
 ), 'html.parser')
 css = (DIST / 'assets/style.css').read_text()
+assistant_css = (DIST / 'assets/pau-assistant.css').read_text()
 manifest = json.loads((ROOT / 'asset-map.json').read_text())
 
 def normalized(element):
@@ -75,13 +76,15 @@ for href in ['https://www.facebook.com/paulinemelissar.v/',
              'https://www.linkedin.com/in/pauline-vicente-b86849234/',
              'https://www.instagram.com/pau.melissaa/']:
     assert soup.find('a', href=href)
-assert not soup.select('form, iframe, video')
+assert not soup.select('iframe, video')
+assert len(soup.select('form')) == 1 and soup.select_one('form#pau-form')
 assert set(re.findall(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', page)) == {'pauline.vicente14@gmail.com'}
 assert not re.search(r'(?:password|passcode|api[_-]?key|secret)\s*[:=]', page, re.I)
 passed('all anchors, public contacts, safe external links, and prefilled email inquiry')
 
 assert len(manifest) == 15
-assert len(soup.select('img')) == 15
+assert len(soup.select('picture[data-photo] img')) == 15
+assert len(soup.select('img')) == 16
 assert len(soup.select('img[loading="lazy"]')) == 14
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
 for key, photo in manifest.items():
@@ -134,7 +137,7 @@ def inspect_rules(rules):
             errors.extend(x for x in tinycss2.parse_declaration_list(rule.content) if x.type == 'error')
         elif rule.type == 'at-rule' and rule.content is not None:
             inspect_rules(tinycss2.parse_rule_list(rule.content))
-inspect_rules(tinycss2.parse_stylesheet(css, skip_whitespace=True, skip_comments=True))
+inspect_rules(tinycss2.parse_stylesheet(css + '\n' + assistant_css, skip_whitespace=True, skip_comments=True))
 assert not errors, errors
 assert 'prefers-reduced-motion:reduce' in css
 assert '.skip-link:focus' in css and ':focus-visible' in css
@@ -142,5 +145,17 @@ assert not re.search(r'opacity\s*:\s*0(?:[;}\s])', css)
 assert 'max-width:600px' in css and 'max-width:900px' in css
 assert soup.select_one('.nav-toggle[aria-controls="navigation-links"][aria-expanded="false"]')
 passed('CSS parses, reduced motion/focus support, visible content, and mobile navigation contract')
+
+assert soup.select_one('#pau-launcher[aria-controls="pau-chat"][aria-expanded="false"]')
+assert soup.select_one('#pau-chat[role="dialog"][aria-modal="false"][hidden]')
+assert soup.select_one('#pau-messages[role="log"][aria-live="polite"]')
+assert soup.select_one('#pau-question[maxlength="1000"]')
+with Image.open(DIST / 'assets/pau-avatar.webp') as avatar:
+    assert max(avatar.size) == 192 and avatar.mode == 'RGBA'
+knowledge = json.loads((DIST / 'assets/pau-knowledge.json').read_text())
+for fact in knowledge['facts']:
+    assert fact['href'][1:] in ids
+assert 'prefers-reduced-motion:reduce' in assistant_css
+passed('assistant dialog/log/input contracts, transparent avatar, knowledge links, and reduced motion')
 
 print('LIMITATION: real-browser screenshots at 320/390/768/1024/1440px were unavailable; visual viewport QA is not claimed.')

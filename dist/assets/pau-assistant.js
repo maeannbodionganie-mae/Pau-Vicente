@@ -1,0 +1,111 @@
+(() => {
+  'use strict';
+  const widget=document.getElementById('pau-assistant');
+  if(!widget||!window.PauEngine)return;
+  const $=id=>document.getElementById(id);
+  const launcher=$('pau-launcher'),panel=$('pau-chat'),input=$('pau-question'),form=$('pau-form');
+  const messages=$('pau-messages'),status=$('pau-status'),send=$('pau-send');
+  let knowledge=null,live=false,busy=false,questions=[],generation=0,drag=null,suppressClick=false;
+  const welcome='Hi, I’m Pau, your portfolio guide. I can help you explore Pau Vicente’s background, find a speaking topic for your audience, or prepare an event inquiry. I’m her digital assistant, not Pau herself.';
+  function mode(isLive){
+    live=isLive;
+    $('pau-mode').textContent=live?'AI · Gemini':'Portfolio guide';
+    $('pau-privacy').textContent=live?'Questions are sent to Google Gemini to match approved portfolio facts. Chat history stays in this tab. Please avoid sensitive information.':'Uses approved portfolio facts; live AI is not active. Chat stays in this tab. Please avoid sensitive information.';
+  }
+  function append(role,text,sources=[]){
+    const box=document.createElement('div');box.className='pau-message';box.dataset.role=role;
+    const label=document.createElement('span');label.className='pau-message-label';label.textContent=role==='user'?'You':'Pau';
+    const p=document.createElement('p');p.textContent=text;box.append(label,p);
+    const links=document.createElement('div');links.className='pau-source-links';
+    for(const source of sources){
+      const fact=knowledge?.facts.find(f=>f.id===source.id);if(!fact)continue;
+      const a=document.createElement('a');a.href=fact.href;a.textContent=fact.title+' ↗';
+      a.addEventListener('click',()=>{close(false);document.querySelector(fact.href)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});links.append(a);
+    }
+    if(links.children.length)box.append(links);
+    messages.append(box);while(messages.children.length>40)messages.firstElementChild.remove();
+    messages.scrollTop=messages.scrollHeight;
+  }
+  append('assistant',welcome);
+  const ready=(async()=>{
+    try {
+      const response=await fetch('assets/pau-knowledge.json',{signal:AbortSignal.timeout(8000)});
+      if(!response.ok)throw new Error('Unavailable');
+      knowledge=await response.json();
+      const result=await fetch('/api/pau',{cache:'no-store',signal:AbortSignal.timeout(8000)}).then(r=>r.ok?r.json():null).catch(()=>null);
+      mode(result?.mode==='gemini');
+    } catch {status.textContent='The guide could not load. Please use the contact section.';}
+  })();
+  function open(){panel.hidden=false;launcher.setAttribute('aria-expanded','true');input.focus({preventScroll:true});}
+  function close(focus=true){panel.hidden=true;launcher.setAttribute('aria-expanded','false');if(focus)launcher.focus({preventScroll:true});}
+  launcher.addEventListener('click',event=>{if(suppressClick&&event.detail!==0){suppressClick=false;return;}panel.hidden?open():close();});
+  $('pau-close').addEventListener('click',()=>close());
+  widget.addEventListener('keydown',event=>{if(event.key==='Escape'&&!panel.hidden){event.preventDefault();close();}});
+  $('pau-clear').addEventListener('click',()=>{generation++;busy=false;send.disabled=false;questions=[];messages.replaceChildren();append('assistant',welcome);status.textContent='Conversation cleared.';input.focus();});
+  $('pau-contact').addEventListener('click',()=>close(false));
+  async function ask(question){
+    if(busy||!question.trim())return;
+    question=question.trim().slice(0,1000);busy=true;send.disabled=true;status.textContent='Finding the relevant portfolio details…';
+    const token=++generation;append('user',question);input.value='';
+    await ready;
+    if(token!==generation)return;
+    try {
+      if(!knowledge)throw new Error('Knowledge unavailable');
+      let result;
+      // Without an active AI connection, the guide stays in the browser.
+      if(live){
+        try{
+          const response=await fetch('/api/pau',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:question,history:questions.slice(-6)}),signal:AbortSignal.timeout(23000)});
+          if(!response.ok){if(response.status===429)throw new Error('rate-limit');throw new Error('Unavailable');}
+          result=await response.json();
+          if(typeof result.answer!=='string'||!Array.isArray(result.sources))throw new Error('Invalid response');
+        }catch(error){
+          result=window.PauEngine.render(window.PauEngine.plan(question),knowledge);
+          result.notice=error.message==='rate-limit'?'Live AI has reached its request limit. Showing approved portfolio facts.':'Live AI is unavailable. Showing approved portfolio facts.';
+        }
+      }else result=window.PauEngine.render(window.PauEngine.plan(question),knowledge);
+      if(token!==generation)return;
+      append('assistant',result.answer,result.sources);questions.push(question);questions=questions.slice(-6);
+      $('pau-mode').textContent=result.mode==='gemini'?'AI · Gemini':'Portfolio guide';
+      status.textContent=result.notice||'';
+    }catch {if(token===generation)status.textContent='The guide is unavailable. Please use “Speak directly with Pau” below.';}
+    finally{if(token===generation){busy=false;send.disabled=false;}}
+  }
+  form.addEventListener('submit',event=>{event.preventDefault();ask(input.value);});
+  $('pau-suggestions').addEventListener('click',event=>{const button=event.target.closest('[data-question]');if(button)ask(button.dataset.question);});
+  function bounds(){const viewport=window.visualViewport;return {width:viewport?.width||innerWidth,height:viewport?.height||innerHeight};}
+  function position(x,y,save=false){
+    const {width,height}=bounds(),box=launcher.getBoundingClientRect();
+    x=Math.max(8,Math.min(x,width-box.width-8));y=Math.max(8,Math.min(y,height-box.height-8));
+    launcher.style.right='auto';launcher.style.bottom='auto';launcher.style.left=x+'px';launcher.style.top=y+'px';
+    if(save)try{localStorage.setItem('pau-launcher-position',JSON.stringify({x,y}));}catch{}
+  }
+  launcher.addEventListener('pointerdown',event=>{
+    if(event.button!==0)return;
+    const box=launcher.getBoundingClientRect();suppressClick=false;
+    drag={id:event.pointerId,startX:event.clientX,startY:event.clientY,x:box.left,y:box.top,moved:false};
+    launcher.setPointerCapture(event.pointerId);
+  });
+  launcher.addEventListener('pointermove',event=>{
+    if(!drag||event.pointerId!==drag.id)return;
+    const dx=event.clientX-drag.startX,dy=event.clientY-drag.startY;
+    if(Math.hypot(dx,dy)>6)drag.moved=true;
+    if(drag.moved){launcher.classList.add('is-dragging');position(drag.x+dx,drag.y+dy);}
+  });
+  function endDrag(event){
+    if(!drag||event.pointerId!==drag.id)return;
+    const moved=drag.moved;drag=null;launcher.classList.remove('is-dragging');
+    if(moved){suppressClick=true;const box=launcher.getBoundingClientRect();position(box.left,box.top,true);}
+    if(launcher.hasPointerCapture(event.pointerId))launcher.releasePointerCapture(event.pointerId);
+  }
+  launcher.addEventListener('pointerup',endDrag);launcher.addEventListener('pointercancel',endDrag);launcher.addEventListener('lostpointercapture',endDrag);
+  launcher.addEventListener('keydown',event=>{
+    const offset={ArrowLeft:[-24,0],ArrowRight:[24,0],ArrowUp:[0,-24],ArrowDown:[0,24]}[event.key];
+    if(!event.altKey||!offset)return;event.preventDefault();const box=launcher.getBoundingClientRect();position(box.left+offset[0],box.top+offset[1],true);
+  });
+  $('pau-reset-position').addEventListener('click',()=>{launcher.removeAttribute('style');try{localStorage.removeItem('pau-launcher-position');}catch{}status.textContent='Avatar returned to the lower right.';});
+  function keepInView(){if(launcher.style.left){const box=launcher.getBoundingClientRect();position(box.left,box.top);}}
+  addEventListener('resize',keepInView);window.visualViewport?.addEventListener('resize',keepInView);
+  try{const saved=JSON.parse(localStorage.getItem('pau-launcher-position'));if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){widget.hidden=false;position(saved.x,saved.y);}}catch{}
+  widget.hidden=false;
+})();
