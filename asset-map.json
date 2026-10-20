@@ -1,33 +1,30 @@
 {
   "pau-hero": {
     "original": "01-24 CCA_2006.jpg",
-    "width": 2592,
-    "height": 3888,
+    "width": 1024,
+    "height": 1536,
     "webp": [
       {
-        "src": "assets/photos/pau-hero-480.webp",
+        "src": "assets/photos/pau-hero-editorial-480.webp",
         "width": 480,
         "height": 720
       },
       {
-        "src": "assets/photos/pau-hero-800.webp",
+        "src": "assets/photos/pau-hero-editorial-800.webp",
         "width": 800,
         "height": 1200
       },
       {
-        "src": "assets/photos/pau-hero-1200.webp",
-        "width": 1200,
-        "height": 1800
-      },
-      {
-        "src": "assets/photos/pau-hero-1800.webp",
-        "width": 1800,
-        "height": 2700
+        "src": "assets/photos/pau-hero-editorial-1024.webp",
+        "width": 1024,
+        "height": 1536
       }
     ],
-    "fallback": "assets/photos/pau-hero.jpg",
-    "fallback_width": 1600,
-    "fallback_height": 2400
+    "fallback": "assets/photos/pau-hero-editorial.png",
+    "fallback_width": 1024,
+    "fallback_height": 1536,
+    "original_fallback": "assets/photos/pau-hero.jpg",
+    "processing": "Background-removal derivative of the assigned original; original JPEG and previous derivatives retained."
   },
   "pau-about": {
     "original": "01-24 CCA_2050.jpg",

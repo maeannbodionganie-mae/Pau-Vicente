@@ -12,7 +12,7 @@ template = (ROOT / 'src/index.html').read_text()
 def picture(match):
     key, alt, sizes, cls = match.group(1).split('|')
     p = photos[key]
-    hero = key in {'pau-hero', 'pau-hero-cutout'}
+    hero = key == 'pau-hero'
     srcset = ', '.join(f"{e['src']} {e['width']}w" for e in p['webp'])
     loading = 'fetchpriority="high" loading="eager"' if hero else 'loading="lazy"'
     return (f'<picture class="{escape(cls)}" data-photo="{key}">'
