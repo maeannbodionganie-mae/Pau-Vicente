@@ -54,15 +54,18 @@ module.exports = async function handler(req, res) {
       headers:{'Content-Type':'application/json','x-goog-api-key':process.env.GEMINI_API_KEY},
       body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents:[{role:'user',parts:[{text:JSON.stringify({previousQuestions:body.history||[],currentQuestion:question})}]}],generationConfig:{responseMimeType:'application/json',responseJsonSchema:schema,maxOutputTokens:2048,temperature:0.1}})
     });
-    if(!response.ok)throw new Error('Provider unavailable');
+    if(!response.ok)throw new Error(`gemini_http_${response.status}`);
     const data=await response.json();
     const candidate=data.candidates?.[0];
     if(candidate?.finishReason!=='STOP')throw new Error('Incomplete provider response');
     const plan=JSON.parse(candidate.content.parts.filter(p=>!p.thought&&typeof p.text==='string').map(p=>p.text).join(''));
     if(!schema.properties.kind.enum.includes(plan.kind)||!schema.properties.lead.enum.includes(plan.lead)||!Array.isArray(plan.ids)||plan.ids.length>3||plan.ids.some(id=>!schema.properties.ids.items.enum.includes(id)))throw new Error('Invalid routing plan');
     return res.status(200).json({...engine.render(plan,knowledge,'gemini'),...status()});
-  } catch {
+  } catch (error) {
     // Do not return provider errors, request contents, credentials or internal reasoning.
-    return res.status(200).json({...engine.render(engine.plan(question),knowledge),knowledgeVersion:knowledge.version,graphify:'not_connected',notice:'Live AI is temporarily unavailable. This answer uses approved portfolio facts.'});
+    const diagnostic=/^gemini_http_[0-9]{3}$/.test(error?.message||'')?error.message:
+      ['TimeoutError','AbortError'].includes(error?.name)?'gemini_timeout':
+      error instanceof TypeError?'gemini_network':'gemini_response_invalid';
+    return res.status(200).json({...engine.render(engine.plan(question),knowledge),knowledgeVersion:knowledge.version,graphify:'not_connected',diagnostic,notice:'Live AI is temporarily unavailable. This answer uses approved portfolio facts.'});
   }
 };

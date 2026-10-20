@@ -48,6 +48,11 @@ async function request(body,options={}){
     const invalid=await request({message:'What is Pau’s background?'});assert.equal(invalid.data.mode,'portfolio-guide');assert.match(invalid.data.notice,/temporarily unavailable/);
     global.fetch=async()=>{throw new Error('sensitive-provider-diagnostic');};
     const failed=await request({message:'What topics does Pau offer?'});assert.equal(failed.code,200);assert(!JSON.stringify(failed.data).includes('sensitive-provider'));
+    assert.equal(failed.data.diagnostic,'gemini_response_invalid');
+    global.fetch=async()=>({ok:false,status:429});
+    const quota=await request({message:'What topics does Pau offer?'});assert.equal(quota.data.diagnostic,'gemini_http_429');
+    global.fetch=async()=>{throw new DOMException('private diagnostic','TimeoutError');};
+    const timeout=await request({message:'What topics does Pau offer?'});assert.equal(timeout.data.diagnostic,'gemini_timeout');
     let last;
     for(let i=0;i<13;i++)last=await request({message:'hi'},{headers:{'x-forwarded-for':'same-test-client'}});
     assert.equal(last.code,429);assert.equal(last.headers['Retry-After'],'60');
