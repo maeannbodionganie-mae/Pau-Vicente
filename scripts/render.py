@@ -99,11 +99,12 @@ def details(event):
 
 
 def status_labels(event):
-    labels = [f'<span class="status-label status-{e(event["status"])}">{e(event["statusLabel"])}</span>']
+    labels = [f'<span class="status-{e(event["status"])}">{e(event["statusLabel"])}</span>']
     reg_label = event['registration'].get('statusLabel')
     if reg_label:
-        labels.append(f'<span class="status-label status-outline">{e(reg_label)}</span>')
-    return f'<p class="event-status">{"".join(labels)}</p>'
+        labels.append(f'<span>{e(reg_label)}</span>')
+    separator = '<span class="status-sep" aria-hidden="true">·</span>'
+    return f'<p class="event-status">{separator.join(labels)}</p>'
 
 
 def list_items(items, cls):
@@ -111,14 +112,14 @@ def list_items(items, cls):
 
 
 def events_feature():
-    heading = ('<div class="events-heading" data-reveal><div><p class="eyebrow">06 / Learn with Pau</p>'
-               '<h2 id="events-title">Upcoming<br><em>sessions.</em></h2></div>'
+    heading = ('<div class="events-heading" data-reveal><div><p class="eyebrow">Events</p>'
+               '<h2 id="events-title">Upcoming <em>sessions.</em></h2></div>'
                '<p>Public sessions are listed here once confirmed. Until then, the session below is a sample '
                'that shows how events and registration will work.</p></div>')
     if not events:
         body = ('<div class="event-empty" data-reveal><p>No public sessions are listed right now.</p>'
                 '<a class="text-link" href="#contact">Ask about bringing a session to your group '
-                '<span aria-hidden="true">↗</span></a></div>')
+                '</a></div>')
         return f'<section class="events section shell" id="events" aria-labelledby="events-title">{heading}{body}</section>'
     cards = []
     for event in events:
@@ -130,7 +131,7 @@ def events_feature():
             f'<h3 id="{tid}">{styled_title(event["title"])}</h3>'
             f'<p class="event-summary">{e(event["summary"])}</p>'
             f'<h4 class="event-subhead">What you’ll take away</h4>{list_items(event["takeaways"], "event-takeaways")}'
-            f'<div class="actions"><a class="button" href="events/{e(event["slug"])}/">{action} <span aria-hidden="true">↗</span></a></div></div>'
+            f'<div class="actions"><a class="button" href="events/{e(event["slug"])}/">{action}</a></div></div>'
             f'{details(event)}</article>')
     return f'<section class="events section shell" id="events" aria-labelledby="events-title">{heading}{"".join(cards)}</section>'
 
@@ -142,13 +143,13 @@ def registration_section(event):
                 '<div class="registration-intro"><p class="eyebrow">Registration</p>'
                 '<h2 id="register-title">Registration is open.</h2>'
                 '<p>Registration is handled on an external page. Submitting there reserves a seat according to its own confirmation.</p>'
-                f'<div class="actions"><a class="button" href="{e(reg["url"])}" target="_blank" rel="noopener noreferrer">Register for this session <span aria-hidden="true">↗</span></a></div>'
+                f'<div class="actions"><a class="button" href="{e(reg["url"])}" target="_blank" rel="noopener noreferrer">Register for this session</a></div>'
                 '</div></section>')
     if reg['mode'] == 'closed':
         return ('<section class="registration" id="register" aria-labelledby="register-title">'
                 '<div class="registration-intro"><p class="eyebrow">Registration</p>'
                 '<h2 id="register-title">Registration is closed.</h2>'
-                '<div class="actions"><a class="button" href="/#contact">Ask Pau about future sessions <span aria-hidden="true">↗</span></a></div>'
+                '<div class="actions"><a class="button" href="/#contact">Ask Pau about future sessions</a></div>'
                 '</div></section>')
     return f'''<section class="registration" id="register" aria-labelledby="register-title">
       <div class="registration-intro"><p class="eyebrow">Registration preview</p><h2 id="register-title">Try the <em>registration form.</em></h2>
@@ -163,12 +164,12 @@ def registration_section(event):
             <div class="field field-wide"><label for="reg-stage">Which best describes you?</label><select id="reg-stage" name="stage"><option>Prefer not to say</option><option>College student</option><option>Fresh graduate</option><option>Career shifter</option><option>Aspiring freelancer</option><option>Virtual assistant</option><option>Other</option></select></div>
             <div class="field field-wide"><label for="reg-hopes">What do you hope to learn?</label><textarea id="reg-hopes" name="hopes" rows="4" maxlength="1000"></textarea></div>
           </div>
-          <div class="form-actions"><button class="button" type="submit"><span class="button-label">Complete preview</span> <span aria-hidden="true">↗</span></button></div>
+          <div class="form-actions"><button class="button" type="submit"><span class="button-label">Complete preview</span></button></div>
         </form>
         <div class="registration-complete" id="registration-complete" tabindex="-1" hidden>
           <p class="eyebrow">Preview complete</p><h3>Nothing was sent.</h3>
           <p>No seat has been reserved, and the details you entered were not saved or shared. When a real session is confirmed, registration will open on this page.</p>
-          <div class="actions"><a class="button" href="/#contact">Ask Pau about this session <span aria-hidden="true">↗</span></a><button class="text-link" type="button" id="registration-restart">Try the preview again</button></div>
+          <div class="actions"><a class="button" href="/#contact">Ask Pau about this session</a><button class="text-link" type="button" id="registration-restart">Try the preview again</button></div>
         </div>
       </div>
     </section>'''
@@ -176,7 +177,7 @@ def registration_section(event):
 
 def event_page(event):
     return f'''<article class="event-page shell" aria-labelledby="event-title">
-      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/#events"><span aria-hidden="true">←</span> All events</a></nav>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/#events">All events</a></nav>
       <header class="event-page-header">{status_labels(event)}<h1 id="event-title">{styled_title(event["title"])}</h1><p class="event-summary">{e(event["summary"])}</p></header>
       <div class="event-page-layout">
         <div class="event-page-copy">

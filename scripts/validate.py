@@ -84,7 +84,7 @@ passed('all anchors, public contacts, safe external links, and prefilled email f
 
 assert len(manifest) == 15
 assert len(soup.select('picture[data-photo] img')) == 15
-assert len(soup.select('img')) == 16
+assert len(soup.select('img')) == 15
 assert len(soup.select('img[loading="lazy"]')) == 14
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
 for key, photo in manifest.items():
@@ -156,13 +156,12 @@ assert soup.select_one('#pau-launcher[aria-controls="pau-chat"][aria-expanded="f
 assert soup.select_one('#pau-chat[role="dialog"][aria-modal="false"][hidden]')
 assert soup.select_one('#pau-messages[role="log"][aria-live="polite"]')
 assert soup.select_one('#pau-question[maxlength="1000"]')
-with Image.open(DIST / 'assets/pau-avatar.webp') as avatar:
-    assert max(avatar.size) == 192 and avatar.mode == 'RGBA'
+assert soup.select_one('#pau-launcher .pau-launcher-label').get_text(strip=True) == 'Ask Pau'
 knowledge = json.loads((DIST / 'assets/pau-knowledge.json').read_text())
 for fact in knowledge['facts']:
     assert fact['href'][1:] in ids
 assert 'prefers-reduced-motion:reduce' in assistant_css
-passed('assistant dialog/log/input contracts, transparent avatar, knowledge links, and reduced motion')
+passed('assistant dialog/log/input contracts, text launcher, knowledge links, and reduced motion')
 
 # Inquiry form: visible labels, described errors, topic context, honest fallback
 form = soup.select_one('#inquiry-form')
