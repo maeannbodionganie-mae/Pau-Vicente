@@ -20,7 +20,7 @@
     for(const source of sources){
       const fact=knowledge?.facts.find(f=>f.id===source.id);if(!fact)continue;
       const a=document.createElement('a');a.href=fact.href;a.textContent=fact.title+' ↗';
-      a.addEventListener('click',()=>{close(false);document.querySelector(fact.href)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});links.append(a);
+      a.addEventListener('click',()=>{close(false);if(fact.href.startsWith('#'))document.querySelector(fact.href)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});links.append(a);
     }
     if(links.children.length)box.append(links);
     messages.append(box);while(messages.children.length>40)messages.firstElementChild.remove();
@@ -107,5 +107,9 @@
   function keepInView(){if(launcher.style.left){const box=launcher.getBoundingClientRect();position(box.left,box.top);}}
   addEventListener('resize',keepInView);window.visualViewport?.addEventListener('resize',keepInView);
   try{const saved=JSON.parse(localStorage.getItem('pau-launcher-position'));if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){widget.hidden=false;position(saved.x,saved.y);}}catch{}
+  // On small screens, tuck the avatar away while a visitor fills in a page form so it never covers fields or buttons.
+  const small=window.matchMedia?matchMedia('(max-width: 600px)'):{matches:false};
+  document.addEventListener('focusin',event=>{const field=event.target;if(small.matches&&field?.closest&&field.closest('form')&&!widget.contains(field))widget.classList.add('is-tucked');});
+  document.addEventListener('focusout',()=>widget.classList.remove('is-tucked'));
   widget.hidden=false;
 })();

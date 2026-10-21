@@ -91,3 +91,13 @@ New assets: `dist/assets/photos/pau-hero-editorial-480.webp`, `pau-hero-editoria
 New checks and notes: `scripts/validate.py`, `scripts/check-interactions.cjs`, `scripts/requirements-qa.txt`, and this document.
 
 The Vercel `dist/` root and existing hosting metadata remain intact. The editorial redesign was subsequently pushed to public `main` and deployed through the existing GitHub/Vercel integration at `https://pau-vicente-speaker.vercel.app/`. The later Pau assistant addition is documented separately in `PAU_ASSISTANT.md`.
+
+## October 22 update: events, inquiries and refinements
+
+- **Events.** Added the *Upcoming sessions* section, a clearly labelled sample event (*Freelance 101: Start Your Freelancing Journey with Confidence*), and its own page at `/events/freelance-101/`. All unconfirmed details read "To be announced". The page has a local-only registration preview that reserves nothing and sends nothing. Everything comes from `src/content/events.json`.
+- **Inquiries.** The contact section now has a full inquiry form: visible labels, an error summary, recoverable failure states, duplicate-safe retries, and a reference ID. The form feeds a private Google Sheet and an email notification through Apps Script (`INQUIRY_SETUP.md`). The prefilled email link remains as a fallback. Each topic has an *Invite Pau for this topic* link that preselects the topic.
+- **Navigation.** Added Events to the header and footer. The hero's second action is now *Explore Events*. Speaking areas stay one step below in the hero index. The footer now carries navigation and verified contacts.
+- **Readability.** Body copy moved to 15–16px across sections; captions, notes and labels went up 1–2px.
+- **Fixes.** Restored the missing spaces in mobile margin notes ("Before the leap, there was a question: …"). The assistant avatar now hides while a page form has focus on small screens.
+- **Copy.** The four chapters and other approved copy are unchanged. Rewrites were held back so that no new claims appear in Pau's voice without her approval.
+- **Verification.** Viewports at 360, 390, 768, 1024 and 1440px were checked in headless Chromium (`scripts/check-browser.py`). The Pinterest references could not be fetched (robots-blocked); the principles recorded above were reused.

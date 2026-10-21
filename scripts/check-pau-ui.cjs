@@ -5,7 +5,9 @@ const vm=require('node:vm');
 const engine=require('../dist/assets/pau-engine.js');
 const knowledge=require('../dist/assets/pau-knowledge.json');
 class Element{
-  constructor(){this.listeners={};this.children=[];this.attributes={};this.style={};this.dataset={};this.hidden=false;this.value='';this.textContent='';this.capture=new Set();const classes=new Set();this.classList={add:c=>classes.add(c),remove:c=>classes.delete(c)};}
+  constructor(){this.listeners={};this.children=[];this.attributes={};this.style={};this.dataset={};this.hidden=false;this.value='';this.textContent='';this.capture=new Set();const classes=new Set();this.classList={add:c=>classes.add(c),remove:c=>classes.delete(c),contains:c=>classes.has(c)};}
+  contains(node){while(node){if(node===this)return true;node=node.parent;}return false;}
+  closest(selector){return selector==='form'&&this.isForm?this:this.parent?.closest?.(selector)||null;}
   addEventListener(type,fn){(this.listeners[type]||=[]).push(fn);}
   fire(type,event={}){for(const fn of this.listeners[type]||[])fn(event);}
   append(...nodes){for(const n of nodes){n.parent=this;this.children.push(n);}}
@@ -26,8 +28,10 @@ const ids=['assistant','launcher','chat','question','form','messages','status','
 const elements=Object.fromEntries(ids.map(id=>['pau-'+id,new Element()]));
 elements['pau-chat'].hidden=true;
 const stored=new Map(),requests=[],viewport={width:390,height:844,addEventListener(){}};
-const document={getElementById:id=>elements[id],createElement:()=>new Element(),querySelector:()=>new Element()};
-const context={document,window:{PauEngine:engine,visualViewport:viewport},innerWidth:390,innerHeight:844,addEventListener(){},localStorage:{getItem:k=>stored.get(k)||null,setItem:(k,v)=>stored.set(k,v),removeItem:k=>stored.delete(k)},AbortSignal,matchMedia:()=>({matches:true}),fetch:async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>url.includes('knowledge')?knowledge:{mode:'portfolio-guide'}};}};
+const documentListeners={};
+const document={getElementById:id=>elements[id],createElement:()=>new Element(),querySelector:()=>new Element(),addEventListener(type,fn){(documentListeners[type]||=[]).push(fn);}};
+const fireDocument=(type,event)=>(documentListeners[type]||[]).forEach(fn=>fn(event));
+const context={document,window:{PauEngine:engine,visualViewport:viewport,matchMedia:()=>({matches:true})},innerWidth:390,innerHeight:844,addEventListener(){},localStorage:{getItem:k=>stored.get(k)||null,setItem:(k,v)=>stored.set(k,v),removeItem:k=>stored.delete(k)},AbortSignal,matchMedia:()=>({matches:true}),fetch:async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>url.includes('knowledge')?knowledge:{mode:'portfolio-guide'}};}};
 vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../dist/assets/pau-assistant.js'),'utf8'),context);
 const $=id=>elements['pau-'+id];
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -50,7 +54,13 @@ const text=node=>node.textContent+node.children.map(text).join(' ');
   $('question').value='<script>alert(1)</script> What is the weather?';$('form').fire('submit',{preventDefault(){}});await tick();
   assert.match(text($('messages')),/Hindi kasama sa scope/);assert.match(text($('messages')),/<script>/,'visitor text is plain text');
   $('clear').fire('click');assert.equal($('messages').children.length,1);assert(!text($('messages')).includes('<script>'));
+  const pageForm=new Element();pageForm.isForm=true;const pageField=new Element();pageForm.append(pageField);
+  fireDocument('focusin',{target:pageField});assert($('assistant').classList.contains('is-tucked'),'avatar tucks away while a page form is in use on small screens');
+  fireDocument('focusout',{target:pageField});assert(!$('assistant').classList.contains('is-tucked'));
+  fireDocument('focusin',{target:$('question')});assert(!$('assistant').classList.contains('is-tucked'),'the chat input itself never hides the avatar');
+  $('question').value='Is there an upcoming event I can join?';$('form').fire('submit',{preventDefault(){}});await tick();
+  assert.match(text($('messages')),/sample listing/);assert.match(text($('messages')),/no seat is reserved/);
   $('reset-position').fire('click');assert.equal($('launcher').style.left,undefined);assert(!stored.has('pau-launcher-position'));
-  console.log('PASS: opening/Escape/focus, pointer drag and clamping, drag-click suppression, keyboard movement, reset, local guide answers, scope refusal, plain-text rendering, and clear chat.');
+  console.log('PASS: opening/Escape/focus, pointer drag and clamping, drag-click suppression, keyboard movement, reset, form-aware tucking, event answers, local guide answers, scope refusal, plain-text rendering, and clear chat.');
   console.log('DOM harness only; browser viewport screenshots remain unverified.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

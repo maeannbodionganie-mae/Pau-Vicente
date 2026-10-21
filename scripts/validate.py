@@ -77,10 +77,10 @@ for href in ['https://www.facebook.com/paulinemelissar.v/',
              'https://www.instagram.com/pau.melissaa/']:
     assert soup.find('a', href=href)
 assert not soup.select('iframe, video')
-assert len(soup.select('form')) == 1 and soup.select_one('form#pau-form')
+assert len(soup.select('form')) == 2 and soup.select_one('form#pau-form') and soup.select_one('form#inquiry-form')
 assert set(re.findall(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', page)) == {'pauline.vicente14@gmail.com'}
 assert not re.search(r'(?:password|passcode|api[_-]?key|secret)\s*[:=]', page, re.I)
-passed('all anchors, public contacts, safe external links, and prefilled email inquiry')
+passed('all anchors, public contacts, safe external links, and prefilled email fallback')
 
 assert len(manifest) == 15
 assert len(soup.select('picture[data-photo] img')) == 15
@@ -125,6 +125,7 @@ contrast_pairs = {(palette[text], palette[surface])
                   for text in ['ink', 'body', 'accent']
                   for surface in ['paper', 'oat', 'sand', 'stone']}
 contrast_pairs.update((palette[text], '241b16') for text in ['ink', 'body', 'accent'])
+contrast_pairs.update((palette['error'], surface) for surface in [palette['paper'], palette['oat']])
 contrast_pairs.update([(palette['button-ink'], palette['button']),
                        (palette['button-ink'], palette['accent'])])
 for foreground, background in contrast_pairs:
@@ -163,4 +164,56 @@ for fact in knowledge['facts']:
 assert 'prefers-reduced-motion:reduce' in assistant_css
 passed('assistant dialog/log/input contracts, transparent avatar, knowledge links, and reduced motion')
 
-print('LIMITATION: real-browser screenshots at 320/390/768/1024/1440px were unavailable; visual viewport QA is not claimed.')
+# Inquiry form: visible labels, described errors, topic context, honest fallback
+form = soup.select_one('#inquiry-form')
+assert form.get('novalidate') is not None and form.get('data-endpoint') == '/api/inquiry' and not form.get('action')
+controls = form.select('input, select, textarea')
+for control in controls:
+    if control['name'] == 'website':
+        assert control.find_parent(class_='hp-field') and control.get('tabindex') == '-1'
+        continue
+    assert form.select_one(f'label[for="{control["id"]}"]'), control['id']
+for name in ['name', 'email', 'inquiryType', 'message']:
+    control = form.select_one(f'[name="{name}"]')
+    assert control.has_attr('required')
+    described = control['aria-describedby'].split()
+    assert any(d.endswith('-error') and soup.find(id=d) for d in described), name
+topics = [o.get_text() for o in form.select('#inq-topic option')]
+triggers = [a['data-topic'] for a in soup.select('a[data-topic]')]
+assert len(triggers) == 3 and set(triggers) <= set(topics) and 'Not sure yet' in topics
+assert soup.select_one('#inquiry-status[role="status"][aria-live="polite"]')
+assert 'does' in normalized(soup.select_one('.contact-lede')) and 'booking' in normalized(soup.select_one('.contact-lede'))
+passed('inquiry form labels, required-field errors, topic preselection targets, and booking disclaimer')
+
+# Events: one source renders the homepage feature, event page and assistant facts
+events_source = json.loads((ROOT / 'src/content/events.json').read_text())['events']
+feature = soup.select('#events .event-feature')
+assert len(feature) == len(events_source) == 1
+event = events_source[0]
+assert event['status'] == 'sample' and event['statusLabel'] in normalized(feature[0])
+assert soup.select_one('.hero a[href="#events"]') and soup.select_one('.nav-links a[href="#events"]')
+event_page = BeautifulSoup((DIST / 'events' / event['slug'] / 'index.html').read_text(), 'html.parser')
+assert '{{' not in str(event_page) and len(event_page.select('h1')) == 1
+assert event_page.select_one('meta[name="robots"][content="noindex"]'), 'sample events stay out of search results'
+reg = event_page.select_one('#registration-form[data-mode="preview"]')
+assert reg and not reg.get('action') and 'no seat will be reserved' in normalized(event_page.select_one('.registration .notice'))
+assert 'Nothing was sent' in normalized(event_page.select_one('#registration-complete'))
+for value in [event['date'], event['time'], event['venue'], event['format']]:
+    assert value in normalized(event_page.select_one('.event-details'))
+for tag, attr in [('script', 'src'), ('link', 'href'), ('a', 'href')]:
+    for element in event_page.select(tag):
+        ref = element.get(attr, '')
+        if ref.startswith('/') and not ref.startswith('//'):
+            target = ref.split('#')[0]
+            assert target == '/' or (DIST / target.lstrip('/')).exists(), ref
+        if ref.startswith('/#'):
+            assert ref[2:] in ids, ref
+notfound = BeautifulSoup((DIST / '404.html').read_text(), 'html.parser')
+assert '{{' not in str(notfound) and notfound.select_one('meta[name="robots"][content="noindex"]') and notfound.select_one('a[href="/"]')
+facts = {f['id']: f for f in json.loads((DIST / 'assets/pau-knowledge.json').read_text())['facts']}
+assert event['title'] in facts['event']['text'] and 'not a confirmed session' in facts['event']['text']
+assert 'no seat is reserved' in facts['registration']['text']
+assert not re.search(r'countdown|sold out|limited seats|hurry', page + str(event_page), re.I)
+passed('sample event labelled everywhere, preview registration is local-only, event page links resolve, 404 page, and matching assistant facts')
+
+print('Static checks only. Run scripts/check-browser.py for real-browser viewport and interaction checks.')

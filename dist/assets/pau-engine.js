@@ -33,6 +33,7 @@
     const blocked=guard(question); if(blocked)return blocked;
     const q=question.toLowerCase();
     if (/^(hi|hello|hey|kumusta|kamusta|thanks|thank you|salamat)[!.\s]*(pau)?[!.\s]*$/i.test(q.trim())) return {kind:'greeting'};
+    if (/\bevents?\b|upcoming|register|registration|sign.?up|\battend|join (?:a|the|your) (?:session|class|workshop)|\bseat\b/.test(q)) return {kind:'answer',ids:['event','registration'],lead:'general'};
     if (/coaching|bonus|free session|support.*participant/.test(q)) return {kind:'answer',ids:['coaching'],lead:'general'};
     if (/contact|email|mobile|phone|invite|book|inquir|reach|event arrangement/.test(q)) return {kind:'answer',ids:['contact','formats'],lead:'invitation'};
     if (/facebook|linkedin|instagram|social profile/.test(q)) return {kind:'answer',ids:['socials'],lead:'general'};

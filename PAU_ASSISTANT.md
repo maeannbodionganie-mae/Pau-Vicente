@@ -12,6 +12,10 @@ Gemini reasons about audience fit and selects approved knowledge IDs and a suita
 
 Only the last six visitor questions accompany a current Gemini question; no client-supplied system or assistant messages are accepted. When AI is active, the interface explains that questions go to Google Gemini. The app does not intentionally persist or log chat transcripts. Hosting and provider processing policies still apply. Provider failures fall back to approved facts with a visible notice. Burst protection is per function instance; configure Vercel Firewall and provider spending limits for deployment-wide abuse control.
 
+## Events and inquiries
+
+The `event` and `registration` facts are generated from `src/content/events.json` by `scripts/render.py`, so the assistant always describes the same event as the page. The sample event is described as a sample, and the registration preview as reserving nothing. Questions about events, registering, or attending route to these facts. The assistant still cannot send inquiries or register anyone. It points visitors to the contact form or the event page. On small screens, the avatar hides while a visitor is filling in a page form so it never covers fields or buttons.
+
 ## Graphify: pending service identification
 
 No Graphify connection is claimed. The Graphify product found during research describes a software/code knowledge-graph platform. The requested service URL, workspace or graph, authentication method, and supported query/export contract were not supplied. A working integration requires the exact intended Graphify service and an approved graph containing only Pau's public portfolio facts. Do not connect an unrestricted graph containing internal notes or credentials.
