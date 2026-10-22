@@ -29,6 +29,10 @@ async function request(body,options={}){
     for(const message of ['What is Pau’s degree?','How much is her fee?','Is she available on Friday?','Does she guarantee income?']){
       const reply=await request({message});assert.equal(reply.data.sources[0].id,'unverified');assert.match(reply.data.answer,/ask Pau directly/);
     }
+    for(const message of ['Is there an upcoming event I can join?','How do I register for Freelance 101?']){
+      const reply=await request({message});assert.deepEqual(reply.data.sources.map(s=>s.id),['event','registration']);
+      assert.match(reply.data.answer,/not a confirmed session/);assert.match(reply.data.answer,/no seat is reserved/);
+    }
     const ids=new Set(knowledge.facts.map(f=>f.id));
     for(const edge of knowledge.relationships){assert(ids.has(edge.from));assert(ids.has(edge.to));}
     assert.throws(()=>engine.render({kind:'answer',ids:['invented']},knowledge));
@@ -61,7 +65,7 @@ async function request(body,options={}){
     let last;
     for(let i=0;i<13;i++)last=await request({message:'hi'},{headers:{'x-forwarded-for':'same-test-client'}});
     assert.equal(last.code,429);assert.equal(last.headers['Retry-After'],'60');
-    console.log('PASS: input/origin validation, scope refusal, unverified claims, knowledge references, grounded Gemini routing, hidden reasoning exclusion, provider failure fallback, and burst limit.');
+    console.log('PASS: input/origin validation, scope refusal, unverified claims, sample-event and registration answers, knowledge references, grounded Gemini routing, hidden reasoning exclusion, provider failure fallback, and burst limit.');
     console.log('Provider calls are mocked. Live Gemini/Graphify integration is not claimed.');
   }finally{if(oldKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=oldKey;global.fetch=oldFetch;}
 })().catch(error=>{console.error(error);process.exitCode=1;});

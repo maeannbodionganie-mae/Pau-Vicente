@@ -77,30 +77,32 @@ for href in ['https://www.facebook.com/paulinemelissar.v/',
              'https://www.instagram.com/pau.melissaa/']:
     assert soup.find('a', href=href)
 assert not soup.select('iframe, video')
-assert len(soup.select('form')) == 1 and soup.select_one('form#pau-form')
-assert set(re.findall(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', page)) == {'pauline.vicente14@gmail.com'}
+assert len(soup.select('form')) == 2 and soup.select_one('form#pau-form') and soup.select_one('form#inquiry-form')
+assert set(re.findall(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', page)) == {'askspeakerpau@gmail.com'}
 assert not re.search(r'(?:password|passcode|api[_-]?key|secret)\s*[:=]', page, re.I)
-passed('all anchors, public contacts, safe external links, and prefilled email inquiry')
+passed('all anchors, public contacts, safe external links, and prefilled email fallback')
 
-assert len(manifest) == 15
-assert len(soup.select('picture[data-photo] img')) == 15
-assert len(soup.select('img')) == 16
-assert len(soup.select('img[loading="lazy"]')) == 14
+assert len(manifest) >= 15
+used = [pic['data-photo'] for pic in soup.select('picture[data-photo]')]
+assert len(used) == len(set(used)) >= 15, used
+assert {k for k in manifest if not k.endswith('-cut')} - {'pau-hero', 'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team'} <= set(used), 'every documentary photograph is shown'
+assert set(used) <= set(manifest)
+assert len(soup.select('img')) == len(used)
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
+assert soup.select_one('picture[data-photo="pau-hero-cut"] img[fetchpriority="high"]')
+assert len(soup.select('img[loading="lazy"]')) == len(used) - 1
 for key, photo in manifest.items():
-    pictures = soup.select(f'picture[data-photo="{key}"]')
-    assert len(pictures) == 1, key
-    image = pictures[0].img
+    for variant in photo['webp']:
+        with Image.open(DIST / variant['src']) as asset:
+            assert asset.size == (variant['width'], variant['height']), variant['src']
+    with Image.open(DIST / photo['fallback']) as asset:
+        assert asset.size == (photo['fallback_width'], photo['fallback_height'])
+for key in used:
+    image = soup.select_one(f'picture[data-photo="{key}"] img')
     assert image.get('alt') and len(image['alt']) > 15
     assert int(image['width']) > 0 and int(image['height']) > 0
     assert image.get('decoding') == 'async'
-    assert pictures[0].source.get('srcset') and pictures[0].source.get('sizes')
-    for variant in photo['webp']:
-        path = DIST / variant['src']
-        with Image.open(path) as asset:
-            assert asset.size == (variant['width'], variant['height']), path
-    with Image.open(DIST / photo['fallback']) as asset:
-        assert asset.size == (photo['fallback_width'], photo['fallback_height'])
+    assert image.find_previous_sibling('source').get('srcset')
 for tag, attr in [('img', 'src'), ('script', 'src'), ('link', 'href')]:
     for element in soup.select(tag):
         ref = element.get(attr, '')
@@ -111,7 +113,7 @@ for sheet in (DIST / 'assets/fonts').glob('*.css'):
         assert (sheet.parent / url).exists(), url
 for path in DIST.rglob('*'):
     assert path.suffix.lower() != '.cr3'
-passed('all 15 intended photos, responsive sources, dimensions, local assets, and RAW-safe delivery')
+passed(f'{len(used)} curated photos (yellow studio backgrounds replaced by cutouts), responsive sources, dimensions, local assets, and RAW-safe delivery')
 
 def luminance(color):
     channels = [int(color[i:i + 2], 16) / 255 for i in [0, 2, 4]]
@@ -119,19 +121,20 @@ def luminance(color):
     return sum(v * weight for v, weight in zip(linear, [.2126, .7152, .0722]))
 
 palette = dict(re.findall(r'--([a-z-]+):#([0-9a-f]{6})\b', css))
-assert palette['paper'] == '2b201a' and palette['sand'] == '2b201a'
-assert palette['ink'] == 'e8dfd0' and palette['button'] == 'eadece'
-contrast_pairs = {(palette[text], palette[surface])
-                  for text in ['ink', 'body', 'accent']
-                  for surface in ['paper', 'oat', 'sand', 'stone']}
-contrast_pairs.update((palette[text], '241b16') for text in ['ink', 'body', 'accent'])
-contrast_pairs.update([(palette['button-ink'], palette['button']),
-                       (palette['button-ink'], palette['accent'])])
+assert palette['paper'] == '2b201a' and palette['ink'] == 'e8dfd0', 'espresso and ivory foundation'
+dark_grounds = [palette['paper'], palette['oat'], palette['espresso-deep']]
+light_grounds = [palette['cream'], palette['sand'], palette['card']]
+contrast_pairs = {(palette[t], bg) for t in ['ink', 'body', 'accent', 'error-dark'] for bg in dark_grounds}
+contrast_pairs |= {(palette[t], bg) for t in ['cream-ink', 'cream-muted', 'cream-accent', 'error-light'] for bg in light_grounds}
+contrast_pairs |= {(palette['button-ink'], palette['button']), (palette['cream'], palette['paper'])}
 for foreground, background in contrast_pairs:
     light, dark = sorted([luminance(foreground), luminance(background)], reverse=True)
     ratio = (light + .05) / (dark + .05)
     assert ratio >= 4.5, (foreground, background, ratio)
-passed(f'{len(contrast_pairs)} current text/background pairs meet WCAG AA; espresso reference colors match')
+for bg in light_grounds:
+    light_l, dark_l = sorted([luminance(palette['field-line']), luminance(bg)], reverse=True)
+    assert (light_l + .05) / (dark_l + .05) >= 3, 'form field boundaries need 3:1'
+passed(f'{len(contrast_pairs)} text/background pairs meet WCAG AA on espresso and cream; field borders meet 3:1')
 
 errors = []
 def inspect_rules(rules):
@@ -155,12 +158,63 @@ assert soup.select_one('#pau-launcher[aria-controls="pau-chat"][aria-expanded="f
 assert soup.select_one('#pau-chat[role="dialog"][aria-modal="false"][hidden]')
 assert soup.select_one('#pau-messages[role="log"][aria-live="polite"]')
 assert soup.select_one('#pau-question[maxlength="1000"]')
-with Image.open(DIST / 'assets/pau-avatar.webp') as avatar:
-    assert max(avatar.size) == 192 and avatar.mode == 'RGBA'
+assert soup.select_one('#pau-launcher .pau-launcher-label').get_text(strip=True) == 'Ask Pau'
 knowledge = json.loads((DIST / 'assets/pau-knowledge.json').read_text())
 for fact in knowledge['facts']:
     assert fact['href'][1:] in ids
 assert 'prefers-reduced-motion:reduce' in assistant_css
-passed('assistant dialog/log/input contracts, transparent avatar, knowledge links, and reduced motion')
+passed('assistant dialog/log/input contracts, text launcher, knowledge links, and reduced motion')
 
-print('LIMITATION: real-browser screenshots at 320/390/768/1024/1440px were unavailable; visual viewport QA is not claimed.')
+# Inquiry form: visible labels, described errors, topic context, honest fallback
+form = soup.select_one('#inquiry-form')
+assert form.get('novalidate') is not None and form.get('data-endpoint') == '/api/inquiry' and not form.get('action')
+controls = form.select('input, select, textarea')
+for control in controls:
+    if control['name'] == 'website':
+        assert control.find_parent(class_='hp-field') and control.get('tabindex') == '-1'
+        continue
+    assert form.select_one(f'label[for="{control["id"]}"]'), control['id']
+for name in ['name', 'email', 'inquiryType', 'message']:
+    control = form.select_one(f'[name="{name}"]')
+    assert control.has_attr('required')
+    described = control['aria-describedby'].split()
+    assert any(d.endswith('-error') and soup.find(id=d) for d in described), name
+topics = [o.get_text() for o in form.select('#inq-topic option')]
+triggers = [a['data-topic'] for a in soup.select('a[data-topic]')]
+assert len(triggers) == 3 and set(triggers) <= set(topics) and 'Not sure yet' in topics
+assert soup.select_one('#inquiry-status[role="status"][aria-live="polite"]')
+assert 'does' in normalized(soup.select_one('.contact-lede')) and 'booking' in normalized(soup.select_one('.contact-lede'))
+passed('inquiry form labels, required-field errors, topic preselection targets, and booking disclaimer')
+
+# Events: one source renders the homepage feature, event page and assistant facts
+events_source = json.loads((ROOT / 'src/content/events.json').read_text())['events']
+feature = soup.select('#events .event-card')
+assert len(feature) == len(events_source) == 1
+event = events_source[0]
+assert event['status'] == 'sample' and event['statusLabel'] in normalized(feature[0])
+assert soup.select_one('.hero a[href="#events"]') and soup.select_one('.nav-links a[href="#events"]')
+event_page = BeautifulSoup((DIST / 'events' / event['slug'] / 'index.html').read_text(), 'html.parser')
+assert '{{' not in str(event_page) and len(event_page.select('h1')) == 1
+assert event_page.select_one('meta[name="robots"][content="noindex"]'), 'sample events stay out of search results'
+reg = event_page.select_one('#registration-form[data-mode="preview"]')
+assert reg and not reg.get('action') and 'no seat will be reserved' in normalized(event_page.select_one('.registration .notice'))
+assert 'Nothing was sent' in normalized(event_page.select_one('#registration-complete'))
+for value in [event['date'], event['time'], event['venue'], event['format']]:
+    assert value in normalized(event_page.select_one('.event-details'))
+for tag, attr in [('script', 'src'), ('link', 'href'), ('a', 'href')]:
+    for element in event_page.select(tag):
+        ref = element.get(attr, '')
+        if ref.startswith('/') and not ref.startswith('//'):
+            target = ref.split('#')[0]
+            assert target == '/' or (DIST / target.lstrip('/')).exists(), ref
+        if ref.startswith('/#'):
+            assert ref[2:] in ids, ref
+notfound = BeautifulSoup((DIST / '404.html').read_text(), 'html.parser')
+assert '{{' not in str(notfound) and notfound.select_one('meta[name="robots"][content="noindex"]') and notfound.select_one('a[href="/"]')
+facts = {f['id']: f for f in json.loads((DIST / 'assets/pau-knowledge.json').read_text())['facts']}
+assert event['title'] in facts['event']['text'] and 'not a confirmed session' in facts['event']['text']
+assert 'no seat is reserved' in facts['registration']['text']
+assert not re.search(r'countdown|sold out|limited seats|hurry', page + str(event_page), re.I)
+passed('sample event labelled everywhere, preview registration is local-only, event page links resolve, 404 page, and matching assistant facts')
+
+print('Static checks only. Run scripts/check-browser.py for real-browser viewport and interaction checks.')

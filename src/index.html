@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#2b201a">
   <title>Pau Vicente | Speaker &amp; Freelance Coach</title>
-  <meta name="description" content="Meet Pau Vicente, speaker, freelance coach, and social media marketing & branding strategist. Explore talks on freelancing, social media marketing, and purposeful leadership.">
+  <meta name="description" content="Meet Pau Vicente, speaker, freelance coach, and social media marketing &amp; branding strategist. Explore talks on freelancing, social media marketing, and purposeful leadership.">
   <link rel="canonical" href="https://pau-vicente-speaker.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Pau Vicente | Lead with Love. Grow with Purpose.">
@@ -13,14 +13,20 @@
   <meta property="og:url" content="https://pau-vicente-speaker.vercel.app/">
   <meta property="og:image" content="https://pau-vicente-speaker.vercel.app/assets/photos/pau-hero.jpg">
   <meta property="og:image:alt" content="Pau Vicente in her white blazer against the golden studio background.">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="2400">
   <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Pau Vicente","jobTitle":"Speaker, Freelance Coach, Social Media Marketing & Branding Strategist","url":"https://pau-vicente-speaker.vercel.app/","image":"https://pau-vicente-speaker.vercel.app/assets/photos/pau-hero.jpg","email":"mailto:askspeakerpau@gmail.com","sameAs":["https://www.facebook.com/paulinemelissar.v/","https://www.linkedin.com/in/pauline-vicente-b86849234/","https://www.instagram.com/pau.melissaa/"]}</script>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="preload" href="assets/fonts/display-1.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="assets/fonts/cormorant-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/body-0.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="assets/fonts/display.css">
+  <link rel="stylesheet" href="assets/fonts/heading.css">
   <link rel="stylesheet" href="assets/fonts/body.css">
   <link rel="stylesheet" href="assets/style.css">
   <script src="assets/main.js" defer></script>
+  <script src="assets/story.js" defer></script>
+  <script src="assets/motion.js" defer></script>
+  <script src="assets/inquiry.js" defer></script>
   <link rel="stylesheet" href="assets/pau-assistant.css">
   <script src="assets/pau-engine.js" defer></script>
   <script src="assets/pau-assistant.js" defer></script>
@@ -28,88 +34,319 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
-    <nav class="site-nav shell" aria-label="Main navigation">
-      <a class="brand" href="#home" aria-label="Pau Vicente, back to top">Pau Vicente<span aria-hidden="true">.</span></a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navigation-links"><span>Menu</span><span class="menu-mark" aria-hidden="true"><i></i><i></i></span></button>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="Pau Vicente, back to top">Pau Vicente</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navigation-links"><span class="nav-toggle-label">Menu</span><span class="menu-mark" aria-hidden="true"><i></i><i></i></span></button>
       <div class="nav-links" id="navigation-links">
-        <a href="#about">About</a><a href="#my-story">My Story</a><a href="#speaking-topics">Speaking Topics</a><a href="#why-pau">Why Pau</a><a href="#contact">Contact</a>
-        <a class="button button-small" href="#contact">Invite Pau <span aria-hidden="true">↗</span></a>
+        <a href="#about">About</a><a href="#my-story">My Story</a><a href="#speaking-topics">Topics</a><a href="#events">Events</a><a href="#why-pau">Why Pau</a><a href="#contact">Contact</a>
+        <a class="button button-small" href="#contact">Invite Pau to Speak</a>
       </div>
     </nav>
   </header>
 
   <main id="main">
-    <section class="hero" id="home" aria-labelledby="hero-title"><div class="shell hero-layout">
-      <div class="hero-copy" data-reveal>
-        <p class="eyebrow hero-kicker"><span aria-hidden="true"></span>A story worth sharing</p>
-        <p class="hero-name">Pau Vicente</p>
-        <p class="hero-role">Speaker <span aria-hidden="true">/</span> Freelance Coach<br>Social Media Marketing &amp; Branding Strategist</p>
-        <h1 id="hero-title">Lead with <em>Love.</em><br>Grow with<br class="hero-break"> <em>Purpose.</em></h1>
-        <p class="hero-subtitle">Helping Aspiring Freelancers<br>Build with Confidence.</p>
-        <div class="actions"><a class="button" href="#contact">Invite Pau to Speak <span aria-hidden="true">↗</span></a><a class="text-link" href="#speaking-topics">Explore Speaking Topics <span aria-hidden="true">↓</span></a></div>
+    <!-- Cover: Pau steps out of her frame. Layers move at different depths with the pointer and on scroll. -->
+    <section class="hero panel anchored tone-dark" id="home" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Speaker <span class="dot" aria-hidden="true"></span> Freelance Coach <span class="dot" aria-hidden="true"></span> Social Media Marketing &amp; Branding Strategist</p>
+          <h1 id="hero-title"><span class="line"><span>Lead with <em>Love.</em></span></span> <span class="line"><span>Grow with <em>Purpose.</em></span></span></h1>
+          <p class="hero-subtitle">Helping aspiring freelancers build with confidence.</p>
+          <div class="actions"><a class="button" href="#contact">Invite Pau to Speak</a><a class="text-link" href="#events">Explore Events</a></div>
+          <ul class="hero-proof" aria-label="At a glance"><li><span>01</span>From corporate marketing to freelancing</li><li><span>02</span>Mentor to aspiring freelancers</li><li><span>03</span>Leads Cross Core, a digital marketing agency</li></ul>
+        </div>
+        <div class="stage stage-dark" data-stage aria-hidden="false">
+          <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
+          <div class="stage-line" data-layer="0.6" aria-hidden="true"></div>
+          <figure class="stage-figure" data-layer="1">{{image:pau-hero-cut|Pau Vicente wearing her white blazer and black outfit, with her arms crossed.|(max-width: 900px) 86vw, 40vw|cutout}}</figure>
+          <p class="stage-tag" data-layer="0.5" aria-hidden="true">Lead with love</p>
+        </div>
       </div>
-      <figure class="hero-photo" data-reveal>{{image:pau-hero|Pau Vicente wearing her white blazer and black outfit, with her arms crossed.|(max-width: 600px) 92vw, (max-width: 900px) 46vw, 550px|photo hero-cutout}}<figcaption><span>Real experiences.<br>Meaningful conversations.</span><a class="round-link" href="#about" aria-label="Get to know Pau">↓</a></figcaption></figure>
-    </div><nav class="hero-index shell" aria-label="Speaking areas"><span class="eyebrow">The conversations</span><a href="#topic-one">Freelancing <span aria-hidden="true">↗</span></a><a href="#topic-two">Social media &amp; branding <span aria-hidden="true">↗</span></a><a href="#topic-three">Purposeful leadership <span aria-hidden="true">↗</span></a></nav></section>
+    </section>
 
-    <section class="about section shell" id="about" aria-labelledby="about-title">
-      <div class="profile-heading" data-reveal><p class="eyebrow">01 / The person behind the purpose</p><h2 id="about-title">Becoming the mentor<br>I once <em>needed.</em></h2></div>
-      <div class="profile-spread"><figure class="about-photo" data-reveal>{{image:pau-about|Pau standing in a light blazer and black outfit in the studio.|(max-width: 600px) 80vw, 30vw|photo portrait-about}}<figcaption>A willingness to learn. A reason to keep going.</figcaption></figure>
-      <div class="about-copy reading-copy" data-reveal><p>I started freelancing during the pandemic with no experience and no roadmap, just the willingness to learn.</p>
+    <!-- About -->
+    <section class="about panel anchored tone-light" id="about" aria-labelledby="about-title">
+      <div class="container split">
+        <div class="stage stage-light" data-stage>
+          <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
+          <div class="stage-line" data-layer="0.6" aria-hidden="true"></div>
+          <figure class="stage-figure" data-layer="1">{{image:pau-speaking-style-cut|A portrait of Pau in her light blazer with her arms crossed.|(max-width: 900px) 80vw, 36vw|cutout}}</figure>
+        </div>
+        <div class="about-text" data-reveal>
+          <p class="eyebrow">About Pau</p>
+          <h2 id="about-title">Becoming the mentor I once <em>needed.</em></h2>
+          <div class="about-copy reading-copy"><p>I started freelancing during the pandemic with no experience and no roadmap, just the willingness to learn.</p>
 <p>The road wasn’t easy. I navigated difficult clients, managed multiple accounts, and worked days that sometimes stretched beyond 14 hours. Every mistake became a lesson, and every setback strengthened my resilience.</p>
-<p>Today, I strive to be the mentor I once needed, guiding aspiring freelancers toward meaningful careers and helping them discover opportunities beyond the traditional 9-to-5 path.</p><a class="text-link" href="#my-story">This is how it started <span aria-hidden="true">↓</span></a></div>
-      <aside class="profile-note" aria-label="Pau’s purpose" data-reveal><span class="eyebrow">At the heart of it</span><p>Learn.<br>Grow.<br><em>Share.</em></p><span class="note-rule" aria-hidden="true"></span><small>Helping others find their own way forward.</small></aside></div>
+<p>Today, I strive to be the mentor I once needed, guiding aspiring freelancers toward meaningful careers and helping them discover opportunities beyond the traditional 9-to-5 path.</p></div>
+          <div class="about-foot"><p class="signature">Pau Vicente</p><ul class="values" aria-label="Pau’s purpose"><li>Learn</li><li>Grow</li><li>Share</li></ul></div>
+          <a class="text-link" href="#my-story">Read my story</a>
+        </div>
+      </div>
     </section>
 
-    <section class="story" id="my-story" aria-labelledby="story-title">
-      <header class="story-heading shell" data-reveal><div><p class="eyebrow">02 / My story · Four chapters</p><h2 id="story-title">A leap of faith.<br>A purpose worth <em>sharing.</em></h2></div><div class="story-introduction"><p>From corporate life to freelancing, mentoring, and building opportunities for others.</p><nav class="chapter-index" aria-label="Story chapters"><a href="#chapter-one"><span>01</span>The beginning</a><a href="#chapter-two"><span>02</span>The leap</a><a href="#chapter-three"><span>03</span>The mentor</a><a href="#chapter-four"><span>04</span>Cross Core</a></nav></div></header>
-      <article class="chapter chapter-corporate shell" aria-labelledby="chapter-one">
-        <div class="chapter-title" data-reveal><p class="chapter-label"><span>01</span>Where it began</p><h3 id="chapter-one">The corporate<br><em>beginning.</em></h3></div>
-        <div class="corporate-feature"><figure class="corporate-main" data-reveal>{{image:corporate-events|Pau and colleagues together at a corporate celebration.|(max-width: 600px) 92vw, 42vw|photo documentary}}<figcaption>Organizing events. Working with people.</figcaption></figure><div class="chapter-copy reading-copy" data-reveal><p>Before stepping into freelancing, I worked as a Marketing Assistant for a corporate company in the Philippines. I genuinely enjoyed the work, especially organizing corporate events and collaborating with different teams.</p><p>Over time, I began to feel burned out. I poured so much time and energy into my job while feeling that my efforts weren’t reflected in the opportunities and compensation I received. Deep down, I wanted more room to grow, create a greater impact, and have more freedom over my career.</p><p class="chapter-statement">Room to grow.<br><em>Freedom to create.</em></p></div></div>
-        <div class="corporate-footnotes" data-reveal><p class="margin-note">Before the leap,<br>there was a question:<br><span>what else is possible?</span></p><figure>{{image:corporate-team|A group photograph with colleagues at a corporate gathering.|(max-width: 600px) 52vw, 25vw|photo documentary}}<figcaption>Teamwork, and the experiences that shaped me.</figcaption></figure><figure class="corporate-personal">{{image:corporate-portrait|Pau in a black top and light trousers during her corporate chapter.|(max-width: 600px) 32vw, 16vw|photo documentary}}</figure></div>
-      </article>
-      <article class="chapter chapter-leap" aria-labelledby="chapter-two"><div class="shell leap-layout"><div class="leap-copy" data-reveal><p class="chapter-label"><span>02</span>A new direction</p><h3 id="chapter-two">The leap into<br><em>freelancing.</em></h3><div class="chapter-copy reading-copy"><p>When the pandemic changed the way we worked, I took a leap of faith and applied as a Virtual Assistant. With no roadmap and very little knowledge of freelancing, the beginning was filled with uncertainty, trial and error, and plenty of learning along the way.</p><p>Everything changed when I landed my first client. For the first time, I experienced what it felt like to have my work valued and appreciated. That gave me the confidence to keep going, work with multiple clients, and continue sharpening my skills.</p></div></div><div class="leap-visual" data-reveal><p class="feature-line">The first client.<br><em>A new sense of possibility.</em></p><figure class="first-client">{{image:first-client-call|Pau joining an online meeting with Paul, Brynne, and fellow participants.|(max-width: 600px) 92vw, 48vw|photo documentary}}<figcaption>Learning through real work and real conversations.</figcaption></figure><figure class="early-work">{{image:freelance-beginnings|Pau seated beside her laptop during her early freelance journey.|(max-width: 600px) 58vw, 24vw|photo documentary}}<figcaption>Starting with what I had.</figcaption></figure></div></div></article>
-      <article class="chapter chapter-mentor shell" aria-labelledby="chapter-three"><div class="mentor-heading" data-reveal><p class="chapter-label"><span>03</span>Passing it forward</p><h3 id="chapter-three">Becoming the mentor<br><em>I once needed.</em></h3><p class="mentor-statement">What began as simple conversations<br>grew into <em>something much bigger.</em></p></div><div class="mentor-layout"><div class="chapter-copy reading-copy" data-reveal><p>As my freelance career grew, I realized I couldn’t take on every opportunity myself. Around the same time, my closest friends started asking what I did, how freelancing worked, and how they could begin.</p><p>I started mentoring them, sharing what I had learned through my own experiences. What began as simple conversations grew into something much bigger: a passion for helping others build meaningful careers.</p></div><div class="mentor-conversations" data-reveal><figure>{{image:mentoring-kylee|Pau on a video call with Kylee and other participants.|(max-width: 600px) 92vw, 43vw|photo documentary}}<figcaption>Sharing what I learned along the way.</figcaption></figure><figure>{{image:mentoring-taylin|Pau participating in an online meeting with Taylin and a group.|(max-width: 600px) 78vw, 34vw|photo documentary}}<figcaption>Making space for questions, learning, and growth.</figcaption></figure></div></div></article>
-      <article class="chapter chapter-core" aria-labelledby="chapter-four"><div class="shell"><div class="core-feature"><div class="core-copy" data-reveal><p class="chapter-label"><span>04</span>Growing together</p><h3 id="chapter-four">Building<br><em>Cross Core.</em></h3><div class="chapter-copy reading-copy"><p>That passion became the foundation of Cross Core, the digital marketing agency I now lead.</p><p>More than providing digital marketing services, Cross Core was built to create opportunities and equip aspiring freelancers with practical skills. Its mission reflects what I have come to believe: success becomes more meaningful when others grow with you.</p></div><p class="core-statement">Growth means more<br>when it’s <em>shared.</em></p></div><figure class="core-team" data-reveal>{{image:cross-core-team|Pau with the Cross Core team in a group studio portrait against a golden backdrop.|(max-width: 600px) 82vw, 34vw|photo}}<figcaption>The people behind a shared purpose.</figcaption></figure></div><div class="core-community" data-reveal><p class="margin-note">Creating opportunities.<br>Equipping people.<br><span>Growing alongside them.</span></p><figure>{{image:cross-core-gathering|A Cross Core group gathering around a table.|(max-width: 600px) 92vw, 31vw|photo documentary}}<figcaption>Connection beyond the work.</figcaption></figure><figure>{{image:cross-core-community|A Cross Core community group photograph at a celebration.|(max-width: 600px) 92vw, 31vw|photo documentary}}<figcaption>A community to grow with.</figcaption></figure></div></div></article>
+    <!-- Story time: a storybook. Each page settles back in 3D as the next one arrives. -->
+    <section class="story tone-dark" id="my-story" aria-labelledby="story-title">
+      <div class="storybook" data-storybook>
+        <div class="page page-cover">
+          <div class="container page-inner cover-inner">
+            <p class="eyebrow">Story time</p>
+            <h2 id="story-title">A leap of faith. A purpose worth <em>sharing.</em></h2>
+            <p class="cover-lede">From corporate life to freelancing, mentoring, and building opportunities for others.</p>
+            <nav class="chapter-index" aria-label="Story chapters"><a href="#chapter-one"><span>01</span>The beginning</a><a href="#chapter-two"><span>02</span>The leap</a><a href="#chapter-three"><span>03</span>The mentor</a><a href="#chapter-four"><span>04</span>Cross Core</a></nav>
+            <p class="cover-hint" aria-hidden="true">Scroll to turn the page</p>
+          </div>
+        </div>
+        <article class="page chapter" id="chapter-1" aria-labelledby="chapter-one" data-chapter="0">
+          <div class="container page-inner">
+            <figure class="chapter-media"><div class="media-stack">{{image:corporate-events|Pau and colleagues together at a corporate celebration.|(max-width: 900px) 92vw, 44vw|photo}}<div class="media-inset">{{image:corporate-portrait|Pau in a black top and light trousers during her corporate chapter.|(max-width: 900px) 30vw, 13vw|photo}}</div></div><figcaption>Organizing events. Working with people.</figcaption></figure>
+            <div class="chapter-text">
+              <p class="chapter-label"><span>Chapter 01</span>Where it began</p>
+              <h3 id="chapter-one">The corporate <em>beginning.</em></h3>
+              <div class="chapter-copy reading-copy"><p>Before stepping into freelancing, I worked as a Marketing Assistant for a corporate company in the Philippines. I genuinely enjoyed the work, especially organizing corporate events and collaborating with different teams.</p><p>Over time, I began to feel burned out. I poured so much time and energy into my job while feeling that my efforts weren’t reflected in the opportunities and compensation I received. Deep down, I wanted more room to grow, create a greater impact, and have more freedom over my career.</p><p class="chapter-statement">Room to grow. <em>Freedom to create.</em></p></div>
+            </div>
+            <p class="folio" aria-hidden="true">01 <span>/ 04</span></p>
+          </div>
+        </article>
+        <article class="page chapter" id="chapter-2" aria-labelledby="chapter-two" data-chapter="1">
+          <div class="container page-inner">
+            <figure class="chapter-media"><div class="media-stack">{{image:freelance-beginnings|Pau seated beside her laptop during her early freelance journey.|(max-width: 900px) 92vw, 44vw|photo}}<div class="media-inset media-inset-wide">{{image:first-client-call|Pau joining an online meeting with Paul, Brynne, and fellow participants.|(max-width: 900px) 40vw, 18vw|photo}}</div></div><figcaption>Starting with what I had, and an early client meeting online.</figcaption></figure>
+            <div class="chapter-text">
+              <p class="chapter-label"><span>Chapter 02</span>A new direction</p>
+              <h3 id="chapter-two">The leap into <em>freelancing.</em></h3>
+              <div class="chapter-copy reading-copy"><p>When the pandemic changed the way we worked, I took a leap of faith and applied as a Virtual Assistant. With no roadmap and very little knowledge of freelancing, the beginning was filled with uncertainty, trial and error, and plenty of learning along the way.</p><p>Everything changed when I landed my first client. For the first time, I experienced what it felt like to have my work valued and appreciated. That gave me the confidence to keep going, work with multiple clients, and continue sharpening my skills.</p><p class="chapter-statement">The first client. <em>A new sense of possibility.</em></p></div>
+            </div>
+            <p class="folio" aria-hidden="true">02 <span>/ 04</span></p>
+          </div>
+        </article>
+        <article class="page chapter" id="chapter-3" aria-labelledby="chapter-three" data-chapter="2">
+          <div class="container page-inner">
+            <figure class="chapter-media"><div class="media-stack">{{image:mentoring-kylee|Pau on a video call with Kylee and other participants.|(max-width: 900px) 92vw, 44vw|photo}}<div class="media-inset media-inset-wide">{{image:mentoring-taylin|Pau participating in an online meeting with Taylin and a group.|(max-width: 900px) 40vw, 18vw|photo}}</div></div><figcaption>Sharing what I learned along the way.</figcaption></figure>
+            <div class="chapter-text">
+              <p class="chapter-label"><span>Chapter 03</span>Passing it forward</p>
+              <h3 id="chapter-three">Becoming the mentor <em>I once needed.</em></h3>
+              <div class="chapter-copy reading-copy"><p>As my freelance career grew, I realized I couldn’t take on every opportunity myself. Around the same time, my closest friends started asking what I did, how freelancing worked, and how they could begin.</p><p>I started mentoring them, sharing what I had learned through my own experiences. What began as simple conversations grew into something much bigger: a passion for helping others build meaningful careers.</p><p class="chapter-statement">Simple conversations. <em>Something much bigger.</em></p></div>
+            </div>
+            <p class="folio" aria-hidden="true">03 <span>/ 04</span></p>
+          </div>
+        </article>
+        <article class="page chapter" id="chapter-4" aria-labelledby="chapter-four" data-chapter="3">
+          <div class="container page-inner">
+            <figure class="chapter-media chapter-media-cut"><div class="media-stack">{{image:cross-core-team-cut|Pau with the Cross Core team in a group studio portrait.|(max-width: 900px) 80vw, 36vw|cutout}}</div><figcaption>The people behind a shared purpose.</figcaption></figure>
+            <div class="chapter-text">
+              <p class="chapter-label"><span>Chapter 04</span>Growing together</p>
+              <h3 id="chapter-four">Building <em>Cross Core.</em></h3>
+              <div class="chapter-copy reading-copy"><p>That passion became the foundation of Cross Core, the digital marketing agency I now lead.</p><p>More than providing digital marketing services, Cross Core was built to create opportunities and equip aspiring freelancers with practical skills. Its mission reflects what I have come to believe: success becomes more meaningful when others grow with you.</p><p class="chapter-statement">Growth means more when it’s <em>shared.</em></p></div>
+            </div>
+            <p class="folio" aria-hidden="true">04 <span>/ 04</span></p>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <section class="topics section shell" id="speaking-topics" aria-labelledby="topics-title"><div class="topics-heading" data-reveal><div><p class="eyebrow">03 / The speaking program</p><h2 id="topics-title">Conversations that<br>move people <em>forward.</em></h2></div><p>Practical learning, honest experiences, and purposeful next steps for your audience.</p></div>
-      <article class="topic topic-featured" data-reveal aria-labelledby="topic-one"><div class="topic-intro"><span class="topic-number" aria-hidden="true">01</span><div><p class="eyebrow">Build your foundation</p><h3 id="topic-one">Freelance 101</h3><p>For students, career shifters, and beginners.</p></div></div><ul class="topic-list"><li>What freelancing really is</li><li>Different freelance careers</li><li>Finding your niche</li><li>Preparing your portfolio</li><li>Getting your first client</li><li>Common mistakes beginners make</li></ul></article>
-      <div class="topic-pair"><article class="topic topic-marketing" data-reveal aria-labelledby="topic-two"><div class="topic-intro"><span class="topic-number" aria-hidden="true">02</span><div><p class="eyebrow">Connect through content</p><h3 id="topic-two">Social Media<br>Marketing</h3><p>Build a practical understanding of content, branding, and working with businesses.</p></div></div><ul class="topic-list"><li>Fundamentals of social media marketing</li><li>Creating engaging content</li><li>Content planning</li><li>Building a personal brand</li><li>Understanding clients</li><li>Working with businesses</li></ul></article><article class="topic topic-leadership" data-reveal aria-labelledby="topic-three"><div class="topic-intro"><span class="topic-number" aria-hidden="true">03</span><div><p class="eyebrow">Grow with purpose</p><h3 id="topic-three">Inspirational<br>Leadership</h3><p>For students, young professionals, leaders, church communities, and organizations.</p></div></div><ul class="topic-list"><li>Leading with purpose and integrity</li><li>Building influence beyond a title</li><li>Developing a growth mindset</li><li>Overcoming setbacks and embracing challenges</li><li>Leading yourself before leading others</li><li>The importance of character, resilience, and service</li><li>Turning your experiences into opportunities to inspire others</li></ul></article></div>
-      <div class="topics-footer"><p>What conversation does your audience need?</p><a class="text-link" href="#contact">Discuss Your Event <span aria-hidden="true">↗</span></a></div>
+    <!-- Moments: on desktop each photograph rises as a tilted print and opens to fill the screen as you scroll. -->
+    <section class="moments tone-dark" aria-labelledby="moments-title">
+      <div class="moments-track" data-cinema>
+        <div class="moments-view">
+          <header class="moments-head container">
+            <p class="eyebrow">Moments along the way</p>
+            <h2 id="moments-title">The people behind the <em>story.</em></h2>
+          </header>
+          <div class="moments-scene">
+            <figure class="moment">{{image:corporate-team|A group photograph with colleagues at a corporate gathering.|(max-width: 900px) 78vw, 100vw|photo}}<figcaption><span>01 / 03</span>Teamwork in the corporate years.</figcaption></figure>
+            <figure class="moment">{{image:cross-core-gathering|A Cross Core group gathering around a table.|(max-width: 900px) 78vw, 100vw|photo}}<figcaption><span>02 / 03</span>A Cross Core gathering.</figcaption></figure>
+            <figure class="moment">{{image:cross-core-community|A Cross Core community group photograph at a celebration.|(max-width: 900px) 78vw, 100vw|photo}}<figcaption><span>03 / 03</span>Celebrating with the Cross Core community.</figcaption></figure>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="speaking-style" aria-labelledby="style-title"><div class="shell style-layout"><div class="style-heading" data-reveal><p class="eyebrow">04 / My speaking style</p><h2 id="style-title">Practical knowledge.<br><em>Meaningful stories.</em><br>Purposeful action.</h2></div><figure class="style-photo" data-reveal>{{image:pau-speaking-style|A thoughtful portrait of Pau in her light blazer against the golden studio background.|(max-width: 600px) 75vw, 32vw|photo}}<figcaption>Practical guidance. Personal connection.</figcaption></figure><div class="style-copy reading-copy" data-reveal><p>My sessions blend practical strategies with real-life experiences, helping participants develop both knowledge and confidence.</p>
+    <!-- Approach -->
+    <section class="approach panel anchored tone-sand" aria-labelledby="style-title">
+      <div class="container split split-reverse">
+        <div class="approach-text" data-reveal>
+          <p class="eyebrow">Speaking style</p>
+          <h2 id="style-title">Practical knowledge. Meaningful stories. Purposeful <em>action.</em></h2>
+          <div class="style-copy reading-copy"><p>My sessions blend practical strategies with real-life experiences, helping participants develop both knowledge and confidence.</p>
 <p>Beyond the technical side of freelancing, social media marketing, and branding, I encourage the right mindset, continuous growth, and purposeful action.</p>
-<p>My goal is for participants to leave informed, inspired, and equipped to create meaningful opportunities for themselves.</p></div></div></section>
+<p>My goal is for participants to leave informed, inspired, and equipped to create meaningful opportunities for themselves.</p></div>
+        </div>
+        <div class="stage stage-sand" data-stage>
+          <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
+          <div class="stage-line" data-layer="0.6" aria-hidden="true"></div>
+          <figure class="stage-figure" data-layer="1">{{image:pau-why-cut|Pau seated on a wooden chair in her light blazer and black outfit.|(max-width: 900px) 80vw, 36vw|cutout}}</figure>
+        </div>
+      </div>
+    </section>
 
-    <section class="outcomes section shell" aria-labelledby="outcomes-title"><div class="outcomes-heading" data-reveal><div><p class="eyebrow">05 / What participants will learn</p><h2 id="outcomes-title">A clearer way <em>forward.</em></h2></div><p>Ideas you can understand.<br>Steps you can begin to take.</p></div><ol class="outcome-list" data-reveal><li><span aria-hidden="true">01</span><p>Understand how freelancing works</p></li><li><span aria-hidden="true">02</span><p>Identify a niche that suits you</p></li><li><span aria-hidden="true">03</span><p>Learn practical social media marketing fundamentals</p></li><li><span aria-hidden="true">04</span><p>Build confidence in starting your freelance journey</p></li><li><span aria-hidden="true">05</span><p>Understand how branding creates opportunities</p></li><li><span aria-hidden="true">06</span><p>Take clear next steps toward becoming a freelancer</p></li></ol></section>
+    <div class="band" aria-hidden="true"><div class="band-track"><div class="band-run"><span>Freelance 101</span><i></i><span>Social Media Marketing</span><i></i><span>Inspirational Leadership</span><i></i><span>Keynotes</span><i></i><span>Workshops</span><i></i><span>Seminars</span><i></i><span>Webinars</span><i></i><span>Panel Discussions</span><i></i><span>Coaching</span><i></i></div><div class="band-run"><span>Freelance 101</span><i></i><span>Social Media Marketing</span><i></i><span>Inspirational Leadership</span><i></i><span>Keynotes</span><i></i><span>Workshops</span><i></i><span>Seminars</span><i></i><span>Webinars</span><i></i><span>Panel Discussions</span><i></i><span>Coaching</span><i></i></div></div></div>
 
-    <section class="coaching" aria-labelledby="coaching-title"><div class="shell coaching-layout" data-reveal><div><p class="eyebrow">A thoughtful extra / Free coaching</p><h2 id="coaching-title">The conversation<br>doesn’t end <em>here.</em></h2></div><div><p>Participants will receive access to a free coaching session where they can ask questions, seek guidance, and receive practical advice as they begin or continue their freelancing journey.</p><a class="text-link" href="#contact">Ask about participant support <span aria-hidden="true">↗</span></a></div></div></section>
+    <!-- Speaking topics -->
+    <section class="topics panel tone-light" id="speaking-topics" aria-labelledby="topics-title">
+      <div class="container">
+        <header class="row-head" data-reveal>
+          <div><p class="eyebrow">Speaking topics</p><h2 id="topics-title">Conversations that move people <em>forward.</em></h2></div>
+          <p>Practical learning, honest experiences, and purposeful next steps for your audience.</p>
+        </header>
+        <div class="topic-grid">
+          <article class="topic" aria-labelledby="topic-one" data-reveal>
+            <p class="topic-number"><svg class="topic-icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M30.5 17.5l-4.2 8.8-8.8 4.2 4.2-8.8z"/></svg>01 <span>Build your foundation</span></p>
+            <h3 id="topic-one">Freelance 101</h3>
+            <p class="topic-for">For students, career shifters, and beginners.</p>
+            <ul class="topic-list"><li>What freelancing really is</li><li>Different freelance careers</li><li>Finding your niche</li><li>Preparing your portfolio</li><li>Getting your first client</li><li>Common mistakes beginners make</li></ul>
+            <a class="text-link topic-inquire" href="#contact" data-topic="Freelance 101">Invite Pau for this topic</a>
+          </article>
+          <article class="topic" aria-labelledby="topic-two" data-reveal>
+            <p class="topic-number"><svg class="topic-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M9 12.5h30v18H22l-8 6.5v-6.5H9z"/><path d="M15.5 19.5h17M15.5 24.5h11"/></svg>02 <span>Connect through content</span></p>
+            <h3 id="topic-two">Social Media Marketing</h3>
+            <p class="topic-for">Build a practical understanding of content, branding, and working with businesses.</p>
+            <ul class="topic-list"><li>Fundamentals of social media marketing</li><li>Creating engaging content</li><li>Content planning</li><li>Building a personal brand</li><li>Understanding clients</li><li>Working with businesses</li></ul>
+            <a class="text-link topic-inquire" href="#contact" data-topic="Social Media Marketing">Invite Pau for this topic</a>
+          </article>
+          <article class="topic" aria-labelledby="topic-three" data-reveal>
+            <p class="topic-number"><svg class="topic-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 38l13-19 7 10 5-6 11 15z"/><path d="M26 29V9.5M26 9.5h8l-2.5 3 2.5 3h-8"/></svg>03 <span>Grow with purpose</span></p>
+            <h3 id="topic-three">Inspirational Leadership</h3>
+            <p class="topic-for">For students, young professionals, leaders, church communities, and organizations.</p>
+            <ul class="topic-list"><li>Leading with purpose and integrity</li><li>Building influence beyond a title</li><li>Developing a growth mindset</li><li>Overcoming setbacks and embracing challenges</li><li>Leading yourself before leading others</li><li>The importance of character, resilience, and service</li><li>Turning your experiences into opportunities to inspire others</li></ul>
+            <a class="text-link topic-inquire" href="#contact" data-topic="Inspirational Leadership">Invite Pau for this topic</a>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    <section class="audiences section shell" aria-labelledby="audience-title"><div class="audience-heading" data-reveal><p class="eyebrow">06 / Who this is for</p><h2 id="audience-title">For people ready<br>to <em>grow.</em></h2><p>Different starting points.<br>A shared willingness to learn.</p></div><ul class="audience-list"><li>College Students</li><li>Fresh Graduates</li><li>Aspiring Freelancers</li><li>Virtual Assistants</li><li>Career Shifters</li><li>Entrepreneurs</li><li>Church Communities</li><li>Youth Organizations</li><li class="wide">Corporate Teams exploring freelancing or digital skills</li></ul></section>
-    <section class="formats shell" aria-labelledby="formats-title" data-reveal><div><p class="eyebrow">Session formats</p><h2 id="formats-title">Different settings.<br><em>The same purpose.</em></h2></div><div class="format-index"><ul><li>Keynote Speaking</li><li>Workshops</li><li>Seminars</li><li>Webinars</li><li>Panel Discussions</li><li>Coaching Sessions</li><li>Q&amp;A</li></ul><a class="text-link" href="#contact">Let’s discuss your format <span aria-hidden="true">↗</span></a></div></section>
+    <!-- Outcomes and participant support -->
+    <section class="outcomes panel tone-dark" aria-labelledby="outcomes-title">
+      <div class="container">
+        <div class="outcomes-grid">
+          <div class="outcomes-head" data-reveal>
+            <p class="eyebrow">What participants learn</p>
+            <h2 id="outcomes-title">A clearer way <em>forward.</em></h2>
+            <p>Ideas you can understand. Steps you can begin to take.</p>
+          </div>
+          <ol class="outcome-list" data-reveal><li><span aria-hidden="true">01</span><p>Understand how freelancing works</p></li><li><span aria-hidden="true">02</span><p>Identify a niche that suits you</p></li><li><span aria-hidden="true">03</span><p>Learn practical social media marketing fundamentals</p></li><li><span aria-hidden="true">04</span><p>Build confidence in starting your freelance journey</p></li><li><span aria-hidden="true">05</span><p>Understand how branding creates opportunities</p></li><li><span aria-hidden="true">06</span><p>Take clear next steps toward becoming a freelancer</p></li></ol>
+        </div>
+        <div class="coaching" data-reveal>
+          <div><p class="eyebrow">Participant support</p><h2 id="coaching-title" class="coaching-title">The conversation doesn’t end <em>here.</em></h2></div>
+          <div><p>Participants will receive access to a free coaching session where they can ask questions, seek guidance, and receive practical advice as they begin or continue their freelancing journey.</p><a class="text-link" href="#contact">Ask about participant support</a></div>
+        </div>
+      </div>
+    </section>
 
-    <section class="why section" id="why-pau" aria-labelledby="why-title"><div class="shell why-layout"><div class="why-heading" data-reveal><p class="eyebrow">07 / Why invite Pau?</p><h2 id="why-title">More than a talk.<br>A meaningful <em>next step.</em></h2></div><figure class="why-photo" data-reveal>{{image:pau-why|Pau seated in the studio wearing a light blazer over a black outfit.|(max-width: 600px) 82vw, 35vw|photo}}<figcaption>A fellow learner, sharing the lessons along the way.</figcaption></figure><div class="why-copy" data-reveal><p class="why-introduction">I bring the lessons of my own freelance journey into every conversation, pairing practical strategies with meaningful stories that encourage people to take action.</p><dl class="why-strengths"><div><dt><span aria-hidden="true">01</span>Real experience</dt><dd>Real-world freelancing experience and meaningful stories that inspire action, grounded in the challenges and growth of my own journey.</dd></div><div><dt><span aria-hidden="true">02</span>Practical guidance</dt><dd>Practical strategies and clear explanations of complex concepts, helping participants understand what they can do next.</dd></div><div><dt><span aria-hidden="true">03</span>Purposeful encouragement</dt><dd>An encouraging learning environment that builds confidence, resilience, and purposeful next steps.</dd></div></dl><a class="text-link" href="#contact">Bring this conversation to your audience <span aria-hidden="true">↗</span></a></div></div></section>
+    {{events_feature}}
 
-    <section class="contact" id="contact" aria-labelledby="contact-title"><div class="shell contact-layout"><div class="contact-heading" data-reveal><p class="eyebrow">08 / Let’s work together</p><h2 id="contact-title">Let’s create a<br>conversation<br><em>that matters.</em></h2></div><figure class="contact-photo" data-reveal>{{image:pau-contact|Pau standing in profile in a light blazer against the golden studio backdrop.|(max-width: 600px) 78vw, 32vw|photo}}<figcaption>Lead with Love. Grow with Purpose.</figcaption></figure><div class="contact-copy" data-reveal><p>Planning an event for your school, community, organization, or team? Let’s explore how a conversation about freelancing, branding, or leadership can serve your audience.</p><div class="actions"><a class="button" href="{{inquiry}}">Invite Pau to Speak <span aria-hidden="true">↗</span></a><a class="text-link" href="mailto:pauline.vicente14@gmail.com">Send an Email <span aria-hidden="true">↗</span></a></div><p class="contact-note">Tell me about your audience, your event, and what you hope they’ll take away.</p><dl class="contact-details"><div><dt>Email</dt><dd><a href="mailto:pauline.vicente14@gmail.com">pauline.vicente14@gmail.com</a></dd></div><div><dt>Mobile</dt><dd><a href="tel:+639153412728">09153412728</a></dd></div></dl><div class="social-links" aria-label="Pau’s social profiles"><a href="https://www.facebook.com/paulinemelissar.v/" target="_blank" rel="noopener noreferrer">Facebook <span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/pauline-vicente-b86849234/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a href="https://www.instagram.com/pau.melissaa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram, @pau.melissaa">Instagram <span aria-hidden="true">↗</span></a></div></div></div></section>
+    <!-- Audiences and formats -->
+    <section class="audiences panel tone-sand" aria-labelledby="audience-title">
+      <div class="container">
+        <div class="audience-grid">
+          <div data-reveal>
+            <p class="eyebrow">Who it’s for</p>
+            <h2 id="audience-title">For people ready to <em>grow.</em></h2>
+            <p class="muted">Different starting points. A shared willingness to learn.</p>
+          </div>
+          <ul class="audience-list" data-reveal><li>College Students</li><li>Fresh Graduates</li><li>Aspiring Freelancers</li><li>Virtual Assistants</li><li>Career Shifters</li><li>Entrepreneurs</li><li>Church Communities</li><li>Youth Organizations</li><li class="wide">Corporate Teams exploring freelancing or digital skills</li></ul>
+        </div>
+        <div class="formats" data-reveal>
+          <h2 id="formats-title" class="formats-title">Session formats</h2>
+          <div class="format-index"><ul><li>Keynote Speaking</li><li>Workshops</li><li>Seminars</li><li>Webinars</li><li>Panel Discussions</li><li>Coaching Sessions</li><li>Q&amp;A</li></ul><a class="text-link" href="#contact">Let’s discuss your format</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why invite Pau: her own words beside her portrait -->
+    <section class="why panel anchored tone-dark" id="why-pau" aria-labelledby="why-title">
+      <div class="container split">
+        <div class="stage stage-dark" data-stage>
+          <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
+          <div class="stage-line" data-layer="0.6" aria-hidden="true"></div>
+          <figure class="stage-figure" data-layer="1">{{image:pau-contact-cut|Pau standing in profile in her light blazer, holding its lapel.|(max-width: 900px) 70vw, 30vw|cutout}}</figure>
+        </div>
+        <div class="why-text" data-reveal>
+          <p class="eyebrow">Why invite Pau</p>
+          <h2 id="why-title" class="sr-only">More than a talk. A meaningful next step.</h2>
+          <figure class="why-quote">
+            <blockquote><p class="why-introduction">I bring the lessons of my own freelance journey into every conversation, pairing practical strategies with meaningful stories that encourage people to take action.</p></blockquote>
+            <figcaption>Pau Vicente <span>Speaker &amp; Freelance Coach</span></figcaption>
+          </figure>
+          <dl class="why-strengths"><div><dt><span aria-hidden="true">01</span>Real experience</dt><dd>Real-world freelancing experience and meaningful stories that inspire action, grounded in the challenges and growth of my own journey.</dd></div><div><dt><span aria-hidden="true">02</span>Practical guidance</dt><dd>Practical strategies and clear explanations of complex concepts, helping participants understand what they can do next.</dd></div><div><dt><span aria-hidden="true">03</span>Purposeful encouragement</dt><dd>An encouraging learning environment that builds confidence, resilience, and purposeful next steps.</dd></div></dl>
+          <div class="actions"><a class="button" href="#contact">Bring this conversation to your audience</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact tone-light section" id="contact" aria-labelledby="contact-title">
+      <div class="container contact-grid">
+        <div class="contact-side">
+          <header class="contact-head" data-reveal>
+            <p class="eyebrow">Contact</p>
+            <h2 id="contact-title">Let’s create a conversation that <em>matters.</em></h2>
+            <div class="contact-lede"><p>Planning an event for your school, community, organization, or team? Let’s explore how a conversation about freelancing, branding, or leadership can serve your audience.</p><p class="contact-note">Helpful details include who will attend, the format you have in mind, a possible date, and what you hope your audience takes away. An inquiry doesn’t confirm availability or a booking. Pau reviews each one and replies to discuss the details.</p></div>
+          </header>
+          <dl class="contact-details"><div><dt>Email</dt><dd><a href="mailto:askspeakerpau@gmail.com">askspeakerpau@gmail.com</a></dd></div><div><dt>Mobile</dt><dd><a href="tel:+639153412728">09153412728</a></dd></div></dl>
+          <div class="social-links" aria-label="Pau’s social profiles"><a href="https://www.facebook.com/paulinemelissar.v/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.linkedin.com/in/pauline-vicente-b86849234/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://www.instagram.com/pau.melissaa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram, @pau.melissaa">Instagram</a></div>
+        </div>
+        <div class="form-card">
+        <form class="inquiry-form" id="inquiry-form" novalidate aria-describedby="inquiry-required-note" data-endpoint="/api/inquiry">
+          <p class="form-note" id="inquiry-required-note">Fields marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required.</p>
+          <div class="form-summary" id="inquiry-summary" role="alert" tabindex="-1" hidden></div>
+          <fieldset>
+            <legend>About you</legend>
+            <div class="field-grid">
+              <div class="field"><label for="inq-name">Full name <span class="req" aria-hidden="true">*</span></label><input id="inq-name" name="name" type="text" autocomplete="name" maxlength="120" required aria-describedby="inq-name-error"><p class="field-error" id="inq-name-error" hidden></p></div>
+              <div class="field"><label for="inq-email">Email <span class="req" aria-hidden="true">*</span></label><input id="inq-email" name="email" type="email" autocomplete="email" maxlength="160" required aria-describedby="inq-email-error"><p class="field-error" id="inq-email-error" hidden></p></div>
+              <div class="field field-wide"><label for="inq-organization">Organization or school</label><input id="inq-organization" name="organization" type="text" autocomplete="organization" maxlength="160"></div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>About your event</legend>
+            <div class="field-grid">
+              <div class="field"><label for="inq-type">Inquiry type <span class="req" aria-hidden="true">*</span></label><select id="inq-type" name="inquiryType" required aria-describedby="inq-type-error"><option value="">Choose one</option><option>Speaking invitation</option><option>Workshop or training</option><option>Coaching</option><option>General inquiry</option></select><p class="field-error" id="inq-type-error" hidden></p></div>
+              <div class="field"><label for="inq-topic">Topic</label><select id="inq-topic" name="topic"><option>Not sure yet</option><option>Freelance 101</option><option>Social Media Marketing</option><option>Inspirational Leadership</option></select></div>
+              <div class="field"><label for="inq-format">Event type</label><select id="inq-format" name="eventType"><option>Not sure yet</option><option>Keynote</option><option>Workshop</option><option>Seminar</option><option>Webinar</option><option>Panel discussion</option><option>Coaching session</option><option>Q&amp;A session</option><option>Other</option></select></div>
+              <div class="field"><label for="inq-date">Preferred date</label><input id="inq-date" name="preferredDate" type="text" maxlength="80" aria-describedby="inq-date-hint"><p class="field-hint" id="inq-date-hint">A date, a month, or “Not yet decided”.</p></div>
+              <div class="field"><label for="inq-location">Location or platform</label><select id="inq-location" name="location"><option>Not yet decided</option><option>Online</option><option>Onsite</option></select></div>
+              <div class="field"><label for="inq-size">Estimated audience size</label><select id="inq-size" name="audienceSize"><option>Not sure yet</option><option>Under 30</option><option>30–100</option><option>100–300</option><option>More than 300</option></select></div>
+              <div class="field field-wide"><label for="inq-audience">Who will attend?</label><input id="inq-audience" name="audience" type="text" maxlength="200" aria-describedby="inq-audience-hint"><p class="field-hint" id="inq-audience-hint">For example: college students, a church youth group, or a marketing team.</p></div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Your message</legend>
+            <div class="field"><label for="inq-message">Event goals or inquiry details <span class="req" aria-hidden="true">*</span></label><textarea id="inq-message" name="message" rows="6" maxlength="3000" required aria-describedby="inq-message-hint inq-message-error"></textarea><p class="field-hint" id="inq-message-hint">What should your audience take away? Include anything else Pau should know.</p><p class="field-error" id="inq-message-error" hidden></p></div>
+          </fieldset>
+          <div class="hp-field" aria-hidden="true"><label for="inq-website">Leave this field empty</label><input id="inq-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <p class="form-privacy">Your details are used only to review and respond to this inquiry.</p>
+          <div class="form-actions"><button class="button" type="submit" id="inquiry-submit"><span class="button-label">Send Inquiry</span></button><a class="text-link" href="{{inquiry}}">Prefer email? Open a prefilled message</a></div>
+          <div class="form-status" id="inquiry-status" role="status" aria-live="polite"></div>
+          <noscript><p class="form-noscript">The inquiry form needs JavaScript. Please email <a href="mailto:askspeakerpau@gmail.com">askspeakerpau@gmail.com</a> instead.</p></noscript>
+        </form>
+        </div>
+      </div>
+    </section>
   </main>
-  <footer class="site-footer shell"><div class="footer-content"><a class="brand" href="#home">Pau Vicente<span aria-hidden="true">.</span></a><p>Speaker. Coach. A fellow learner.</p><a class="text-link" href="#home">Back to top <span aria-hidden="true">↑</span></a></div><div class="footer-bottom"><span>© <span id="copyright-year">2026</span> Pau Vicente</span><span>Lead with Love. Grow with Purpose.</span></div></footer>
+
+  <footer class="site-footer tone-dark">
+    <div class="container">
+      <a class="footer-brand" href="#home">Pau Vicente</a>
+      <p class="footer-tagline">Lead with Love. Grow with Purpose.</p>
+      <nav class="footer-nav" aria-label="Footer navigation"><a href="#about">About</a><a href="#my-story">My Story</a><a href="#speaking-topics">Topics</a><a href="#events">Events</a><a href="#contact">Invite Pau</a></nav>
+      <div class="footer-contact"><a href="mailto:askspeakerpau@gmail.com">askspeakerpau@gmail.com</a><a href="https://www.facebook.com/paulinemelissar.v/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.linkedin.com/in/pauline-vicente-b86849234/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://www.instagram.com/pau.melissaa/" target="_blank" rel="noopener noreferrer">Instagram</a></div>
+      <div class="footer-bottom"><span>© <span id="copyright-year">2026</span> Pau Vicente</span><span>Speaker, freelance coach, and social media marketing &amp; branding strategist</span><a class="text-link" href="#home">Back to top</a></div>
+    </div>
+  </footer>
   <aside id="pau-assistant" class="pau-assistant" hidden aria-label="Pau portfolio assistant">
-    <button id="pau-launcher" class="pau-launcher" type="button" aria-label="Chat with Pau, portfolio assistant. Drag to move, or use Alt and arrow keys." aria-controls="pau-chat" aria-expanded="false" aria-describedby="pau-drag-help">
-      <img src="assets/pau-avatar.webp" width="96" height="96" alt="" decoding="async" draggable="false">
-      <span class="pau-launcher-label">Ask Pau <span aria-hidden="true">↗</span></span>
+    <button id="pau-launcher" class="pau-launcher" type="button" aria-label="Ask Pau’s digital assistant. Drag to move, or use Alt and arrow keys." aria-controls="pau-chat" aria-expanded="false" aria-describedby="pau-drag-help">
+      <span class="pau-launcher-dot" aria-hidden="true"></span><span class="pau-launcher-label">Ask Pau</span>
     </button>
-    <p id="pau-drag-help" class="pau-sr-only">Drag the avatar to move it. Use Alt and arrow keys to move with a keyboard. Reset its position in the chat header.</p>
+    <p id="pau-drag-help" class="pau-sr-only">Drag the button to move it. Use Alt and arrow keys to move it with a keyboard. Reset its position in the chat panel.</p>
     <section id="pau-chat" class="pau-chat" role="dialog" aria-modal="false" aria-labelledby="pau-chat-title" hidden>
       <header class="pau-chat-header"><div><p class="pau-kicker">A little guidance, with purpose</p><h2 id="pau-chat-title">Hello, I’m <em>Pau.</em></h2></div><button id="pau-close" class="pau-icon-button" type="button" aria-label="Close chat">×</button></header>
       <div class="pau-chat-toolbar"><span id="pau-mode">Portfolio guide</span><div><button id="pau-reset-position" type="button">Reset position</button><button id="pau-clear" type="button">Clear chat</button></div></div>
       <p class="pau-intro">Pau’s digital portfolio assistant. Ask about her experience, speaking topics, or your event’s fit.</p>
       <div id="pau-messages" class="pau-messages" role="log" aria-label="Conversation with Pau" aria-live="polite" aria-relevant="additions"></div>
-      <div id="pau-suggestions" class="pau-suggestions" aria-label="Suggested questions"><button type="button" data-question="What qualifies Pau as a speaker?">Why invite Pau?</button><button type="button" data-question="Which talk suits college students starting freelancing?">Find a talk</button><button type="button" data-question="How can I invite Pau to our event?">Plan an event</button></div>
+      <div id="pau-suggestions" class="pau-suggestions" aria-label="Suggested questions"><button type="button" data-question="What qualifies Pau as a speaker?">Why invite Pau?</button><button type="button" data-question="Which talk suits college students starting freelancing?">Find a talk</button><button type="button" data-question="How can I invite Pau to our event?">Plan an event</button><button type="button" data-question="Is there an upcoming event I can join?">Upcoming event</button></div>
       <p id="pau-status" class="pau-status" role="status"></p>
-      <form id="pau-form" class="pau-form"><label for="pau-question" class="pau-sr-only">Your question about Pau</label><input id="pau-question" name="question" type="text" maxlength="1000" autocomplete="off" placeholder="Ask something about Pau…" required><button type="submit" id="pau-send" aria-label="Send question">Send <span aria-hidden="true">↗</span></button></form>
+      <form id="pau-form" class="pau-form"><label for="pau-question" class="pau-sr-only">Your question about Pau</label><input id="pau-question" name="question" type="text" maxlength="1000" autocomplete="off" placeholder="Ask something about Pau…" required><button type="submit" id="pau-send" aria-label="Send question">Send</button></form>
       <p class="pau-privacy" id="pau-privacy">Uses approved portfolio facts. Chat stays in this tab; please avoid sharing sensitive information.</p>
-      <a id="pau-contact" class="pau-contact" href="#contact">Speak directly with Pau <span aria-hidden="true">↗</span></a>
+      <a id="pau-contact" class="pau-contact" href="#contact">Speak directly with Pau</a>
     </section>
   </aside>
 </body>

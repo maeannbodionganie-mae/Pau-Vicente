@@ -1,4 +1,4 @@
 {
-  "functions": { "api/pau.js": { "maxDuration": 30 } },
+  "functions": { "api/pau.js": { "maxDuration": 30 }, "api/inquiry.js": { "maxDuration": 30 } },
   "headers": [{ "source": "/assets/pau-knowledge.json", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] }]
 }
