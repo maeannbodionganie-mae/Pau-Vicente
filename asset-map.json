@@ -429,131 +429,147 @@
   "pau-speaking-style-cut": {
     "original": "01-24 CCA_2013.jpg",
     "width": 1067,
-    "height": 1389,
+    "height": 1377,
     "webp": [
       {
         "src": "assets/photos/pau-speaking-style-cut-480.webp",
         "width": 480,
-        "height": 625
+        "height": 619
       },
       {
         "src": "assets/photos/pau-speaking-style-cut-800.webp",
         "width": 800,
-        "height": 1041
+        "height": 1032
       },
       {
         "src": "assets/photos/pau-speaking-style-cut-1067.webp",
         "width": 1067,
-        "height": 1389
+        "height": 1377
       }
     ],
     "fallback": "assets/photos/pau-speaking-style-cut.png",
     "fallback_width": 800,
-    "fallback_height": 1041,
-    "processing": "Background removed (IS-Net matte), yellow spill on edges graded to the site caramel, light matte tightening. Original photograph unchanged."
+    "fallback_height": 1032,
+    "processing": "Background removed with IS-Net and closed-form alpha matting (soft hair edges, background colour removed from edge pixels); remaining yellow spill graded to the site caramel; cropped to the figure. Original photograph unchanged."
   },
   "pau-why-cut": {
     "original": "01-24 CCA_2078.jpg",
-    "width": 1067,
-    "height": 1294,
+    "width": 969,
+    "height": 1279,
     "webp": [
       {
         "src": "assets/photos/pau-why-cut-480.webp",
         "width": 480,
-        "height": 582
+        "height": 634
       },
       {
         "src": "assets/photos/pau-why-cut-800.webp",
         "width": 800,
-        "height": 970
+        "height": 1056
       },
       {
-        "src": "assets/photos/pau-why-cut-1067.webp",
-        "width": 1067,
-        "height": 1294
+        "src": "assets/photos/pau-why-cut-969.webp",
+        "width": 969,
+        "height": 1279
       }
     ],
     "fallback": "assets/photos/pau-why-cut.png",
     "fallback_width": 800,
-    "fallback_height": 970,
-    "processing": "Background removed (IS-Net matte), yellow spill on edges graded to the site caramel, light matte tightening. Original photograph unchanged."
+    "fallback_height": 1056,
+    "processing": "Background removed with IS-Net and closed-form alpha matting (soft hair edges, background colour removed from edge pixels); remaining yellow spill graded to the site caramel; cropped to the figure. Original photograph unchanged."
   },
   "pau-about-cut": {
     "original": "01-24 CCA_2050.jpg",
-    "width": 1067,
-    "height": 1377,
+    "width": 706,
+    "height": 1140,
     "webp": [
       {
         "src": "assets/photos/pau-about-cut-480.webp",
         "width": 480,
-        "height": 619
+        "height": 775
       },
       {
-        "src": "assets/photos/pau-about-cut-800.webp",
-        "width": 800,
-        "height": 1032
-      },
-      {
-        "src": "assets/photos/pau-about-cut-1067.webp",
-        "width": 1067,
-        "height": 1377
+        "src": "assets/photos/pau-about-cut-706.webp",
+        "width": 706,
+        "height": 1140
       }
     ],
     "fallback": "assets/photos/pau-about-cut.png",
-    "fallback_width": 800,
-    "fallback_height": 1032,
-    "processing": "Background removed (IS-Net matte), yellow spill on edges graded to the site caramel, light matte tightening. Original photograph unchanged."
+    "fallback_width": 706,
+    "fallback_height": 1140,
+    "processing": "Background removed with IS-Net and closed-form alpha matting (soft hair edges, background colour removed from edge pixels); remaining yellow spill graded to the site caramel; cropped to the figure from head to mid-thigh. Original photograph unchanged."
   },
   "pau-contact-cut": {
     "original": "01-24 CCA_2042.jpg",
-    "width": 1067,
-    "height": 1409,
+    "width": 560,
+    "height": 1225,
     "webp": [
       {
         "src": "assets/photos/pau-contact-cut-480.webp",
         "width": 480,
-        "height": 634
+        "height": 1050
       },
       {
-        "src": "assets/photos/pau-contact-cut-800.webp",
-        "width": 800,
-        "height": 1056
-      },
-      {
-        "src": "assets/photos/pau-contact-cut-1067.webp",
-        "width": 1067,
-        "height": 1409
+        "src": "assets/photos/pau-contact-cut-560.webp",
+        "width": 560,
+        "height": 1225
       }
     ],
     "fallback": "assets/photos/pau-contact-cut.png",
-    "fallback_width": 800,
-    "fallback_height": 1056,
-    "processing": "Background removed (IS-Net matte), yellow spill on edges graded to the site caramel, light matte tightening. Original photograph unchanged."
+    "fallback_width": 560,
+    "fallback_height": 1225,
+    "processing": "Background removed with IS-Net and closed-form alpha matting (soft hair edges, background colour removed from edge pixels); remaining yellow spill graded to the site caramel; cropped to the figure from head to mid-thigh. Original photograph unchanged."
   },
   "cross-core-team-cut": {
     "original": "01-24 CCA_2511.jpg",
     "width": 1067,
-    "height": 1476,
+    "height": 1469,
     "webp": [
       {
         "src": "assets/photos/cross-core-team-cut-480.webp",
         "width": 480,
-        "height": 664
+        "height": 661
       },
       {
         "src": "assets/photos/cross-core-team-cut-800.webp",
         "width": 800,
-        "height": 1107
+        "height": 1101
       },
       {
         "src": "assets/photos/cross-core-team-cut-1067.webp",
         "width": 1067,
-        "height": 1476
+        "height": 1469
       }
     ],
     "fallback": "assets/photos/cross-core-team-cut.png",
     "fallback_width": 800,
-    "fallback_height": 1107,
-    "processing": "Background removed (IS-Net matte), yellow spill on edges graded to the site caramel, light matte tightening. Original photograph unchanged."
+    "fallback_height": 1101,
+    "processing": "Background removed with IS-Net and closed-form alpha matting (soft hair edges, background colour removed from edge pixels); remaining yellow spill graded to the site caramel; cropped to the figure. Original photograph unchanged."
+  },
+  "pau-hero-cut": {
+    "original": "01-24 CCA_2006.jpg",
+    "width": 1067,
+    "height": 1464,
+    "webp": [
+      {
+        "src": "assets/photos/pau-hero-cut-480.webp",
+        "width": 480,
+        "height": 659
+      },
+      {
+        "src": "assets/photos/pau-hero-cut-800.webp",
+        "width": 800,
+        "height": 1098
+      },
+      {
+        "src": "assets/photos/pau-hero-cut-1067.webp",
+        "width": 1067,
+        "height": 1464
+      }
+    ],
+    "fallback": "assets/photos/pau-hero-cut.png",
+    "fallback_width": 800,
+    "fallback_height": 1098,
+    "processing": "Background removed with IS-Net and closed-form alpha matting (soft hair edges, background colour removed from edge pixels); remaining yellow spill graded to the site caramel; cropped to the figure. Original photograph unchanged."
   }
 }

@@ -3,7 +3,8 @@
    - Stage: Pau steps out of her frame; the panel, outline and portrait sit at different depths and
      shift with the pointer and with scroll.
    - Storybook: chapter pages stack; each page settles back in 3D as the next one arrives.
-   - Photographs open like a curtain; the Moments prints fan out when they come into view. */
+   - Photographs open like a curtain.
+   - Moments: on desktop the scene moves toward the reader as they scroll, so they walk past the prints. */
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -13,8 +14,8 @@
   if (still || !('IntersectionObserver' in window)) return;
   root.classList.add('motion');
 
-  /* Reveal on entry: photographs, stages and the Moments deck */
-  const revealTargets = document.querySelectorAll('.chapter-media .media-stack > .photo, .deck-card .photo, [data-stage], [data-deck]');
+  /* Reveal on entry: photographs and stages */
+  const revealTargets = document.querySelectorAll('.chapter-media .media-stack > .photo, [data-stage]');
   revealTargets.forEach((el) => el.setAttribute('data-curtain', ''));
   const reveal = new IntersectionObserver((entries) => {
     for (const entry of entries) {
@@ -41,7 +42,7 @@
   let ticking = false;
   function schedule() { if (!ticking) { ticking = true; requestAnimationFrame(apply); } }
 
-  function apply() {
+  let apply = function () {
     ticking = false;
     const vh = innerHeight;
     for (const el of active) {
@@ -64,6 +65,37 @@
       }
     }
   }
+  /* Moments walk-through */
+  const fly = document.querySelector('[data-flythrough]');
+  const flyItems = fly ? [...fly.querySelectorAll('.moment, .moment-word')] : [];
+  const flyHead = fly && fly.querySelector('.moments-head');
+  const flyScene = fly && fly.querySelector('.moments-scene');
+  function flySetup() {
+    const on = Boolean(fly) && desktop.matches;
+    root.classList.toggle('fly', on);
+    if (!on && flyScene) { flyScene.style.removeProperty('--cam'); flyItems.forEach((el) => { el.style.opacity = ''; }); }
+  }
+  function flyApply() {
+    if (!fly || !root.classList.contains('fly')) return;
+    const box = fly.getBoundingClientRect();
+    const span = box.height - innerHeight;
+    if (box.bottom < 0 || box.top > innerHeight) return;
+    const progress = Math.max(0, Math.min(1, -box.top / span));
+    const cam = progress * 3000;
+    flyScene.style.setProperty('--cam', cam.toFixed(1));
+    for (const el of flyItems) {
+      const depth = Number(getComputedStyle(el).getPropertyValue('--mz')) + cam;
+      const near = Math.max(0, Math.min(1, 1 - (depth - 120) / 420));
+      const far = Math.max(0, Math.min(1, (depth + 2600) / 1400));
+      el.style.opacity = (near * far).toFixed(3);
+    }
+    if (flyHead) flyHead.style.opacity = Math.max(0, 1 - progress * 4).toFixed(3);
+  }
+  flySetup();
+  desktop.addEventListener('change', () => { flySetup(); schedule(); });
+  const baseApply = apply;
+  apply = function () { baseApply(); flyApply(); };
+
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule);
   desktop.addEventListener('change', schedule);

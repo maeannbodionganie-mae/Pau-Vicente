@@ -57,7 +57,7 @@ def validate_events():
 def picture(match):
     key, alt, sizes, cls = match.group(1).split('|')
     p = photos[key]
-    hero = key == 'pau-hero'
+    hero = key in ('pau-hero', 'pau-hero-cut')
     srcset = ', '.join(f"{v['src']} {v['width']}w" for v in p['webp'])
     loading = 'fetchpriority="high" loading="eager"' if hero else 'loading="lazy"'
     return (f'<picture class="{e(cls)}" data-photo="{key}">'
@@ -121,7 +121,7 @@ def events_feature():
     if not events:
         body = ('<div class="event-empty container" data-reveal><p>No public sessions are listed right now.</p>'
                 '<a class="text-link" href="#contact">Ask about bringing a session to your group</a></div>')
-        return f'<section class="events panel tone-light" id="events" aria-labelledby="events-title">{heading}{body}</section>'
+        return f'<section class="events panel anchored tone-light" id="events" aria-labelledby="events-title">{heading}{body}</section>'
     cards = []
     for event in events:
         tid = f'event-{event["slug"]}-title'
@@ -131,7 +131,7 @@ def events_feature():
             image = ('<div class="stage stage-sand event-stage" data-stage><div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>'
                      '<div class="stage-line" data-layer="0.6" aria-hidden="true"></div>'
                      f'<figure class="stage-figure" data-layer="1">{{{{image:{event["image"]}|{e(event.get("imageAlt", "Pau Vicente"))}|'
-                     '(max-width: 900px) 70vw, 28vw|cutout}}</figure></div>')
+                     '(max-width: 900px) 80vw, 30vw|cutout}}</figure></div>')
         cards.append(
             f'<article class="event-card container" aria-labelledby="{tid}" data-reveal>{image}'
             f'<div class="event-body">{status_labels(event)}'
@@ -140,7 +140,7 @@ def events_feature():
             f'<h4 class="event-subhead">What you’ll take away</h4>{list_items(event["takeaways"], "event-takeaways")}'
             f'{details(event)}'
             f'<div class="actions"><a class="button" href="events/{e(event["slug"])}/">{action}</a></div></div></article>')
-    return f'<section class="events panel tone-light" id="events" aria-labelledby="events-title">{heading}{"".join(cards)}</section>'
+    return f'<section class="events panel anchored tone-light" id="events" aria-labelledby="events-title">{heading}{"".join(cards)}</section>'
 
 
 def registration_section(event):

@@ -46,7 +46,7 @@
 
   <main id="main">
     <!-- Cover: Pau steps out of her frame. Layers move at different depths with the pointer and on scroll. -->
-    <section class="hero panel tone-dark" id="home" aria-labelledby="hero-title">
+    <section class="hero panel anchored tone-dark" id="home" aria-labelledby="hero-title">
       <div class="container hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">Speaker <span class="dot" aria-hidden="true"></span> Freelance Coach <span class="dot" aria-hidden="true"></span> Social Media Marketing &amp; Branding Strategist</p>
@@ -58,15 +58,14 @@
         <div class="stage stage-dark" data-stage aria-hidden="false">
           <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
           <div class="stage-line" data-layer="0.6" aria-hidden="true"></div>
-          <figure class="stage-figure" data-layer="1">{{image:pau-hero|Pau Vicente wearing her white blazer and black outfit, with her arms crossed.|(max-width: 900px) 80vw, 40vw|cutout}}</figure>
+          <figure class="stage-figure" data-layer="1">{{image:pau-hero-cut|Pau Vicente wearing her white blazer and black outfit, with her arms crossed.|(max-width: 900px) 86vw, 40vw|cutout}}</figure>
           <p class="stage-tag" data-layer="0.5" aria-hidden="true">Lead with love</p>
         </div>
       </div>
-      <a class="scroll-cue" href="#about" aria-label="Scroll to About Pau"><span></span></a>
     </section>
 
     <!-- About -->
-    <section class="about panel tone-light" id="about" aria-labelledby="about-title">
+    <section class="about panel anchored tone-light" id="about" aria-labelledby="about-title">
       <div class="container split">
         <div class="stage stage-light" data-stage>
           <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
@@ -144,21 +143,28 @@
       </div>
     </section>
 
-    <!-- Moments: community photographs fanned like prints on a table. -->
-    <section class="moments panel tone-dark" aria-labelledby="moments-title">
-      <header class="section-head container" data-reveal>
-        <p class="eyebrow">Moments along the way</p>
-        <h2 id="moments-title">The people behind the <em>story.</em></h2>
-      </header>
-      <div class="deck container" data-deck>
-        <figure class="deck-card">{{image:corporate-team|A group photograph with colleagues at a corporate gathering.|(max-width: 900px) 78vw, 30vw|photo}}<figcaption>Teamwork in the corporate years.</figcaption></figure>
-        <figure class="deck-card">{{image:cross-core-gathering|A Cross Core group gathering around a table.|(max-width: 900px) 78vw, 30vw|photo}}<figcaption>A Cross Core gathering.</figcaption></figure>
-        <figure class="deck-card">{{image:cross-core-community|A Cross Core community group photograph at a celebration.|(max-width: 900px) 78vw, 30vw|photo}}<figcaption>Celebrating with the Cross Core community.</figcaption></figure>
+    <!-- Moments: a short walk through the photographs. On desktop the scene moves toward you as you scroll. -->
+    <section class="moments tone-dark" aria-labelledby="moments-title">
+      <div class="moments-track" data-flythrough>
+        <div class="moments-view">
+          <header class="moments-head container">
+            <p class="eyebrow">Moments along the way</p>
+            <h2 id="moments-title">The people behind the <em>story.</em></h2>
+            <p class="moments-hint" aria-hidden="true">Keep scrolling to walk through</p>
+          </header>
+          <div class="moments-scene">
+            <figure class="moment" style="--mx:-24;--my:2;--mz:-200">{{image:corporate-team|A group photograph with colleagues at a corporate gathering.|(max-width: 900px) 78vw, 34vw|photo}}<figcaption>Teamwork in the corporate years.</figcaption></figure>
+            <p class="moment-word" style="--mx:20;--my:-18;--mz:-850" aria-hidden="true">Teamwork</p>
+            <figure class="moment" style="--mx:22;--my:4;--mz:-1450">{{image:cross-core-gathering|A Cross Core group gathering around a table.|(max-width: 900px) 78vw, 34vw|photo}}<figcaption>A Cross Core gathering.</figcaption></figure>
+            <p class="moment-word" style="--mx:-20;--my:16;--mz:-2050" aria-hidden="true">Community</p>
+            <figure class="moment" style="--mx:-2;--my:-2;--mz:-2700">{{image:cross-core-community|A Cross Core community group photograph at a celebration.|(max-width: 900px) 78vw, 34vw|photo}}<figcaption>Celebrating with the Cross Core community.</figcaption></figure>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Approach -->
-    <section class="approach panel tone-sand" aria-labelledby="style-title">
+    <section class="approach panel anchored tone-sand" aria-labelledby="style-title">
       <div class="container split split-reverse">
         <div class="approach-text" data-reveal>
           <p class="eyebrow">Speaking style</p>
@@ -273,7 +279,7 @@
           </header>
           <div class="stage stage-light stage-small" data-stage>
             <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
-            <figure class="stage-figure" data-layer="1">{{image:pau-contact-cut|Pau standing in profile in her light blazer.|(max-width: 900px) 50vw, 18vw|cutout}}</figure>
+            <figure class="stage-figure" data-layer="1">{{image:pau-contact-cut|Pau standing in profile in her light blazer.|(max-width: 900px) 46vw, 16vw|cutout}}</figure>
           </div>
           <dl class="contact-details"><div><dt>Email</dt><dd><a href="mailto:pauline.vicente14@gmail.com">pauline.vicente14@gmail.com</a></dd></div><div><dt>Mobile</dt><dd><a href="tel:+639153412728">09153412728</a></dd></div></dl>
           <div class="social-links" aria-label="Pau’s social profiles"><a href="https://www.facebook.com/paulinemelissar.v/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.linkedin.com/in/pauline-vicente-b86849234/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://www.instagram.com/pau.melissaa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram, @pau.melissaa">Instagram</a></div>

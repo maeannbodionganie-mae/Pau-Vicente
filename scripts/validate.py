@@ -85,11 +85,11 @@ passed('all anchors, public contacts, safe external links, and prefilled email f
 assert len(manifest) >= 15
 used = [pic['data-photo'] for pic in soup.select('picture[data-photo]')]
 assert len(used) == len(set(used)) >= 15, used
-assert {k for k in manifest if not k.endswith('-cut')} - {'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team'} <= set(used), 'every documentary photograph is shown'
+assert {k for k in manifest if not k.endswith('-cut')} - {'pau-hero', 'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team'} <= set(used), 'every documentary photograph is shown'
 assert set(used) <= set(manifest)
 assert len(soup.select('img')) == len(used)
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
-assert soup.select_one('picture[data-photo="pau-hero"] img[fetchpriority="high"]')
+assert soup.select_one('picture[data-photo="pau-hero-cut"] img[fetchpriority="high"]')
 assert len(soup.select('img[loading="lazy"]')) == len(used) - 1
 for key, photo in manifest.items():
     for variant in photo['webp']:

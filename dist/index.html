@@ -46,7 +46,7 @@
 
   <main id="main">
     <!-- Cover: Pau steps out of her frame. Layers move at different depths with the pointer and on scroll. -->
-    <section class="hero panel tone-dark" id="home" aria-labelledby="hero-title">
+    <section class="hero panel anchored tone-dark" id="home" aria-labelledby="hero-title">
       <div class="container hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">Speaker <span class="dot" aria-hidden="true"></span> Freelance Coach <span class="dot" aria-hidden="true"></span> Social Media Marketing &amp; Branding Strategist</p>
@@ -58,20 +58,19 @@
         <div class="stage stage-dark" data-stage aria-hidden="false">
           <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
           <div class="stage-line" data-layer="0.6" aria-hidden="true"></div>
-          <figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-hero"><source type="image/webp" srcset="assets/photos/pau-hero-editorial-480.webp 480w, assets/photos/pau-hero-editorial-800.webp 800w, assets/photos/pau-hero-editorial-1024.webp 1024w" sizes="(max-width: 900px) 80vw, 40vw"><img src="assets/photos/pau-hero-editorial.png" width="1024" height="1536" alt="Pau Vicente wearing her white blazer and black outfit, with her arms crossed." fetchpriority="high" loading="eager" decoding="async"></picture></figure>
+          <figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-hero-cut"><source type="image/webp" srcset="assets/photos/pau-hero-cut-480.webp 480w, assets/photos/pau-hero-cut-800.webp 800w, assets/photos/pau-hero-cut-1067.webp 1067w" sizes="(max-width: 900px) 86vw, 40vw"><img src="assets/photos/pau-hero-cut.png" width="1067" height="1464" alt="Pau Vicente wearing her white blazer and black outfit, with her arms crossed." fetchpriority="high" loading="eager" decoding="async"></picture></figure>
           <p class="stage-tag" data-layer="0.5" aria-hidden="true">Lead with love</p>
         </div>
       </div>
-      <a class="scroll-cue" href="#about" aria-label="Scroll to About Pau"><span></span></a>
     </section>
 
     <!-- About -->
-    <section class="about panel tone-light" id="about" aria-labelledby="about-title">
+    <section class="about panel anchored tone-light" id="about" aria-labelledby="about-title">
       <div class="container split">
         <div class="stage stage-light" data-stage>
           <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
           <div class="stage-line" data-layer="0.6" aria-hidden="true"></div>
-          <figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-speaking-style-cut"><source type="image/webp" srcset="assets/photos/pau-speaking-style-cut-480.webp 480w, assets/photos/pau-speaking-style-cut-800.webp 800w, assets/photos/pau-speaking-style-cut-1067.webp 1067w" sizes="(max-width: 900px) 80vw, 36vw"><img src="assets/photos/pau-speaking-style-cut.png" width="1067" height="1389" alt="A portrait of Pau in her light blazer with her arms crossed." loading="lazy" decoding="async"></picture></figure>
+          <figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-speaking-style-cut"><source type="image/webp" srcset="assets/photos/pau-speaking-style-cut-480.webp 480w, assets/photos/pau-speaking-style-cut-800.webp 800w, assets/photos/pau-speaking-style-cut-1067.webp 1067w" sizes="(max-width: 900px) 80vw, 36vw"><img src="assets/photos/pau-speaking-style-cut.png" width="1067" height="1377" alt="A portrait of Pau in her light blazer with her arms crossed." loading="lazy" decoding="async"></picture></figure>
         </div>
         <div class="about-text" data-reveal>
           <p class="eyebrow">About Pau</p>
@@ -132,7 +131,7 @@
         </article>
         <article class="page chapter" id="chapter-4" aria-labelledby="chapter-four" data-chapter="3">
           <div class="container page-inner">
-            <figure class="chapter-media chapter-media-cut"><div class="media-stack"><picture class="cutout" data-photo="cross-core-team-cut"><source type="image/webp" srcset="assets/photos/cross-core-team-cut-480.webp 480w, assets/photos/cross-core-team-cut-800.webp 800w, assets/photos/cross-core-team-cut-1067.webp 1067w" sizes="(max-width: 900px) 80vw, 36vw"><img src="assets/photos/cross-core-team-cut.png" width="1067" height="1476" alt="Pau with the Cross Core team in a group studio portrait." loading="lazy" decoding="async"></picture></div><figcaption>The people behind a shared purpose.</figcaption></figure>
+            <figure class="chapter-media chapter-media-cut"><div class="media-stack"><picture class="cutout" data-photo="cross-core-team-cut"><source type="image/webp" srcset="assets/photos/cross-core-team-cut-480.webp 480w, assets/photos/cross-core-team-cut-800.webp 800w, assets/photos/cross-core-team-cut-1067.webp 1067w" sizes="(max-width: 900px) 80vw, 36vw"><img src="assets/photos/cross-core-team-cut.png" width="1067" height="1469" alt="Pau with the Cross Core team in a group studio portrait." loading="lazy" decoding="async"></picture></div><figcaption>The people behind a shared purpose.</figcaption></figure>
             <div class="chapter-text">
               <p class="chapter-label"><span>Chapter 04</span>Growing together</p>
               <h3 id="chapter-four">Building <em>Cross Core.</em></h3>
@@ -144,21 +143,28 @@
       </div>
     </section>
 
-    <!-- Moments: community photographs fanned like prints on a table. -->
-    <section class="moments panel tone-dark" aria-labelledby="moments-title">
-      <header class="section-head container" data-reveal>
-        <p class="eyebrow">Moments along the way</p>
-        <h2 id="moments-title">The people behind the <em>story.</em></h2>
-      </header>
-      <div class="deck container" data-deck>
-        <figure class="deck-card"><picture class="photo" data-photo="corporate-team"><source type="image/webp" srcset="assets/photos/corporate-team-480.webp 480w, assets/photos/corporate-team-800.webp 800w, assets/photos/corporate-team-1080.webp 1080w" sizes="(max-width: 900px) 78vw, 30vw"><img src="assets/photos/corporate-team.jpg" width="1080" height="810" alt="A group photograph with colleagues at a corporate gathering." loading="lazy" decoding="async"></picture><figcaption>Teamwork in the corporate years.</figcaption></figure>
-        <figure class="deck-card"><picture class="photo" data-photo="cross-core-gathering"><source type="image/webp" srcset="assets/photos/cross-core-gathering-480.webp 480w, assets/photos/cross-core-gathering-800.webp 800w, assets/photos/cross-core-gathering-1200.webp 1200w, assets/photos/cross-core-gathering-1800.webp 1800w" sizes="(max-width: 900px) 78vw, 30vw"><img src="assets/photos/cross-core-gathering.jpg" width="6024" height="4020" alt="A Cross Core group gathering around a table." loading="lazy" decoding="async"></picture><figcaption>A Cross Core gathering.</figcaption></figure>
-        <figure class="deck-card"><picture class="photo" data-photo="cross-core-community"><source type="image/webp" srcset="assets/photos/cross-core-community-480.webp 480w, assets/photos/cross-core-community-800.webp 800w, assets/photos/cross-core-community-1200.webp 1200w, assets/photos/cross-core-community-1800.webp 1800w" sizes="(max-width: 900px) 78vw, 30vw"><img src="assets/photos/cross-core-community.jpg" width="6024" height="4020" alt="A Cross Core community group photograph at a celebration." loading="lazy" decoding="async"></picture><figcaption>Celebrating with the Cross Core community.</figcaption></figure>
+    <!-- Moments: a short walk through the photographs. On desktop the scene moves toward you as you scroll. -->
+    <section class="moments tone-dark" aria-labelledby="moments-title">
+      <div class="moments-track" data-flythrough>
+        <div class="moments-view">
+          <header class="moments-head container">
+            <p class="eyebrow">Moments along the way</p>
+            <h2 id="moments-title">The people behind the <em>story.</em></h2>
+            <p class="moments-hint" aria-hidden="true">Keep scrolling to walk through</p>
+          </header>
+          <div class="moments-scene">
+            <figure class="moment" style="--mx:-24;--my:2;--mz:-200"><picture class="photo" data-photo="corporate-team"><source type="image/webp" srcset="assets/photos/corporate-team-480.webp 480w, assets/photos/corporate-team-800.webp 800w, assets/photos/corporate-team-1080.webp 1080w" sizes="(max-width: 900px) 78vw, 34vw"><img src="assets/photos/corporate-team.jpg" width="1080" height="810" alt="A group photograph with colleagues at a corporate gathering." loading="lazy" decoding="async"></picture><figcaption>Teamwork in the corporate years.</figcaption></figure>
+            <p class="moment-word" style="--mx:20;--my:-18;--mz:-850" aria-hidden="true">Teamwork</p>
+            <figure class="moment" style="--mx:22;--my:4;--mz:-1450"><picture class="photo" data-photo="cross-core-gathering"><source type="image/webp" srcset="assets/photos/cross-core-gathering-480.webp 480w, assets/photos/cross-core-gathering-800.webp 800w, assets/photos/cross-core-gathering-1200.webp 1200w, assets/photos/cross-core-gathering-1800.webp 1800w" sizes="(max-width: 900px) 78vw, 34vw"><img src="assets/photos/cross-core-gathering.jpg" width="6024" height="4020" alt="A Cross Core group gathering around a table." loading="lazy" decoding="async"></picture><figcaption>A Cross Core gathering.</figcaption></figure>
+            <p class="moment-word" style="--mx:-20;--my:16;--mz:-2050" aria-hidden="true">Community</p>
+            <figure class="moment" style="--mx:-2;--my:-2;--mz:-2700"><picture class="photo" data-photo="cross-core-community"><source type="image/webp" srcset="assets/photos/cross-core-community-480.webp 480w, assets/photos/cross-core-community-800.webp 800w, assets/photos/cross-core-community-1200.webp 1200w, assets/photos/cross-core-community-1800.webp 1800w" sizes="(max-width: 900px) 78vw, 34vw"><img src="assets/photos/cross-core-community.jpg" width="6024" height="4020" alt="A Cross Core community group photograph at a celebration." loading="lazy" decoding="async"></picture><figcaption>Celebrating with the Cross Core community.</figcaption></figure>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Approach -->
-    <section class="approach panel tone-sand" aria-labelledby="style-title">
+    <section class="approach panel anchored tone-sand" aria-labelledby="style-title">
       <div class="container split split-reverse">
         <div class="approach-text" data-reveal>
           <p class="eyebrow">Speaking style</p>
@@ -170,7 +176,7 @@
         <div class="stage stage-sand" data-stage>
           <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
           <div class="stage-line" data-layer="0.6" aria-hidden="true"></div>
-          <figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-why-cut"><source type="image/webp" srcset="assets/photos/pau-why-cut-480.webp 480w, assets/photos/pau-why-cut-800.webp 800w, assets/photos/pau-why-cut-1067.webp 1067w" sizes="(max-width: 900px) 80vw, 36vw"><img src="assets/photos/pau-why-cut.png" width="1067" height="1294" alt="Pau seated on a wooden chair in her light blazer and black outfit." loading="lazy" decoding="async"></picture></figure>
+          <figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-why-cut"><source type="image/webp" srcset="assets/photos/pau-why-cut-480.webp 480w, assets/photos/pau-why-cut-800.webp 800w, assets/photos/pau-why-cut-969.webp 969w" sizes="(max-width: 900px) 80vw, 36vw"><img src="assets/photos/pau-why-cut.png" width="969" height="1279" alt="Pau seated on a wooden chair in her light blazer and black outfit." loading="lazy" decoding="async"></picture></figure>
         </div>
       </div>
     </section>
@@ -228,7 +234,7 @@
       </div>
     </section>
 
-    <section class="events panel tone-light" id="events" aria-labelledby="events-title"><header class="row-head container" data-reveal><div><p class="eyebrow">Events</p><h2 id="events-title">Upcoming <em>sessions.</em></h2></div><p>Public sessions are listed here once confirmed. Until then, the session below is a sample that shows how events and registration will work.</p></header><article class="event-card container" aria-labelledby="event-freelance-101-title" data-reveal><div class="stage stage-sand event-stage" data-stage><div class="stage-panel" data-layer="0.35" aria-hidden="true"></div><div class="stage-line" data-layer="0.6" aria-hidden="true"></div><figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-about-cut"><source type="image/webp" srcset="assets/photos/pau-about-cut-480.webp 480w, assets/photos/pau-about-cut-800.webp 800w, assets/photos/pau-about-cut-1067.webp 1067w" sizes="(max-width: 900px) 70vw, 28vw"><img src="assets/photos/pau-about-cut.png" width="1067" height="1377" alt="Pau standing in her light blazer and black outfit." loading="lazy" decoding="async"></picture></figure></div><div class="event-body"><p class="event-status"><span class="status-sample">Sample event</span><span class="status-sep" aria-hidden="true">·</span><span>Registration preview</span></p><h3 id="event-freelance-101-title">Freelance 101: <em>Start Your Freelancing Journey with Confidence</em></h3><p class="event-summary">An introductory session for anyone curious about freelancing: what the work really involves, how to find a direction that suits you, and how to prepare for your first client.</p><h4 class="event-subhead">What you’ll take away</h4><ul class="event-takeaways"><li>Understand how freelancing works</li><li>Identify a niche that suits you</li><li>Build confidence in starting your freelance journey</li><li>Take clear next steps toward becoming a freelancer</li></ul><dl class="event-details"><div><dt>Audience</dt><dd>Students, fresh graduates, career shifters, and beginners exploring freelancing.</dd></div><div><dt>Format</dt><dd class="is-tba">To be announced</dd></div><div><dt>Date</dt><dd class="is-tba">To be announced</dd></div><div><dt>Time</dt><dd class="is-tba">To be announced</dd></div><div><dt>Venue or platform</dt><dd class="is-tba">To be announced</dd></div><div><dt>Registration</dt><dd>Not yet open (preview only)</dd></div></dl><div class="actions"><a class="button" href="events/freelance-101/">View details &amp; preview registration</a></div></div></article></section>
+    <section class="events panel anchored tone-light" id="events" aria-labelledby="events-title"><header class="row-head container" data-reveal><div><p class="eyebrow">Events</p><h2 id="events-title">Upcoming <em>sessions.</em></h2></div><p>Public sessions are listed here once confirmed. Until then, the session below is a sample that shows how events and registration will work.</p></header><article class="event-card container" aria-labelledby="event-freelance-101-title" data-reveal><div class="stage stage-sand event-stage" data-stage><div class="stage-panel" data-layer="0.35" aria-hidden="true"></div><div class="stage-line" data-layer="0.6" aria-hidden="true"></div><figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-about-cut"><source type="image/webp" srcset="assets/photos/pau-about-cut-480.webp 480w, assets/photos/pau-about-cut-706.webp 706w" sizes="(max-width: 900px) 80vw, 30vw"><img src="assets/photos/pau-about-cut.png" width="706" height="1140" alt="Pau standing in her light blazer and black outfit." loading="lazy" decoding="async"></picture></figure></div><div class="event-body"><p class="event-status"><span class="status-sample">Sample event</span><span class="status-sep" aria-hidden="true">·</span><span>Registration preview</span></p><h3 id="event-freelance-101-title">Freelance 101: <em>Start Your Freelancing Journey with Confidence</em></h3><p class="event-summary">An introductory session for anyone curious about freelancing: what the work really involves, how to find a direction that suits you, and how to prepare for your first client.</p><h4 class="event-subhead">What you’ll take away</h4><ul class="event-takeaways"><li>Understand how freelancing works</li><li>Identify a niche that suits you</li><li>Build confidence in starting your freelance journey</li><li>Take clear next steps toward becoming a freelancer</li></ul><dl class="event-details"><div><dt>Audience</dt><dd>Students, fresh graduates, career shifters, and beginners exploring freelancing.</dd></div><div><dt>Format</dt><dd class="is-tba">To be announced</dd></div><div><dt>Date</dt><dd class="is-tba">To be announced</dd></div><div><dt>Time</dt><dd class="is-tba">To be announced</dd></div><div><dt>Venue or platform</dt><dd class="is-tba">To be announced</dd></div><div><dt>Registration</dt><dd>Not yet open (preview only)</dd></div></dl><div class="actions"><a class="button" href="events/freelance-101/">View details &amp; preview registration</a></div></div></article></section>
 
     <!-- Audiences and formats -->
     <section class="audiences panel tone-sand" aria-labelledby="audience-title">
@@ -273,7 +279,7 @@
           </header>
           <div class="stage stage-light stage-small" data-stage>
             <div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>
-            <figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-contact-cut"><source type="image/webp" srcset="assets/photos/pau-contact-cut-480.webp 480w, assets/photos/pau-contact-cut-800.webp 800w, assets/photos/pau-contact-cut-1067.webp 1067w" sizes="(max-width: 900px) 50vw, 18vw"><img src="assets/photos/pau-contact-cut.png" width="1067" height="1409" alt="Pau standing in profile in her light blazer." loading="lazy" decoding="async"></picture></figure>
+            <figure class="stage-figure" data-layer="1"><picture class="cutout" data-photo="pau-contact-cut"><source type="image/webp" srcset="assets/photos/pau-contact-cut-480.webp 480w, assets/photos/pau-contact-cut-560.webp 560w" sizes="(max-width: 900px) 46vw, 16vw"><img src="assets/photos/pau-contact-cut.png" width="560" height="1225" alt="Pau standing in profile in her light blazer." loading="lazy" decoding="async"></picture></figure>
           </div>
           <dl class="contact-details"><div><dt>Email</dt><dd><a href="mailto:pauline.vicente14@gmail.com">pauline.vicente14@gmail.com</a></dd></div><div><dt>Mobile</dt><dd><a href="tel:+639153412728">09153412728</a></dd></div></dl>
           <div class="social-links" aria-label="Pau’s social profiles"><a href="https://www.facebook.com/paulinemelissar.v/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.linkedin.com/in/pauline-vicente-b86849234/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://www.instagram.com/pau.melissaa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram, @pau.melissaa">Instagram</a></div>
