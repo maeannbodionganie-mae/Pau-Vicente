@@ -23,13 +23,13 @@ Until configured, the form shows "The online form isn't available yet" and offer
 
 ## One-time setup (about 15 minutes)
 
-Do these steps while signed in to the Google account whose Gmail should send the notifications. Normally that is Pau's account.
+Do these steps while signed in to **askspeakerpau@gmail.com**, Pau's inquiry account. The Sheet lives in that account's Drive, notifications are sent from and delivered to that inbox, and the visitor is set as Reply-To.
 
 1. **Create the Sheet.** In Google Sheets, create a private spreadsheet (for example *Pau Vicente – Inquiries*). Do not share it publicly.
 2. **Add the script.** Go to Extensions → Apps Script. Replace the editor contents with `integrations/google-apps-script/Code.gs` and save.
 3. **Create the shared secret.** Generate a long random string, for example with `openssl rand -hex 32`. In Apps Script → Project Settings → Script properties, add:
    - `WEBHOOK_SECRET` = the random string (required)
-   - `NOTIFY_EMAIL` = the inbox to notify (optional; defaults to the script owner)
+   - `NOTIFY_EMAIL` = optional. It defaults to the script owner, askspeakerpau@gmail.com.
    - `SEND_ACKNOWLEDGMENT` = `true` to email visitors a receipt (optional; the receipt states it does not confirm a booking)
 4. **Run `setup`.** Choose `setup` in the function menu and click Run. Approve the permission prompt (Sheets + send email as you). This creates the *Inquiries* tab, headers, the Follow-up status dropdown (New, Contacted, In Discussion, Confirmed, Closed), and sets the timezone to Asia/Manila.
 5. **Check email delivery.** Run `testNotificationEmail`. A `[TEST]` email should arrive. It writes nothing to the Sheet.

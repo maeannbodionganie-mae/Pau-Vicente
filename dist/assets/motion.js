@@ -4,7 +4,7 @@
      shift with the pointer and with scroll.
    - Storybook: chapter pages stack; each page settles back in 3D as the next one arrives.
    - Photographs open like a curtain.
-   - Moments: on desktop the scene moves toward the reader as they scroll, so they walk past the prints. */
+   - Moments: on desktop each photograph rises as a tilted print and opens to fill the screen. */
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -65,36 +65,54 @@
       }
     }
   }
-  /* Moments walk-through */
-  const fly = document.querySelector('[data-flythrough]');
-  const flyItems = fly ? [...fly.querySelectorAll('.moment, .moment-word')] : [];
-  const flyHead = fly && fly.querySelector('.moments-head');
-  const flyScene = fly && fly.querySelector('.moments-scene');
-  function flySetup() {
-    const on = Boolean(fly) && desktop.matches;
-    root.classList.toggle('fly', on);
-    if (!on && flyScene) { flyScene.style.removeProperty('--cam'); flyItems.forEach((el) => { el.style.opacity = ''; }); }
+  /* Moments: pinned cinematic reveal. Each photograph rises as a tilted print, then opens to fill the screen;
+     the one before it recedes and dims. */
+  const cinema = document.querySelector('[data-cinema]');
+  const shots = cinema ? [...cinema.querySelectorAll('.moment')] : [];
+  const cineHead = cinema && cinema.querySelector('.moments-head');
+  const clamp01 = (v) => Math.max(0, Math.min(1, v));
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+  function cineSetup() {
+    const on = Boolean(cinema) && desktop.matches;
+    root.classList.toggle('cine', on);
+    if (!on) shots.forEach((el) => { el.style.transform = ''; el.style.clipPath = ''; el.style.filter = ''; const c = el.querySelector('figcaption'); if (c) c.style.opacity = ''; const i = el.querySelector('img'); if (i) i.style.transform = ''; });
+    if (!on && cineHead) cineHead.style.opacity = '';
   }
-  function flyApply() {
-    if (!fly || !root.classList.contains('fly')) return;
-    const box = fly.getBoundingClientRect();
-    const span = box.height - innerHeight;
+  function cineApply() {
+    if (!cinema || !root.classList.contains('cine')) return;
+    const box = cinema.getBoundingClientRect();
     if (box.bottom < 0 || box.top > innerHeight) return;
-    const progress = Math.max(0, Math.min(1, -box.top / span));
-    const cam = progress * 3000;
-    flyScene.style.setProperty('--cam', cam.toFixed(1));
-    for (const el of flyItems) {
-      const depth = Number(getComputedStyle(el).getPropertyValue('--mz')) + cam;
-      const near = Math.max(0, Math.min(1, 1 - (depth - 120) / 420));
-      const far = Math.max(0, Math.min(1, (depth + 2600) / 1400));
-      el.style.opacity = (near * far).toFixed(3);
-    }
-    if (flyHead) flyHead.style.opacity = Math.max(0, 1 - progress * 4).toFixed(3);
+    const total = clamp01(-box.top / (box.height - innerHeight));
+    const n = shots.length;
+    const states = shots.map((_, i) => {
+      const start = i / n + (i === 0 ? 0.02 : -0.04), end = (i + 1) / n - 0.06;
+      const local = clamp01((total - start) / (end - start));
+      const rise = i === 0 ? 1 : ease(clamp01(local / 0.45));
+      const open = ease(clamp01((local - (i === 0 ? 0 : 0.3)) / (i === 0 ? 1 : 0.7)));
+      return { rise, open };
+    });
+    shots.forEach((el, i) => {
+      const { rise, open } = states[i];
+      const next = states[i + 1];
+      const recede = next ? next.open : 0;
+      const y = (1 - rise) * 105 + (1 - open) * (i === 0 ? 16 : 10);
+      const scale = (0.46 + 0.54 * open) * (1 - recede * 0.08);
+      const tilt = (1 - open) * 22;
+      el.style.transform = `translate3d(0, ${y.toFixed(2)}vh, 0) rotateX(${tilt.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
+      const inset = (1 - open) * 4;
+      el.style.clipPath = `inset(${inset.toFixed(2)}% round ${((1 - open) * 18).toFixed(1)}px)`;
+      el.style.filter = recede ? `brightness(${(1 - recede * 0.55).toFixed(3)})` : '';
+      const img = el.querySelector('img');
+      if (img) img.style.transform = `scale(${(1.18 - 0.18 * open).toFixed(4)})`;
+      const cap = el.querySelector('figcaption');
+      if (cap) cap.style.opacity = clamp01((open - 0.7) / 0.3 - recede * 2).toFixed(3);
+    });
+    if (cineHead) cineHead.style.opacity = (1 - clamp01(states[0].open * 1.6)).toFixed(3);
   }
-  flySetup();
-  desktop.addEventListener('change', () => { flySetup(); schedule(); });
+  cineSetup();
+  desktop.addEventListener('change', () => { cineSetup(); schedule(); });
   const baseApply = apply;
-  apply = function () { baseApply(); flyApply(); };
+  apply = function () { baseApply(); cineApply(); };
 
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule);

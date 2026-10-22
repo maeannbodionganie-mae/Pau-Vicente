@@ -181,25 +181,30 @@ figcaption{margin-top:12px;font-size:13px;line-height:1.55;color:var(--fg-muted)
 .folio{position:absolute;right:0;bottom:clamp(20px,4vh,40px);font:italic 400 20px/1 var(--display);color:var(--accent)}
 .folio span{color:var(--fg-muted)}
 
-/* Moments: prints you walk past. Flat, scrollable row by default; a 3D walk-through on desktop with motion. */
+/* Moments. Default: a swipeable row of prints. Desktop with motion (.cine): each photograph rises as a
+   tilted print and opens to fill the screen while the section is pinned. */
 .moments{position:relative;background:var(--espresso-deep)}
 .moments-view{padding-block:calc(var(--header) + 40px) 64px}
-.moments-head{margin-bottom:30px}
+.moments-head{margin-bottom:30px;text-align:center}
+.moments-head .eyebrow{justify-content:center}
 .moments-head h2{font-size:clamp(30px,3.6vw,54px)}
-.moments-hint{display:none}
 .moments-scene{display:flex;justify-content:center;gap:24px;overflow-x:auto;padding:12px var(--gutter) 24px;scroll-snap-type:x mandatory}
 .moment{flex:0 0 min(78vw,400px);padding:12px 12px 0;background:var(--card);box-shadow:0 40px 80px -34px rgba(0,0,0,.85);scroll-snap-align:center}
 .moment .photo{aspect-ratio:3/2;background:var(--sand)}
 .moment .photo img{height:100%;object-fit:cover}
 .moment figcaption{margin:0;padding:10px 4px 14px;font:italic 400 17px/1.3 var(--display);color:var(--cream-ink)}
-.moment-word{display:none}
-.fly .moments-track{height:340vh}
-.fly .moments-view{position:sticky;top:0;height:100svh;padding:0;overflow:hidden;perspective:1000px;perspective-origin:50% 45%}
-.fly .moments-head{position:absolute;left:0;right:0;top:calc(var(--header) + 36px);z-index:3;margin:0 auto;transition:opacity .4s}
-.fly .moments-hint{display:block;margin-top:14px;font:italic 400 18px/1 var(--display);color:var(--accent)}
-.fly .moments-scene{position:absolute;inset:0;display:block;overflow:visible;padding:0;transform-style:preserve-3d;transform:translateZ(calc(var(--cam,0) * 1px))}
-.fly .moment{position:absolute;left:50%;top:54%;width:min(34vw,460px);transform:translate(-50%,-50%) translate3d(calc(var(--mx) * 1vw),calc(var(--my) * 1vh),calc(var(--mz) * 1px));will-change:opacity}
-.fly .moment-word{display:block;position:absolute;left:50%;top:50%;margin:0;transform:translate(-50%,-50%) translate3d(calc(var(--mx) * 1vw),calc(var(--my) * 1vh),calc(var(--mz) * 1px));font:italic 400 clamp(80px,11vw,170px)/1 var(--display);color:transparent;-webkit-text-stroke:1px rgba(217,190,152,.55);white-space:nowrap;pointer-events:none}
+.moment figcaption span{display:none}
+.cine .moments-track{height:360vh}
+.cine .moments-view{position:sticky;top:0;height:100svh;padding:0;overflow:hidden}
+.cine .moments-head{position:absolute;left:0;right:0;top:calc(var(--header) + 5vh);z-index:1;margin:0 auto}
+.cine .moments-scene{position:absolute;inset:0;display:block;overflow:visible;padding:0;perspective:1600px;perspective-origin:50% 40%}
+.cine .moment{position:absolute;inset:0;width:auto;padding:0;background:#120d0a;box-shadow:0 60px 120px -40px rgba(0,0,0,.9);transform-origin:50% 100%;will-change:transform,clip-path,filter}
+.cine .moment:nth-child(1){z-index:2}.cine .moment:nth-child(2){z-index:3}.cine .moment:nth-child(3){z-index:4}
+.cine .moment .photo{position:absolute;inset:0;aspect-ratio:auto;background:none}
+.cine .moment .photo img{width:100%;height:100%;object-fit:cover;will-change:transform}
+.cine .moment::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,13,10,.0) 45%,rgba(18,13,10,.82) 100%);pointer-events:none}
+.cine .moment figcaption{position:absolute;left:var(--gutter);right:var(--gutter);bottom:clamp(40px,9vh,90px);z-index:2;padding:0;font:italic 400 clamp(32px,4.2vw,68px)/1.05 var(--display);color:var(--ink);max-width:20ch}
+.cine .moment figcaption span{display:block;margin-bottom:16px;font:500 11px/1 var(--sans);font-style:normal;letter-spacing:.24em;color:var(--accent)}
 
 /* Approach */
 
@@ -274,22 +279,19 @@ figcaption{margin-top:12px;font-size:13px;line-height:1.55;color:var(--fg-muted)
 .format-index li::before{content:'';width:4px;height:4px;margin-right:12px;transform:rotate(45deg);background:var(--caramel)}
 .format-index .text-link{margin-top:14px}
 
-/* Why invite Pau */
-.why-inner{text-align:center}
-.why-inner>.eyebrow{justify-content:center}
-.why-quote{max-width:980px;margin:0 auto}
-.why-quote blockquote::before{content:'“';display:block;height:40px;font:400 90px/1 var(--display);color:var(--caramel)}
-.why-introduction{font:italic 400 clamp(26px,3vw,44px)/1.3 var(--display);color:var(--fg);text-wrap:balance}
-.why-quote figcaption{margin-top:clamp(18px,3vh,28px);font:500 12px/1.6 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--fg)}
-.why-quote figcaption span{display:block;margin-top:4px;color:var(--fg-muted);letter-spacing:.18em}
-.why-strengths{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(36px,7vh,80px);border-top:1px solid var(--rule);text-align:left}
-.why-strengths>div{padding:clamp(20px,3.4vh,34px) clamp(18px,2.6vw,36px) 4px}
-.why-strengths>div:first-child{padding-left:0}.why-strengths>div:last-child{padding-right:0}
-.why-strengths>div+div{border-left:1px solid var(--rule)}
-.why-strengths dt{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;font:400 clamp(20px,1.8vw,24px)/1.2 var(--display);text-transform:uppercase;letter-spacing:.05em}
+/* Why invite Pau: portrait beside her own words */
+.why-quote{margin:0}
+.why-quote blockquote::before{content:'“';display:block;height:34px;font:400 80px/1 var(--display);color:var(--caramel)}
+.why-introduction{font:italic 400 clamp(24px,2.3vw,36px)/1.3 var(--display);color:var(--fg);text-wrap:pretty}
+.why-quote figcaption{margin-top:clamp(12px,2vh,20px);font:500 12px/1.6 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--fg)}
+.why-quote figcaption span{margin-left:14px;color:var(--fg-muted);letter-spacing:.18em}
+.why-strengths{margin-top:clamp(20px,3.6vh,36px);border-top:1px solid var(--rule)}
+.why-strengths>div{display:grid;grid-template-columns:minmax(200px,.5fr) 1fr;gap:6px 24px;align-items:baseline;padding:clamp(10px,1.8vh,16px) 0;border-bottom:1px solid var(--rule)}
+.why-strengths dt{display:flex;align-items:baseline;gap:10px;font:400 clamp(17px,1.5vw,20px)/1.2 var(--display);text-transform:uppercase;letter-spacing:.05em}
 .why-strengths dt span{font-style:italic;color:var(--accent-text)}
-.why-strengths dd{font-size:15px;line-height:1.7;color:var(--fg-muted)}
-.why-inner>.actions{margin-top:clamp(28px,5vh,48px)}
+.why-strengths dd{font-size:14.5px;line-height:1.6;color:var(--fg-muted)}
+.why .actions{margin-top:clamp(18px,3vh,30px)}
+.anchored .why-text{padding-bottom:clamp(36px,6vh,72px)}
 
 /* Contact */
 .contact-grid{display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(36px,6vw,90px);align-items:start}
@@ -461,9 +463,8 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
   .topic+.topic{border-left:0;border-top:1px solid var(--rule)}
   .topic,.topic:first-child,.topic:last-child{padding:28px 0}
   .topic-for{min-height:0}
-  .why-strengths{grid-template-columns:1fr}
-  .why-strengths>div+div{border-left:0;border-top:1px solid var(--rule)}
-  .why-strengths>div,.why-strengths>div:first-child,.why-strengths>div:last-child{padding-inline:0}
+  .why-strengths>div{grid-template-columns:1fr}
+  .anchored .why-text{padding-bottom:0}
   .contact-side{position:static}
   .event-page-aside{position:static;order:-1}
 }

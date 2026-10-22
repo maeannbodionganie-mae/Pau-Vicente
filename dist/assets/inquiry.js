@@ -7,7 +7,7 @@
   const submit = document.getElementById('inquiry-submit');
   const status = document.getElementById('inquiry-status');
   const summary = document.getElementById('inquiry-summary');
-  const EMAIL = 'pauline.vicente14@gmail.com';
+  const EMAIL = 'askspeakerpau@gmail.com';
   const EMAIL_PATTERN = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"]{2,}$/;
   const labels = { name: 'Full name', email: 'Email', inquiryType: 'Inquiry type', message: 'Event goals or inquiry details' };
   const newKey = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`);

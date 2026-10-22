@@ -185,21 +185,23 @@ with serve() as base, sync_playwright() as p:
     page.evaluate("scrollBy({top: -300, behavior: 'instant'})")
     page.wait_for_timeout(400)
     assert 'rotateX' in page.evaluate("document.querySelector('#chapter-2 .page-inner').style.transform"), 'the previous page settles back in 3D'
-    track = page.evaluate("(() => { const t = document.querySelector('[data-flythrough]'); return [t.getBoundingClientRect().top + scrollY, t.offsetHeight - innerHeight]; })()")
-    assert page.evaluate("document.documentElement.classList.contains('fly')")
-    page.evaluate(f"scrollTo({{top: {track[0]} + {track[1]} * 0.5, behavior: 'instant'}})")
-    page.wait_for_timeout(500)
-    cam = float(page.evaluate("document.querySelector('.moments-scene').style.getPropertyValue('--cam')"))
-    assert 1200 < cam < 1800, cam
-    opacities = page.evaluate("[...document.querySelectorAll('.moment')].map(m => Number(m.style.opacity))")
-    assert max(opacities) > 0.5 and min(opacities) < 0.5, opacities
+    track = page.evaluate("(() => { const t = document.querySelector('[data-cinema]'); return [t.getBoundingClientRect().top + scrollY, t.offsetHeight - innerHeight]; })()")
+    assert page.evaluate("document.documentElement.classList.contains('cine')")
+    page.evaluate(f"scrollTo({{top: {track[0]} + {track[1]} * 0.3, behavior: 'instant'}})")
+    page.wait_for_timeout(400)
+    first = page.evaluate("(() => { const r = document.querySelector('.moment').getBoundingClientRect(); return [r.width, innerWidth]; })()")
+    assert first[0] > first[1] * 0.9, first
+    page.evaluate(f"scrollTo({{top: {track[0]} + {track[1]} * 0.02, behavior: 'instant'}})")
+    page.wait_for_timeout(400)
+    small = page.evaluate("document.querySelector('.moment').getBoundingClientRect().width / innerWidth")
+    assert small < 0.7, small
     page.mouse.move(1300, 200)
     page.evaluate("document.querySelector('.hero').scrollIntoView({behavior:'instant'})")
     page.wait_for_timeout(300)
     assert 'translate3d' in page.evaluate("document.querySelector('.hero .stage-figure').style.transform")
     assert page.evaluate("document.querySelector('.site-header').classList.contains('is-scrolled')") is False
     page.close()
-    passed('storybook pages stack and turn in 3D, chapter index follows, stage layers move in depth, Moments walk-through moves the camera past the photographs')
+    passed('storybook pages stack and turn in 3D, chapter index follows, stage layers move in depth, Moments prints rise tilted and open to full screen')
 
     browser.close()
 print('Browser checks use intercepted API responses; live Apps Script, Sheet and email delivery are verified separately.')

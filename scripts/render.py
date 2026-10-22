@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'src'
 DIST = ROOT / 'dist'
 TBA = 'To be announced'
-INQUIRY_EMAIL = 'pauline.vicente14@gmail.com'
+INQUIRY_EMAIL = 'askspeakerpau@gmail.com'
 
 photos = json.loads((ROOT / 'asset-map.json').read_text())
 events_doc = json.loads((SRC / 'content/events.json').read_text())

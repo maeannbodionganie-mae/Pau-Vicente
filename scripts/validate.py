@@ -78,7 +78,7 @@ for href in ['https://www.facebook.com/paulinemelissar.v/',
     assert soup.find('a', href=href)
 assert not soup.select('iframe, video')
 assert len(soup.select('form')) == 2 and soup.select_one('form#pau-form') and soup.select_one('form#inquiry-form')
-assert set(re.findall(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', page)) == {'pauline.vicente14@gmail.com'}
+assert set(re.findall(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', page)) == {'askspeakerpau@gmail.com'}
 assert not re.search(r'(?:password|passcode|api[_-]?key|secret)\s*[:=]', page, re.I)
 passed('all anchors, public contacts, safe external links, and prefilled email fallback')
 
