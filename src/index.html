@@ -26,6 +26,7 @@
   <script src="assets/main.js" defer></script>
   <script src="assets/story.js" defer></script>
   <script src="assets/sculpture.js" defer></script>
+  <script src="assets/motion.js" defer></script>
   <script src="assets/inquiry.js" defer></script>
   <link rel="stylesheet" href="assets/pau-assistant.css">
   <script src="assets/pau-engine.js" defer></script>
@@ -51,11 +52,12 @@
       <div class="hero-inner">
         <div class="hero-copy" data-reveal>
           <p class="eyebrow">Speaker <span class="dot" aria-hidden="true"></span> Freelance Coach <span class="dot" aria-hidden="true"></span> Social Media Marketing &amp; Branding Strategist</p>
-          <h1 id="hero-title">Lead with <em>Love.</em><br>Grow with <em>Purpose.</em></h1>
+          <h1 id="hero-title"><span class="line"><span>Lead with <em>Love.</em></span></span> <span class="line"><span>Grow with <em>Purpose.</em></span></span></h1>
           <p class="hero-subtitle">Helping aspiring freelancers build with confidence.</p>
           <div class="actions actions-center"><a class="button" href="#contact">Invite Pau to Speak</a><a class="text-link" href="#events">Explore Events</a></div>
         </div>
-        <figure class="hero-portrait">{{image:pau-hero|Pau Vicente wearing her white blazer and black outfit, with her arms crossed.|(max-width: 600px) 86vw, (max-width: 1100px) 52vw, 560px|hero-cutout}}</figure>
+        <figure class="hero-portrait"><div class="hero-halo" data-sculpture="halo" aria-hidden="true"><canvas></canvas></div>{{image:pau-hero|Pau Vicente wearing her white blazer and black outfit, with her arms crossed.|(max-width: 600px) 86vw, (max-width: 1100px) 52vw, 560px|hero-cutout}}</figure>
+        <ul class="hero-proof" aria-label="At a glance"><li>From corporate marketing to freelancing</li><li>Mentor to aspiring freelancers</li><li>Leads Cross Core, a digital marketing agency</li></ul>
         <p class="hero-corner hero-corner-left" aria-hidden="true">Pau Vicente</p>
         <p class="hero-corner hero-corner-right" aria-hidden="true">Lead with Love</p>
       </div>
@@ -73,7 +75,7 @@
           <p class="signature">Pau Vicente</p>
           <a class="text-link" href="#my-story">Read my story</a>
         </div>
-        <figure class="about-portrait framed" data-reveal>{{image:pau-speaking-style|A portrait of Pau in her light blazer against the golden studio background.|(max-width: 900px) 80vw, 34vw|photo}}</figure>
+        <figure class="about-portrait framed" data-reveal data-tilt>{{image:pau-speaking-style|A portrait of Pau in her light blazer against the golden studio background.|(max-width: 900px) 80vw, 34vw|photo}}</figure>
       </div>
       <ul class="values container" aria-label="Pau’s purpose" data-reveal><li>Learn</li><li>Grow</li><li>Share</li></ul>
     </section>
@@ -87,10 +89,9 @@
         <nav class="chapter-index" aria-label="Story chapters"><a href="#chapter-one"><span>01</span>The beginning</a><a href="#chapter-two"><span>02</span>The leap</a><a href="#chapter-three"><span>03</span>The mentor</a><a href="#chapter-four"><span>04</span>Cross Core</a></nav>
       </header>
       <div class="story-body container">
-        <div class="story-progress" aria-hidden="true"><span class="story-count"><b>01</b> / 04</span><span class="story-bar"><i></i></span></div>
         <ol class="chapters">
           <li><article class="chapter" id="chapter-1" aria-labelledby="chapter-one" data-chapter="0">
-            <figure class="chapter-media" data-reveal>{{image:corporate-events|Pau and colleagues together at a corporate celebration.|(max-width: 900px) 92vw, 46vw|photo}}<figcaption>Organizing events. Working with people.</figcaption></figure>
+            <figure class="chapter-media" data-depth><div class="media-stack">{{image:corporate-events|Pau and colleagues together at a corporate celebration.|(max-width: 900px) 92vw, 46vw|photo}}<div class="media-inset" data-parallax="-0.12">{{image:corporate-portrait|Pau in a black top and light trousers during her corporate chapter.|(max-width: 900px) 34vw, 15vw|photo}}</div></div><figcaption>Organizing events. Working with people.</figcaption></figure>
             <div class="chapter-text" data-reveal>
             <p class="chapter-label"><span>Chapter 01</span>Where it began</p>
             <h3 id="chapter-one">The corporate <em>beginning.</em></h3>
@@ -98,7 +99,7 @@
             </div>
           </article></li>
           <li><article class="chapter" id="chapter-2" aria-labelledby="chapter-two" data-chapter="1">
-            <figure class="chapter-media" data-reveal>{{image:freelance-beginnings|Pau seated beside her laptop during her early freelance journey.|(max-width: 900px) 92vw, 46vw|photo}}<figcaption>Starting with what I had.</figcaption></figure>
+            <figure class="chapter-media" data-depth>{{image:freelance-beginnings|Pau seated beside her laptop during her early freelance journey.|(max-width: 900px) 92vw, 46vw|photo}}<figcaption>Starting with what I had.</figcaption></figure>
             <div class="chapter-text" data-reveal>
             <p class="chapter-label"><span>Chapter 02</span>A new direction</p>
             <h3 id="chapter-two">The leap into <em>freelancing.</em></h3>
@@ -106,7 +107,7 @@
             </div>
           </article></li>
           <li><article class="chapter" id="chapter-3" aria-labelledby="chapter-three" data-chapter="2">
-            <figure class="chapter-media" data-reveal>{{image:mentoring-kylee|Pau on a video call with Kylee and other participants.|(max-width: 900px) 92vw, 46vw|photo}}<figcaption>Sharing what I learned along the way.</figcaption></figure>
+            <figure class="chapter-media" data-depth>{{image:mentoring-kylee|Pau on a video call with Kylee and other participants.|(max-width: 900px) 92vw, 46vw|photo}}<figcaption>Sharing what I learned along the way.</figcaption></figure>
             <div class="chapter-text" data-reveal>
             <p class="chapter-label"><span>Chapter 03</span>Passing it forward</p>
             <h3 id="chapter-three">Becoming the mentor <em>I once needed.</em></h3>
@@ -114,7 +115,7 @@
             </div>
           </article></li>
           <li><article class="chapter" id="chapter-4" aria-labelledby="chapter-four" data-chapter="3">
-            <figure class="chapter-media" data-reveal>{{image:cross-core-team|Pau with the Cross Core team in a group studio portrait.|(max-width: 900px) 92vw, 46vw|photo}}<figcaption>The people behind a shared purpose.</figcaption></figure>
+            <figure class="chapter-media" data-depth>{{image:cross-core-team|Pau with the Cross Core team in a group studio portrait.|(max-width: 900px) 92vw, 46vw|photo}}<figcaption>The people behind a shared purpose.</figcaption></figure>
             <div class="chapter-text" data-reveal>
             <p class="chapter-label"><span>Chapter 04</span>Growing together</p>
             <h3 id="chapter-four">Building <em>Cross Core.</em></h3>
@@ -122,13 +123,27 @@
             </div>
           </article></li>
         </ol>
+        <div class="story-progress" aria-hidden="true"><span class="story-count"><b>01</b> / 04</span><span class="story-bar"><i></i></span></div>
       </div>
+    </section>
+
+    <!-- Moments: the supporting photographs on a slowly turning ring. -->
+    <section class="moments tone-dark section" aria-labelledby="moments-title">
+      <header class="section-head container" data-reveal>
+        <p class="eyebrow">Moments along the way</p>
+        <h2 id="moments-title">The people behind the <em>story.</em></h2>
+        <p>Real photographs from the corporate years, early freelance work, mentoring, and Cross Core.</p>
+      </header>
+      <div class="ring-stage" data-ring tabindex="0" aria-roledescription="carousel" aria-label="Moments. Use the arrow keys or the buttons to turn.">
+        <ul class="ring" aria-label="Photographs from Pau’s journey"><li class="ring-item"><figure>{{image:corporate-team|A group photograph with colleagues at a corporate gathering.|(max-width: 600px) 74vw, 420px|photo}}<figcaption>Teamwork during the corporate chapter.</figcaption></figure></li><li class="ring-item"><figure>{{image:first-client-call|Pau joining an online meeting with Paul, Brynne, and fellow participants.|(max-width: 600px) 74vw, 420px|photo}}<figcaption>An early client meeting online.</figcaption></figure></li><li class="ring-item"><figure>{{image:mentoring-taylin|Pau participating in an online meeting with Taylin and a group.|(max-width: 600px) 74vw, 420px|photo}}<figcaption>Mentoring, one conversation at a time.</figcaption></figure></li><li class="ring-item"><figure>{{image:cross-core-gathering|A Cross Core group gathering around a table.|(max-width: 600px) 74vw, 420px|photo}}<figcaption>A Cross Core gathering.</figcaption></figure></li><li class="ring-item"><figure>{{image:cross-core-community|A Cross Core community group photograph at a celebration.|(max-width: 600px) 74vw, 420px|photo}}<figcaption>Celebrating with the Cross Core community.</figcaption></figure></li></ul>
+      </div>
+      <div class="ring-controls container"><button type="button" class="ring-button" data-ring-prev aria-label="Previous photograph"><span aria-hidden="true">←</span></button><p class="ring-caption" aria-live="polite"></p><button type="button" class="ring-button" data-ring-next aria-label="Next photograph"><span aria-hidden="true">→</span></button></div>
     </section>
 
     <!-- Approach: speaking style beside a quiet sculptural form. -->
     <section class="approach tone-sand section" aria-labelledby="style-title">
       <div class="container approach-grid">
-        <div class="sculpture" data-sculpture aria-hidden="true"><canvas></canvas></div>
+        <div class="sculpture" data-sculpture="ribbon" aria-hidden="true"><canvas></canvas></div>
         <div class="approach-text" data-reveal>
           <p class="eyebrow">Speaking style</p>
           <h2 id="style-title">Practical knowledge. Meaningful stories. Purposeful <em>action.</em></h2>
@@ -138,6 +153,8 @@
         </div>
       </div>
     </section>
+
+    <div class="band" aria-hidden="true"><div class="band-track"><div class="band-run"><span>Freelance 101</span><i></i><span>Social Media Marketing</span><i></i><span>Inspirational Leadership</span><i></i><span>Keynotes</span><i></i><span>Workshops</span><i></i><span>Seminars</span><i></i><span>Webinars</span><i></i><span>Panel Discussions</span><i></i><span>Coaching</span><i></i></div><div class="band-run"><span>Freelance 101</span><i></i><span>Social Media Marketing</span><i></i><span>Inspirational Leadership</span><i></i><span>Keynotes</span><i></i><span>Workshops</span><i></i><span>Seminars</span><i></i><span>Webinars</span><i></i><span>Panel Discussions</span><i></i><span>Coaching</span><i></i></div></div></div>
 
     <!-- Speaking topics: three programs, one clear grid. -->
     <section class="topics tone-light section" id="speaking-topics" aria-labelledby="topics-title">
@@ -270,7 +287,7 @@
         </form>
         </div>
         <aside class="contact-aside" aria-label="Direct contact details">
-          <figure class="contact-photo framed">{{image:pau-contact|Pau standing in profile in a light blazer against the golden studio backdrop.|(max-width: 900px) 60vw, 24vw|photo}}</figure>
+          <figure class="contact-photo framed" data-tilt>{{image:pau-contact|Pau standing in profile in a light blazer against the golden studio backdrop.|(max-width: 900px) 60vw, 24vw|photo}}</figure>
           <dl class="contact-details"><div><dt>Email</dt><dd><a href="mailto:pauline.vicente14@gmail.com">pauline.vicente14@gmail.com</a></dd></div><div><dt>Mobile</dt><dd><a href="tel:+639153412728">09153412728</a></dd></div></dl>
           <div class="social-links" aria-label="Pau’s social profiles"><a href="https://www.facebook.com/paulinemelissar.v/" target="_blank" rel="noopener noreferrer">Facebook</a><a href="https://www.linkedin.com/in/pauline-vicente-b86849234/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://www.instagram.com/pau.melissaa/" target="_blank" rel="noopener noreferrer" aria-label="Instagram, @pau.melissaa">Instagram</a></div>
         </aside>

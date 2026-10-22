@@ -128,7 +128,7 @@ def events_feature():
         action = 'View details &amp; preview registration' if event['registration']['mode'] == 'preview' else 'View details &amp; register'
         image = ''
         if event.get('image'):
-            image = (f'<figure class="event-image framed">{{{{image:{event["image"]}|{e(event.get("imageAlt", "Pau Vicente"))}|'
+            image = (f'<figure class="event-image framed" data-tilt>{{{{image:{event["image"]}|{e(event.get("imageAlt", "Pau Vicente"))}|'
                      '(max-width: 900px) 70vw, 30vw|photo}}</figure>')
         cards.append(
             f'<article class="event-card container" aria-labelledby="{tid}" data-reveal>{image}'

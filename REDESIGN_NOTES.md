@@ -123,3 +123,23 @@ The owner supplied three reference layouts: a framed espresso cover with a centr
 - **3D.** `assets/sculpture.js` is a dependency-free WebGL ray-marched satin ribbon in cream and caramel, about 6KB. It initialises only near the viewport, pauses off-screen and in hidden tabs, renders one still frame for reduced motion, and falls back to a CSS form without WebGL.
 - **Navigation.** The header is transparent on the cover and turns solid on scroll. On mobile, a full-screen serif menu.
 - **Assistant.** The launcher is a small "Ask Pau" pill. It hides while the menu is open and while a form is in use on small screens.
+
+### Motion and 3D layer (October 22, second pass)
+
+Benchmarks reviewed: speaker-site roundups from Nano Globals and Talks.co, and Webflow's luxury-site review. Patterns adopted honestly: a specific credential at the top, each topic with audience and outcome, a persistent booking action, and a restrained reveal-led opening. Testimonials, logos and statistics were not added because none have been supplied.
+
+- **Signature ribbon.**
+  - The satin ribbon is the site's 3D motif. A thin caramel orbit frames the cover portrait (`data-sculpture="halo"`).
+  - The full satin form sits beside the speaking style.
+  - Both use one dependency-free shader in `assets/sculpture.js`.
+- **Opening.**
+  - Headline lines rise from a mask. The role line, subtitle and actions fade up, and the portrait surfaces.
+  - The proof strip ("From corporate marketing to freelancing · Mentor to aspiring freelancers · Leads Cross Core") settles last. It uses verified facts only.
+- **Photographs** open like a curtain and settle from a slight zoom.
+  - Story photos turn a few degrees toward the reader as they scroll and recede slightly at the edges of the viewport.
+  - The corporate chapter layers a personal portrait over the event photo with gentle parallax.
+  - Framed portraits tilt slightly under a mouse or trackpad.
+- **Moments ring.** The five supporting documentary photographs sit on a slowly turning 3D ring. It can be dragged, stepped with buttons or the arrow keys, and pauses on hover. Without JavaScript it is a horizontal row. All 15 supplied photographs are now on the page again.
+- **Kinetic band.** A slow italic ticker of topics and formats sits between the cream sections. It pauses on hover and stays still for reduced motion.
+- **Texture.** A faint paper grain on espresso grounds keeps large dark areas from looking flat.
+- **Accessibility.** All motion is off for `prefers-reduced-motion`, and the sculptures then draw one still frame. Content never depends on motion to be visible.
