@@ -8,7 +8,7 @@ Authoritative sources, which you edit:
 
 - `src/index.html`: the homepage. `src/event.html` is the event page template and `src/404.html` is the not-found page.
 - `src/content/events.json`: **the single source for events.** It feeds the homepage feature, each `/events/<slug>/` page, and the assistant's event answers.
-- `dist/assets/style.css` (design tokens and section tones at the top), `main.js` (navigation), `story.js` (header state and story progress), `sculpture.js` (WebGL form), `inquiry.js`, `register.js`, and the `pau-*` assistant files are hand-maintained in place.
+- `dist/assets/style.css` (design tokens and section tones at the top), `main.js` (navigation), `story.js` (header state and chapter index), `motion.js` (stage depth, storybook pages, reveals), `inquiry.js`, `register.js`, and the `pau-*` assistant files are hand-maintained in place.
 - `dist/api/inquiry.js` and `dist/api/pau.js` are Vercel functions.
 - `asset-map.json` maps the 15 supplied original filenames to optimized browser assets.
 

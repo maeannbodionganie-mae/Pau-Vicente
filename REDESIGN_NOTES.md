@@ -143,3 +143,16 @@ Benchmarks reviewed: speaker-site roundups from Nano Globals and Talks.co, and W
 - **Kinetic band.** A slow italic ticker of topics and formats sits between the cream sections. It pauses on hover and stays still for reduced motion.
 - **Texture.** A faint paper grain on espresso grounds keeps large dark areas from looking flat.
 - **Accessibility.** All motion is off for `prefers-reduced-motion`, and the sculptures then draw one still frame. Content never depends on motion to be visible.
+
+## October 22, third pass: owner feedback on circles, yellow backgrounds, spacing and the assistant
+
+- **Circle and "pearl" removed.** The WebGL ring and satin sculpture are gone, and so is `sculpture.js`.
+- **New signature, the stage.** Pau steps out of a framed panel. The panel, an offset outline and the cutout sit at different depths and shift with the pointer and with scroll. The same motif repeats on the cover, About, Speaking style, the event and Contact.
+- **Story time is a storybook.** On desktop each chapter is a full-screen page. As the next page arrives, the previous one tilts back, shrinks slightly and dims. The page stays readable without motion, and stacks normally on phones.
+- **Yellow backgrounds removed.**
+  - New cutouts were made for four studio portraits and the Cross Core team portrait: an IS-Net matte, yellow spill on edges and hair regraded to the site caramel, then light matte tightening.
+  - They are stored as `*-cut` entries in `asset-map.json` with transparent WebP (480/800/full) and PNG fallbacks. The originals are untouched.
+  - The cutouts were checked on both cream and espresso.
+- **One screen per section on desktop.** Main sections fill exactly one viewport (`.panel`), with gentle scroll snapping (proximity, never forced). Phones flow naturally.
+- **Photographs placed with intent.** Each chapter has one main photograph plus at most one layered inset. The corporate, client-call and mentoring insets come from the supplied set. The three community photos are fanned like prints on a table in *Moments*. All supplied photographs remain on the site.
+- **Assistant.** The assistant was restyled to the design system: espresso header, cream body, card-white messages, square controls, small-caps chips, an espresso send button and a caramel scrollbar. The launcher is a square espresso button with a caramel diamond.

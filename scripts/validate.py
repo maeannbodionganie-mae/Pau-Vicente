@@ -82,9 +82,10 @@ assert set(re.findall(r'[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}', page)) == {'pauline.vic
 assert not re.search(r'(?:password|passcode|api[_-]?key|secret)\s*[:=]', page, re.I)
 passed('all anchors, public contacts, safe external links, and prefilled email fallback')
 
-assert len(manifest) == 15
+assert len(manifest) >= 15
 used = [pic['data-photo'] for pic in soup.select('picture[data-photo]')]
-assert len(used) == len(set(used)) >= 9, used
+assert len(used) == len(set(used)) >= 15, used
+assert {k for k in manifest if not k.endswith('-cut')} - {'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team'} <= set(used), 'every documentary photograph is shown'
 assert set(used) <= set(manifest)
 assert len(soup.select('img')) == len(used)
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
@@ -112,7 +113,7 @@ for sheet in (DIST / 'assets/fonts').glob('*.css'):
         assert (sheet.parent / url).exists(), url
 for path in DIST.rglob('*'):
     assert path.suffix.lower() != '.cr3'
-passed(f'{len(used)} curated photos (one per story chapter), responsive sources, dimensions, local assets, and RAW-safe delivery')
+passed(f'{len(used)} curated photos (yellow studio backgrounds replaced by cutouts), responsive sources, dimensions, local assets, and RAW-safe delivery')
 
 def luminance(color):
     channels = [int(color[i:i + 2], 16) / 255 for i in [0, 2, 4]]

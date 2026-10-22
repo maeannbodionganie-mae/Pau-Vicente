@@ -175,22 +175,28 @@ with serve() as base, sync_playwright() as p:
     page.close()
     passed('registration preview validates, completes truthfully, clears entries and makes no network submission')
 
-    # 5. Story time progress and the sculpture (desktop)
+    # 5. Storybook pages, stage depth and the Moments deck (desktop)
     page = browser.new_page(viewport={'width': 1440, 'height': 900})
     page.goto(base + '/', wait_until='networkidle')
-    assert page.evaluate("document.documentElement.classList.contains('story-enhanced')")
-    page.locator('#chapter-3').scroll_into_view_if_needed()
-    page.evaluate("document.getElementById('chapter-3').scrollIntoView({block:'center'})")
-    page.wait_for_timeout(500)
-    assert page.inner_text('.story-count b') == '03'
+    assert page.evaluate("getComputedStyle(document.querySelector('.page')).position") == 'sticky'
+    page.evaluate("document.getElementById('chapter-3').scrollIntoView({block:'start', behavior:'instant'})")
+    page.wait_for_timeout(600)
     assert page.locator('.chapter-index a[aria-current="step"]').get_attribute('href') == '#chapter-three'
-    page.evaluate("document.querySelector('[data-sculpture]').scrollIntoView({block:'center'})")
-    page.wait_for_function("document.querySelector('[data-sculpture]').classList.contains('is-live')", timeout=8000)
-    painted = page.evaluate("""(() => { const c = document.querySelector('[data-sculpture] canvas'); return c.width > 0 && c.height > 0; })()""")
-    assert painted
-    assert page.evaluate("document.querySelector('.site-header').classList.contains('is-scrolled')")
+    page.evaluate("scrollBy({top: -300, behavior: 'instant'})")
+    page.wait_for_timeout(400)
+    assert 'rotateX' in page.evaluate("document.querySelector('#chapter-2 .page-inner').style.transform"), 'the previous page settles back in 3D'
+    page.evaluate("document.querySelector('[data-deck]').scrollIntoView({block:'center', behavior:'instant'})")
+    page.wait_for_function("document.querySelector('[data-deck]').classList.contains('is-revealed')", timeout=5000)
+    page.wait_for_timeout(1600)
+    spread = page.evaluate("(() => { const r = [...document.querySelectorAll('.deck-card')].map(c => c.getBoundingClientRect().left); return Math.max(...r) - Math.min(...r); })()")
+    assert spread > 300, spread
+    page.mouse.move(1300, 200)
+    page.evaluate("document.querySelector('.hero').scrollIntoView({behavior:'instant'})")
+    page.wait_for_timeout(300)
+    assert 'translate3d' in page.evaluate("document.querySelector('.hero .stage-figure').style.transform")
+    assert page.evaluate("document.querySelector('.site-header').classList.contains('is-scrolled')") is False
     page.close()
-    passed('story progress follows the chapters, header turns solid on scroll, WebGL sculpture renders')
+    passed('storybook pages stack and turn in 3D, chapter index follows, stage layers move in depth, Moments prints fan out')
 
     browser.close()
 print('Browser checks use intercepted API responses; live Apps Script, Sheet and email delivery are verified separately.')
