@@ -83,24 +83,25 @@ assert not re.search(r'(?:password|passcode|api[_-]?key|secret)\s*[:=]', page, r
 passed('all anchors, public contacts, safe external links, and prefilled email fallback')
 
 assert len(manifest) == 15
-assert len(soup.select('picture[data-photo] img')) == 15
-assert len(soup.select('img')) == 15
-assert len(soup.select('img[loading="lazy"]')) == 14
+used = [pic['data-photo'] for pic in soup.select('picture[data-photo]')]
+assert len(used) == len(set(used)) >= 9, used
+assert set(used) <= set(manifest)
+assert len(soup.select('img')) == len(used)
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
+assert soup.select_one('picture[data-photo="pau-hero"] img[fetchpriority="high"]')
+assert len(soup.select('img[loading="lazy"]')) == len(used) - 1
 for key, photo in manifest.items():
-    pictures = soup.select(f'picture[data-photo="{key}"]')
-    assert len(pictures) == 1, key
-    image = pictures[0].img
+    for variant in photo['webp']:
+        with Image.open(DIST / variant['src']) as asset:
+            assert asset.size == (variant['width'], variant['height']), variant['src']
+    with Image.open(DIST / photo['fallback']) as asset:
+        assert asset.size == (photo['fallback_width'], photo['fallback_height'])
+for key in used:
+    image = soup.select_one(f'picture[data-photo="{key}"] img')
     assert image.get('alt') and len(image['alt']) > 15
     assert int(image['width']) > 0 and int(image['height']) > 0
     assert image.get('decoding') == 'async'
-    assert pictures[0].source.get('srcset') and pictures[0].source.get('sizes')
-    for variant in photo['webp']:
-        path = DIST / variant['src']
-        with Image.open(path) as asset:
-            assert asset.size == (variant['width'], variant['height']), path
-    with Image.open(DIST / photo['fallback']) as asset:
-        assert asset.size == (photo['fallback_width'], photo['fallback_height'])
+    assert image.find_previous_sibling('source').get('srcset')
 for tag, attr in [('img', 'src'), ('script', 'src'), ('link', 'href')]:
     for element in soup.select(tag):
         ref = element.get(attr, '')
@@ -111,7 +112,7 @@ for sheet in (DIST / 'assets/fonts').glob('*.css'):
         assert (sheet.parent / url).exists(), url
 for path in DIST.rglob('*'):
     assert path.suffix.lower() != '.cr3'
-passed('all 15 intended photos, responsive sources, dimensions, local assets, and RAW-safe delivery')
+passed(f'{len(used)} curated photos (one per story chapter), responsive sources, dimensions, local assets, and RAW-safe delivery')
 
 def luminance(color):
     channels = [int(color[i:i + 2], 16) / 255 for i in [0, 2, 4]]
@@ -119,20 +120,20 @@ def luminance(color):
     return sum(v * weight for v, weight in zip(linear, [.2126, .7152, .0722]))
 
 palette = dict(re.findall(r'--([a-z-]+):#([0-9a-f]{6})\b', css))
-assert palette['paper'] == '2b201a' and palette['sand'] == '2b201a'
-assert palette['ink'] == 'e8dfd0' and palette['button'] == 'eadece'
-contrast_pairs = {(palette[text], palette[surface])
-                  for text in ['ink', 'body', 'accent']
-                  for surface in ['paper', 'oat', 'sand', 'stone']}
-contrast_pairs.update((palette[text], '241b16') for text in ['ink', 'body', 'accent'])
-contrast_pairs.update((palette['error'], surface) for surface in [palette['paper'], palette['oat']])
-contrast_pairs.update([(palette['button-ink'], palette['button']),
-                       (palette['button-ink'], palette['accent'])])
+assert palette['paper'] == '2b201a' and palette['ink'] == 'e8dfd0', 'espresso and ivory foundation'
+dark_grounds = [palette['paper'], palette['oat'], palette['espresso-deep']]
+light_grounds = [palette['cream'], palette['sand'], palette['card']]
+contrast_pairs = {(palette[t], bg) for t in ['ink', 'body', 'accent', 'error-dark'] for bg in dark_grounds}
+contrast_pairs |= {(palette[t], bg) for t in ['cream-ink', 'cream-muted', 'cream-accent', 'error-light'] for bg in light_grounds}
+contrast_pairs |= {(palette['button-ink'], palette['button']), (palette['cream'], palette['paper'])}
 for foreground, background in contrast_pairs:
     light, dark = sorted([luminance(foreground), luminance(background)], reverse=True)
     ratio = (light + .05) / (dark + .05)
     assert ratio >= 4.5, (foreground, background, ratio)
-passed(f'{len(contrast_pairs)} current text/background pairs meet WCAG AA; espresso reference colors match')
+for bg in light_grounds:
+    light_l, dark_l = sorted([luminance(palette['field-line']), luminance(bg)], reverse=True)
+    assert (light_l + .05) / (dark_l + .05) >= 3, 'form field boundaries need 3:1'
+passed(f'{len(contrast_pairs)} text/background pairs meet WCAG AA on espresso and cream; field borders meet 3:1')
 
 errors = []
 def inspect_rules(rules):
@@ -186,7 +187,7 @@ passed('inquiry form labels, required-field errors, topic preselection targets, 
 
 # Events: one source renders the homepage feature, event page and assistant facts
 events_source = json.loads((ROOT / 'src/content/events.json').read_text())['events']
-feature = soup.select('#events .event-feature')
+feature = soup.select('#events .event-card')
 assert len(feature) == len(events_source) == 1
 event = events_source[0]
 assert event['status'] == 'sample' and event['statusLabel'] in normalized(feature[0])

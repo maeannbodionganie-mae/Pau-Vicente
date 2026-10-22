@@ -1,5 +1,5 @@
 {
-  "_readme": "Single source for public events. scripts/render.py turns this into the homepage event feature, each event page, and the assistant's event facts. Use \"To be announced\" for anything unconfirmed. Set status to \"sample\" for demonstration events and \"confirmed\" only after Pau confirms the details.",
+  "_readme": "Single source for public events. scripts/render.py turns this into the homepage event feature, each event page, and the assistant's event facts. Use \"To be announced\" for anything unconfirmed. Set status to \"sample\" for demonstration events and \"confirmed\" only after Pau confirms the details. Optional \"image\" is a key from asset-map.json shown beside the event.",
   "events": [
     {
       "slug": "freelance-101",
@@ -33,7 +33,9 @@
         "mode": "preview",
         "statusLabel": "Registration preview",
         "url": ""
-      }
+      },
+      "image": "pau-about",
+      "imageAlt": "Pau standing in a light blazer and black outfit in the studio."
     }
   ]
 }

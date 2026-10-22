@@ -101,3 +101,25 @@ The Vercel `dist/` root and existing hosting metadata remain intact. The editori
 - **Fixes.** Restored the missing spaces in mobile margin notes ("Before the leap, there was a question: …"). The assistant avatar now hides while a page form has focus on small screens.
 - **Copy.** The four chapters and other approved copy are unchanged. Rewrites were held back so that no new claims appear in Pau's voice without her approval.
 - **Verification.** Viewports at 360, 390, 768, 1024 and 1440px were checked in headless Chromium (`scripts/check-browser.py`). The Pinterest references could not be fetched (robots-blocked); the principles recorded above were reused.
+
+## October 22 rebuild: high-end editorial system from the owner's pegs
+
+The owner supplied three reference layouts: a framed espresso cover with a centred portrait, an editorial coaching site on cream, and a "Coach & Co." layout with alternating image/text rows. The homepage was rebuilt on that direction. Approved copy is unchanged.
+
+- **Palette.** Espresso `#2B201A` and deep espresso `#231A15` alternate with cream `#F3EDE4`, sand `#E8DECE` and a card white `#FBF8F3`. Caramel `#B08A5F` is the decorative accent. Each section declares a tone (`.tone-dark`, `.tone-light`, `.tone-sand`) that sets its own text, muted, rule, button and field colours, so every component works on either ground. All text pairs meet WCAG AA, and form field borders meet 3:1.
+- **Type.** Cormorant Garamond (self-hosted, OFL) is used in uppercase with open tracking for display, with italic accents in caramel. DM Sans is the text face. Body copy is 16–19px.
+- **Composition.**
+  - A framed espresso cover with the centred cutout portrait, a warm under-glow, and vertical corner marks.
+  - An About section in an editorial narrative layout, with an offset-frame portrait and a Learn · Grow · Share line.
+  - **Story time:** four chapters alternate sides, and each photograph stays pinned beside its chapter while it is read. A progress indicator follows along. The page reads fully without JavaScript.
+  - Speaking style beside a quiet 3D sculpture.
+  - Topics in a three-column grid with line icons.
+  - Outcomes with a participant-support panel.
+  - The event as an image-and-details card.
+  - Audiences and formats.
+  - *Why Pau* as a centred statement in her own words, with three strengths.
+  - The inquiry form in a card beside direct contacts, then a centred footer.
+- **Photography.** Nine photographs are used: the cover, the About portrait, one per story chapter, the event, the Why avatar and Contact. The other six stay in `asset-map.json` but are no longer shown, so the story does not turn into a gallery. Landscape documentary photographs keep their natural proportions, so no one is cropped out.
+- **3D.** `assets/sculpture.js` is a dependency-free WebGL ray-marched satin ribbon in cream and caramel, about 6KB. It initialises only near the viewport, pauses off-screen and in hidden tabs, renders one still frame for reduced motion, and falls back to a CSS form without WebGL.
+- **Navigation.** The header is transparent on the cover and turns solid on scroll. On mobile, a full-screen serif menu.
+- **Assistant.** The launcher is a small "Ask Pau" pill. It hides while the menu is open and while a form is in use on small screens.

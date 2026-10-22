@@ -14,3 +14,4 @@
 .pau-launcher:hover,.pau-launcher:focus-visible{border-color:var(--pau-accent)}
 .pau-launcher-label{border:0;background:transparent;padding:0;margin:0;font-size:13px;font-weight:500;letter-spacing:.01em}
 .pau-launcher-dot{width:7px;height:7px;border-radius:50%;background:var(--pau-accent);pointer-events:none}
+html:has(.nav-links.is-open) .pau-launcher{visibility:hidden}

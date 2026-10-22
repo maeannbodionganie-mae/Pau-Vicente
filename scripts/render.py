@@ -50,6 +50,8 @@ def validate_events():
             assert reg.get('url', '').startswith('https://'), 'live registration needs an https url'
         if event['status'] == 'sample':
             assert reg['mode'] != 'live', 'a sample event cannot take live registrations'
+        if event.get('image'):
+            assert event['image'] in photos, f'unknown image {event["image"]}'
 
 
 def picture(match):
@@ -112,46 +114,49 @@ def list_items(items, cls):
 
 
 def events_feature():
-    heading = ('<div class="events-heading" data-reveal><div><p class="eyebrow">Events</p>'
-               '<h2 id="events-title">Upcoming <em>sessions.</em></h2></div>'
+    heading = ('<header class="section-head container" data-reveal><p class="eyebrow">Events</p>'
+               '<h2 id="events-title">Upcoming <em>sessions.</em></h2>'
                '<p>Public sessions are listed here once confirmed. Until then, the session below is a sample '
-               'that shows how events and registration will work.</p></div>')
+               'that shows how events and registration will work.</p></header>')
     if not events:
-        body = ('<div class="event-empty" data-reveal><p>No public sessions are listed right now.</p>'
-                '<a class="text-link" href="#contact">Ask about bringing a session to your group '
-                '</a></div>')
-        return f'<section class="events section shell" id="events" aria-labelledby="events-title">{heading}{body}</section>'
+        body = ('<div class="event-empty container" data-reveal><p>No public sessions are listed right now.</p>'
+                '<a class="text-link" href="#contact">Ask about bringing a session to your group</a></div>')
+        return f'<section class="events tone-light section" id="events" aria-labelledby="events-title">{heading}{body}</section>'
     cards = []
     for event in events:
         tid = f'event-{event["slug"]}-title'
         action = 'View details &amp; preview registration' if event['registration']['mode'] == 'preview' else 'View details &amp; register'
+        image = ''
+        if event.get('image'):
+            image = (f'<figure class="event-image framed">{{{{image:{event["image"]}|{e(event.get("imageAlt", "Pau Vicente"))}|'
+                     '(max-width: 900px) 70vw, 30vw|photo}}</figure>')
         cards.append(
-            f'<article class="event-feature" aria-labelledby="{tid}" data-reveal>'
-            f'<div class="event-main">{status_labels(event)}'
+            f'<article class="event-card container" aria-labelledby="{tid}" data-reveal>{image}'
+            f'<div class="event-body">{status_labels(event)}'
             f'<h3 id="{tid}">{styled_title(event["title"])}</h3>'
             f'<p class="event-summary">{e(event["summary"])}</p>'
             f'<h4 class="event-subhead">What you’ll take away</h4>{list_items(event["takeaways"], "event-takeaways")}'
-            f'<div class="actions"><a class="button" href="events/{e(event["slug"])}/">{action}</a></div></div>'
-            f'{details(event)}</article>')
-    return f'<section class="events section shell" id="events" aria-labelledby="events-title">{heading}{"".join(cards)}</section>'
+            f'{details(event)}'
+            f'<div class="actions"><a class="button" href="events/{e(event["slug"])}/">{action}</a></div></div></article>')
+    return f'<section class="events tone-light section" id="events" aria-labelledby="events-title">{heading}{"".join(cards)}</section>'
 
 
 def registration_section(event):
     reg = event['registration']
     if reg['mode'] == 'live':
-        return ('<section class="registration" id="register" aria-labelledby="register-title">'
+        return ('<section class="registration tone-sand section" id="register" aria-labelledby="register-title"><div class="container registration-grid">'
                 '<div class="registration-intro"><p class="eyebrow">Registration</p>'
                 '<h2 id="register-title">Registration is open.</h2>'
                 '<p>Registration is handled on an external page. Submitting there reserves a seat according to its own confirmation.</p>'
                 f'<div class="actions"><a class="button" href="{e(reg["url"])}" target="_blank" rel="noopener noreferrer">Register for this session</a></div>'
-                '</div></section>')
+                '</div></div></section>')
     if reg['mode'] == 'closed':
-        return ('<section class="registration" id="register" aria-labelledby="register-title">'
+        return ('<section class="registration tone-sand section" id="register" aria-labelledby="register-title"><div class="container registration-grid">'
                 '<div class="registration-intro"><p class="eyebrow">Registration</p>'
                 '<h2 id="register-title">Registration is closed.</h2>'
                 '<div class="actions"><a class="button" href="/#contact">Ask Pau about future sessions</a></div>'
-                '</div></section>')
-    return f'''<section class="registration" id="register" aria-labelledby="register-title">
+                '</div></div></section>')
+    return f'''<section class="registration tone-sand section" id="register" aria-labelledby="register-title"><div class="container registration-grid">
       <div class="registration-intro"><p class="eyebrow">Registration preview</p><h2 id="register-title">Try the <em>registration form.</em></h2>
         <div class="notice" role="note"><p><strong>This is a preview, not a live registration.</strong> Registration for this session isn’t open yet. You can try the form, but no seat will be reserved and nothing you type is sent or saved.</p></div></div>
       <div class="registration-panel">
@@ -172,20 +177,26 @@ def registration_section(event):
           <div class="actions"><a class="button" href="/#contact">Ask Pau about this session</a><button class="text-link" type="button" id="registration-restart">Try the preview again</button></div>
         </div>
       </div>
-    </section>'''
+    </div></section>'''
 
 
 def event_page(event):
-    return f'''<article class="event-page shell" aria-labelledby="event-title">
-      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/#events">All events</a></nav>
-      <header class="event-page-header">{status_labels(event)}<h1 id="event-title">{styled_title(event["title"])}</h1><p class="event-summary">{e(event["summary"])}</p></header>
-      <div class="event-page-layout">
-        <div class="event-page-copy">
-          <section aria-labelledby="event-audience-title"><h2 class="event-h2" id="event-audience-title">Who it’s for</h2><p>{e(event["audience"])}</p></section>
-          <section aria-labelledby="event-covers-title"><h2 class="event-h2" id="event-covers-title">What the session covers</h2>{list_items(event["subjects"], "topic-list")}</section>
-          <section aria-labelledby="event-takeaways-title"><h2 class="event-h2" id="event-takeaways-title">What you’ll take away</h2>{list_items(event["takeaways"], "event-takeaways")}<p class="event-disclaimer">These are learning goals. The session does not guarantee clients, income, or employment.</p></section>
+    return f'''<article class="event-page" aria-labelledby="event-title">
+      <header class="event-hero tone-dark">
+        <div class="container">
+          <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/#events">All events</a></nav>
+          {status_labels(event)}<h1 id="event-title">{styled_title(event["title"])}</h1><p class="event-summary">{e(event["summary"])}</p>
         </div>
-        <aside class="event-page-aside" aria-label="Event details">{details(event)}</aside>
+      </header>
+      <div class="event-content tone-light section">
+        <div class="container event-page-layout">
+          <div class="event-page-copy">
+            <section aria-labelledby="event-audience-title"><h2 class="event-h2" id="event-audience-title">Who it’s for</h2><p>{e(event["audience"])}</p></section>
+            <section aria-labelledby="event-covers-title"><h2 class="event-h2" id="event-covers-title">What the session covers</h2>{list_items(event["subjects"], "topic-list")}</section>
+            <section aria-labelledby="event-takeaways-title"><h2 class="event-h2" id="event-takeaways-title">What you’ll take away</h2>{list_items(event["takeaways"], "event-takeaways")}<p class="event-disclaimer">These are learning goals. The session does not guarantee clients, income, or employment.</p></section>
+          </div>
+          <aside class="event-page-aside" aria-label="Event details">{details(event)}</aside>
+        </div>
       </div>
       {registration_section(event)}
     </article>'''
@@ -194,7 +205,7 @@ def event_page(event):
 def subpage_chrome(index_template):
     """Reuse the homepage header and footer, pointing in-page links back to the homepage."""
     header = re.search(r'<header class="site-header">.*?</header>', index_template, re.S).group(0)
-    footer = re.search(r'<footer class="site-footer shell">.*?</footer>', index_template, re.S).group(0)
+    footer = re.search(r'<footer class="site-footer[^"]*">.*?</footer>', index_template, re.S).group(0)
     fix = lambda html: re.sub(r'href="#', 'href="/#', html)
     footer = fix(footer).replace('href="/#home">Back to top', 'href="#main">Back to top')
     return fix(header), footer
@@ -268,6 +279,7 @@ for event in events:
             .replace('{{meta_description}}', e(event['summary']))
             .replace('{{robots}}', '<meta name="robots" content="noindex">' if event['status'] == 'sample' else '')
             .replace('{{slug}}', e(event['slug'])))
+    html = re.sub(r'\{\{image:([^}]+)\}\}', picture, html).replace('src="assets/', 'src="/assets/').replace('srcset="assets/', 'srcset="/assets/')
     assert '{{' not in html
     out = DIST / 'events' / event['slug'] / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)

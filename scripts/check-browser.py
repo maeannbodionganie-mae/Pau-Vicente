@@ -160,7 +160,7 @@ with serve() as base, sync_playwright() as p:
     sent = []
     page.on('request', lambda r: sent.append(r.url) if r.method != 'GET' else None)
     page.goto(base + '/events/freelance-101/', wait_until='networkidle')
-    assert 'sample event' in page.inner_text('.event-page-header').lower()
+    assert 'sample event' in page.inner_text('.event-hero').lower()
     page.click('#registration-form button[type="submit"]')
     assert page.locator('#register-summary').is_visible() and page.locator('[aria-invalid="true"]').count() == 2
     page.fill('#reg-name', 'Juan Dela Cruz')
@@ -174,6 +174,23 @@ with serve() as base, sync_playwright() as p:
     assert page.locator('#registration-form').is_visible() and page.input_value('#reg-name') == ''
     page.close()
     passed('registration preview validates, completes truthfully, clears entries and makes no network submission')
+
+    # 5. Story time progress and the sculpture (desktop)
+    page = browser.new_page(viewport={'width': 1440, 'height': 900})
+    page.goto(base + '/', wait_until='networkidle')
+    assert page.evaluate("document.documentElement.classList.contains('story-enhanced')")
+    page.locator('#chapter-3').scroll_into_view_if_needed()
+    page.evaluate("document.getElementById('chapter-3').scrollIntoView({block:'center'})")
+    page.wait_for_timeout(500)
+    assert page.inner_text('.story-count b') == '03'
+    assert page.locator('.chapter-index a[aria-current="step"]').get_attribute('href') == '#chapter-three'
+    page.evaluate("document.querySelector('[data-sculpture]').scrollIntoView({block:'center'})")
+    page.wait_for_function("document.querySelector('[data-sculpture]').classList.contains('is-live')", timeout=8000)
+    painted = page.evaluate("""(() => { const c = document.querySelector('[data-sculpture] canvas'); return c.width > 0 && c.height > 0; })()""")
+    assert painted
+    assert page.evaluate("document.querySelector('.site-header').classList.contains('is-scrolled')")
+    page.close()
+    passed('story progress follows the chapters, header turns solid on scroll, WebGL sculpture renders')
 
     browser.close()
 print('Browser checks use intercepted API responses; live Apps Script, Sheet and email delivery are verified separately.')
