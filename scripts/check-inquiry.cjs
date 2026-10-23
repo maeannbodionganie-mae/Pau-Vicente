@@ -66,6 +66,11 @@ function makeSheet(book, name) {
         setValues(values) { values.forEach((row, i) => row.forEach((v, j) => put(r + i, c + j, v))); return range; },
         setValue(v) { put(r, c, v); return range; },
         setFormula(f) { formulas[`${r},${c}`] = f; return range; },
+        // Like real Sheets: a checkbox rule makes every empty cell in the range hold FALSE, which getLastRow() counts.
+        setDataValidation(rule) {
+          if (rule && rule.checkbox) for (let i = 0; i < nr; i++) for (let j = 0; j < nc; j++) if (get(r + i, c + j) === '') put(r + i, c + j, false);
+          return range;
+        },
         setFormulas(list) { list.forEach((row, i) => row.forEach((f, j) => { formulas[`${r + i},${c + j}`] = f; })); return range; },
         clearContent() { for (let i = 0; i < nr; i++) for (let j = 0; j < nc; j++) put(r + i, c + j, ''); return range; },
         createTextFinder(text) {
@@ -115,7 +120,8 @@ function appsScript({ secret = SECRET, mailFails = false, props = {}, seed } = {
     SpreadsheetApp: {
       getActiveSpreadsheet: () => book, openById: () => book, flush() {},
       BorderStyle: { SOLID: 'solid' }, ProtectionType: { SHEET: 'sheet' },
-      newDataValidation: () => chain({}), newConditionalFormatRule: () => chain({})
+      newDataValidation: () => { const rule = {}; const proxy = chain(rule); rule.requireCheckbox = () => { rule.checkbox = true; return proxy; }; rule.build = () => rule; return proxy; },
+      newConditionalFormatRule: () => chain({})
     },
     LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
     PropertiesService: { getScriptProperties: () => ({ getProperty: (k) => properties[k] ?? null, setProperty: (k, v) => { properties[k] = v; } }) },
@@ -144,7 +150,7 @@ function appsScript({ secret = SECRET, mailFails = false, props = {}, seed } = {
   return {
     context, book, mail, events, triggers, COL, props: properties,
     sheet: inquiries,
-    rows: () => inquiries().grid.slice(1).filter((row) => row && row.some((v) => v !== '' && v != null)),
+    rows: () => inquiries().grid.slice(1).filter((row) => row && row[0] !== '' && row[0] != null),
     cell: (row, name) => (inquiries().grid[row] || [])[COL[name] - 1] ?? '',
     set: (row, name, value) => { inquiries().getRange(row + 1, COL[name]).setValue(value); },
     edit: (row, name) => context.onSheetEdit({ range: inquiries().getRange(row + 1, COL[name]) }),
@@ -260,7 +266,7 @@ const valid = (extra = {}) => ({
     assert.equal(first.data.notification, 'sent');
     assert.equal(first.data.id, handler.inquiryId(body.submissionKey));
     assert.equal(script.rows().length, 1);
-    assert.equal(script.cell(1, 'Inquiry ID'), first.data.id);
+    assert.equal(script.cell(1, 'Inquiry ID'), first.data.id, 'the first inquiry lands in row 2, not below empty checkbox rows');
     assert.equal(script.cell(1, 'Name'), 'Maria Santos');
     assert.equal(script.cell(1, 'Organization'), '\'=HYPERLINK("http://evil.example","x")');
     assert.equal(script.cell(1, 'Audience'), "'+cmd");

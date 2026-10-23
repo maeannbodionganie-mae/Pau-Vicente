@@ -89,6 +89,7 @@ function showWebhookSecret() {
 function prepareInquiries_(book) {
   var sheet = book.getSheetByName(SHEET_NAME) || book.insertSheet(SHEET_NAME);
   migrateColumns_(book, sheet);
+  tidyRows_(sheet);
   if (sheet.getMaxRows() < 1000) sheet.insertRowsAfter(sheet.getMaxRows(), 1000 - sheet.getMaxRows());
   if (sheet.getMaxColumns() < HEADERS.length) sheet.insertColumnsAfter(sheet.getMaxColumns(), HEADERS.length - sheet.getMaxColumns());
   var rows = sheet.getMaxRows() - 1;
@@ -157,6 +158,7 @@ function migrateColumns_(book, sheet) {
   if (!book.getSheetByName(backupName)) sheet.copyTo(book).setName(backupName);
   var data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
   var index = {};
+  data = data.filter(function (row) { return String(row[current.indexOf('Inquiry ID')] || '') !== ''; });
   current.forEach(function (h, i) { if (h) index[h] = i; });
   var moved = data.map(function (row) {
     return HEADERS.map(function (h) {
@@ -417,7 +419,9 @@ function saveRecord_(record) {
       'Acknowledgment status': 'Pending',
       'Internal notes': record.isTest ? 'TEST RECORD - safe to delete' : ''
     };
-    sheet.appendRow(HEADERS.map(function (h) { return values[h] === undefined ? '' : values[h]; }));
+    var target = lastRow_(sheet) + 1;
+    if (target > sheet.getMaxRows()) sheet.insertRowsAfter(sheet.getMaxRows(), 200);
+    sheet.getRange(target, 1, 1, HEADERS.length).setValues([HEADERS.map(function (h) { return values[h] === undefined ? '' : values[h]; })]);
     SpreadsheetApp.flush();
     return { duplicate: false, notification: 'Pending', acknowledgment: 'Pending' };
   } finally {
@@ -431,7 +435,7 @@ function saveRecord_(record) {
  */
 function retryPendingNotifications() {
   var sheet = sheet_();
-  var last = sheet.getLastRow();
+  var last = lastRow_(sheet);
   if (last < 2) return;
   var values = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
   values.forEach(function (row) {
@@ -632,7 +636,7 @@ function rebuildSchedule_() {
   var schedule = book.getSheetByName(SCHEDULE_NAME);
   if (!schedule) return;
   var sheet = sheet_();
-  var last = sheet.getLastRow();
+  var last = lastRow_(sheet);
   var rows = [];
   if (last >= 2) {
     var range = sheet.getRange(2, 1, last - 1, HEADERS.length);
@@ -868,12 +872,35 @@ function letter_(column) {
   return s;
 }
 
+/**
+ * Last row with an Inquiry ID. Checkbox cells count as filled for getLastRow()/appendRow(), so the Inquiries tab
+ * is always measured by column A instead.
+ */
+function lastRow_(sheet) {
+  var values = sheet.getRange(1, 1, sheet.getMaxRows(), 1).getValues();
+  for (var r = values.length; r > 0; r--) if (String(values[r - 1][0]) !== '') return r;
+  return 0;
+}
+
+/** Closes gaps between inquiry rows (for example a row that landed below empty checkbox rows). Never drops a row. */
+function tidyRows_(sheet) {
+  var last = lastRow_(sheet);
+  if (last < 3) return;
+  var range = sheet.getRange(2, 1, last - 1, Math.max(sheet.getLastColumn(), HEADERS.length));
+  var values = range.getValues();
+  var filled = values.filter(function (row) { return String(row[0]) !== ''; });
+  if (filled.length === values.length) return;
+  range.clearContent();
+  sheet.getRange(2, 1, filled.length, values[0].length).setValues(filled);
+  console.log('Moved ' + filled.length + ' inquiry row(s) together at the top of Inquiries.');
+}
+
 function book_() {
   return SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
 }
 
 function findRow_(sheet, id) {
-  var last = sheet.getLastRow();
+  var last = lastRow_(sheet);
   if (last < 2) return 0;
   var match = sheet.getRange(2, 1, last - 1, 1).createTextFinder(id).matchEntireCell(true).findNext();
   return match ? match.getRow() : 0;
