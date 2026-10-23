@@ -78,6 +78,8 @@ Record the date and result in this file once verified.
 
 **Verified 2026-10-23.** A `[TEST] Website check` submission on https://pau-vicente-speaker.vercel.app showed reference ID `PV-ZF4M-T54N` with "Pau has been notified". The *Inquiries* sheet has the matching row, marked *TEST RECORD - safe to delete*. The askspeakerpau@gmail.com inbox received "[TEST] New speaking inquiry PV-ZF4M-T54N". The Apps Script project is standalone (`SPREADSHEET_ID` set in the deployed copy) because the Sheets *Extensions → Apps Script* shortcut could not be opened from the automation browser.
 
+**v2 verified 2026-10-23.** One `[TEST] Website check` submission (`PV-R4W5-VX42`, date Nov 14 2026, Final) on the live site: the row landed in *Inquiries*, the branded notification and the acknowledgment both arrived in askspeakerpau@gmail.com, and the Dashboard listed it under *Needs a reply*. Ticking *Final & confirmed → Calendar* created an all-day Google Calendar event, set the status to Confirmed, and filled *Schedule* and the Dashboard's *Upcoming schedule*; unticking and re-ticking replaced the event without leaving a duplicate. Two fixes came out of this check: rows are measured by the Inquiry ID column (checkbox cells made `appendRow` skip to row 1001), and Schedule is rebuilt after a flush.
+
 ## How failures behave
 
 | Situation | Visitor sees | Record |
