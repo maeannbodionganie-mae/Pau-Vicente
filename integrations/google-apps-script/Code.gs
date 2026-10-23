@@ -6,7 +6,7 @@
  * record the notification status on the row. Manual columns are never overwritten by retries.
  *
  * Script properties (Project Settings → Script properties):
- *   WEBHOOK_SECRET         required. Same value as the Vercel INQUIRY_WEBHOOK_SECRET.
+ *   WEBHOOK_SECRET         created automatically by setup(). Copy it to Vercel INQUIRY_WEBHOOK_SECRET.
  *   NOTIFY_EMAIL           optional. Defaults to the account that owns this script.
  *   SEND_ACKNOWLEDGMENT    optional. "true" sends the visitor a receipt (never a booking confirmation).
  *
@@ -36,9 +36,17 @@ function setup() {
   sheet.getRange(2, COL['Follow-up status'], sheet.getMaxRows() - 1, 1).setDataValidation(rule);
   sheet.getRange(2, COL['Last follow-up date'], sheet.getMaxRows() - 1, 1).setNumberFormat('yyyy-mm-dd');
   sheet.setColumnWidth(COL['Message'], 380);
-  if (!PropertiesService.getScriptProperties().getProperty('WEBHOOK_SECRET')) {
-    throw new Error('Add the WEBHOOK_SECRET script property before deploying.');
+  // Create the shared secret once, so nobody has to invent or paste one into the script.
+  var props = PropertiesService.getScriptProperties();
+  if (!props.getProperty('WEBHOOK_SECRET')) {
+    props.setProperty('WEBHOOK_SECRET', Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, ''));
   }
+  console.log('Setup complete. Run showWebhookSecret to copy the value for the Vercel INQUIRY_WEBHOOK_SECRET variable.');
+}
+
+/** Prints the shared secret to the execution log so the owner can copy it into Vercel. Never share it elsewhere. */
+function showWebhookSecret() {
+  console.log(PropertiesService.getScriptProperties().getProperty('WEBHOOK_SECRET'));
 }
 
 function doPost(e) {

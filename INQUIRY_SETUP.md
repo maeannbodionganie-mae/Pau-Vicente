@@ -27,17 +27,16 @@ Do these steps while signed in to **askspeakerpau@gmail.com**, Pau's inquiry acc
 
 1. **Create the Sheet.** In Google Sheets, create a private spreadsheet (for example *Pau Vicente – Inquiries*). Do not share it publicly.
 2. **Add the script.** Go to Extensions → Apps Script. Replace the editor contents with `integrations/google-apps-script/Code.gs` and save.
-3. **Create the shared secret.** Generate a long random string, for example with `openssl rand -hex 32`. In Apps Script → Project Settings → Script properties, add:
-   - `WEBHOOK_SECRET` = the random string (required)
-   - `NOTIFY_EMAIL` = optional. It defaults to the script owner, askspeakerpau@gmail.com.
-   - `SEND_ACKNOWLEDGMENT` = `true` to email visitors a receipt (optional; the receipt states it does not confirm a booking)
-4. **Run `setup`.** Choose `setup` in the function menu and click Run. Approve the permission prompt (Sheets + send email as you). This creates the *Inquiries* tab, headers, the Follow-up status dropdown (New, Contacted, In Discussion, Confirmed, Closed), and sets the timezone to Asia/Manila.
+3. **Optional script properties.** In Apps Script → Project Settings → Script properties:
+   - `NOTIFY_EMAIL`: optional. It defaults to the script owner, askspeakerpau@gmail.com.
+   - `SEND_ACKNOWLEDGMENT`: set to `true` to email visitors a receipt. Optional. The receipt states that it does not confirm a booking.
+4. **Run `setup`.** Choose `setup` in the function menu and click Run. Approve the permission prompt (Sheets + send email as you). This creates the *Inquiries* tab, headers, the Follow-up status dropdown (New, Contacted, In Discussion, Confirmed, Closed), and sets the timezone to Asia/Manila. It also creates the `WEBHOOK_SECRET` script property automatically.
 5. **Check email delivery.** Run `testNotificationEmail`. A `[TEST]` email should arrive. It writes nothing to the Sheet.
 6. **Deploy.** Deploy → New deployment → Web app. Set *Execute as*: **Me**. Set *Who has access*: **Anyone**. The URL is unguessable and every request must carry a valid signature. Copy the URL ending in `/exec`.
 7. **Add a reconciliation trigger.** Triggers (clock icon) → Add trigger → function `retryPendingNotifications`, time-driven, every 15 minutes. This re-sends any notification that failed. It never duplicates rows or changes manual columns.
 8. **Configure Vercel.** In Project → Settings → Environment Variables, set for Production and Preview:
    - `INQUIRY_WEBHOOK_URL` = the `/exec` URL
-   - `INQUIRY_WEBHOOK_SECRET` = the same random string as step 3
+   - `INQUIRY_WEBHOOK_SECRET`: in Apps Script, run `showWebhookSecret`, then copy the value from the execution log. Only the account owner should copy it.
 
    Redeploy so the function picks them up. `GET /api/inquiry` then returns `{"status":"ready"}`.
 
