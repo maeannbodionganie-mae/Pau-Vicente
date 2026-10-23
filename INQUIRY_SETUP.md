@@ -15,9 +15,9 @@ No paid service, npm package, or Google Cloud project is required.
 
 | Part | Implemented | Configured | Verified |
 |---|---|---|---|
-| Form, validation, states, reference ID | Yes | n/a | Browser-tested with simulated responses |
-| `/api/inquiry` function | Yes | **No**: needs the two environment variables below | Contract-tested against the real `Code.gs` on an in-memory Sheet |
-| Apps Script (Sheet row + email) | Yes (`integrations/google-apps-script/Code.gs`) | **No**: needs Pau's Sheet and deployment | Not yet. Requires the end-to-end test below |
+| Form, validation, states, reference ID | Yes | n/a | Yes, live on 2026-10-23 |
+| `/api/inquiry` function | Yes | Yes: Production env vars set; `GET /api/inquiry` returns `ready` | Yes, live on 2026-10-23 |
+| Apps Script (Sheet row + email) | Yes (`integrations/google-apps-script/Code.gs`) | Yes: standalone project *Pau Vicente Inquiries* in askspeakerpau@gmail.com, Sheet *Pau Vicente – Inquiries*, 15-minute retry trigger | Yes, live on 2026-10-23 |
 
 Until configured, the form shows "The online form isn't available yet" and offers a prefilled email with the visitor's details. Nothing is lost or falsely confirmed.
 
@@ -51,6 +51,8 @@ Never paste the secret into chat, HTML, browser JavaScript, screenshots, or this
 5. Delete the test row when done.
 
 Record the date and result in this file once verified.
+
+**Verified 2026-10-23.** A `[TEST] Website check` submission on https://pau-vicente-speaker.vercel.app showed reference ID `PV-ZF4M-T54N` with "Pau has been notified". The *Inquiries* sheet has the matching row, marked *TEST RECORD - safe to delete*. The askspeakerpau@gmail.com inbox received "[TEST] New speaking inquiry PV-ZF4M-T54N". The Apps Script project is standalone (`SPREADSHEET_ID` set in the deployed copy) because the Sheets *Extensions → Apps Script* shortcut could not be opened from the automation browser.
 
 ## How failures behave
 
