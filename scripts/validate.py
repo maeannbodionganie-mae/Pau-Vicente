@@ -84,8 +84,11 @@ passed('all anchors, public contacts, safe external links, and prefilled email f
 
 assert len(manifest) >= 15
 used = [pic['data-photo'] for pic in soup.select('picture[data-photo]')]
-assert len(used) == len(set(used)) >= 15, used
-assert {k for k in manifest if not k.endswith('-cut')} - {'pau-hero', 'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team'} <= set(used), 'every documentary photograph is shown'
+# The owner asked for her professional portrait to appear again in chapter 3, replacing the second call screenshot.
+REUSED = {'pau-contact-cut'}
+dupes = {k for k in used if used.count(k) > 1}
+assert dupes <= REUSED and len(set(used)) >= 14, used
+assert {k for k in manifest if not k.endswith('-cut')} - {'pau-hero', 'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team', 'mentoring-taylin'} <= set(used), 'every documentary photograph is shown'
 assert set(used) <= set(manifest)
 assert len(soup.select('img')) == len(used)
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
@@ -181,7 +184,8 @@ for name in ['name', 'email', 'inquiryType', 'message']:
     assert any(d.endswith('-error') and soup.find(id=d) for d in described), name
 topics = [o.get_text() for o in form.select('#inq-topic option')]
 triggers = [a['data-topic'] for a in soup.select('a[data-topic]')]
-assert len(triggers) == 3 and set(triggers) <= set(topics) and 'Not sure yet' in topics
+assert len(soup.select('#speaking-topics a[data-topic]')) == 3 and len(soup.select('#events a[data-topic]')) == 1
+assert set(triggers) <= set(topics) and 'Not sure yet' in topics
 assert soup.select_one('#inquiry-status[role="status"][aria-live="polite"]')
 assert 'does' in normalized(soup.select_one('.contact-lede')) and 'booking' in normalized(soup.select_one('.contact-lede'))
 passed('inquiry form labels, required-field errors, topic preselection targets, and booking disclaimer')

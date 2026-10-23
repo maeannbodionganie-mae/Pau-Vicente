@@ -116,31 +116,36 @@ def list_items(items, cls):
 def events_feature():
     heading = ('<header class="row-head container" data-reveal><div><p class="eyebrow">Events</p>'
                '<h2 id="events-title">Upcoming <em>sessions.</em></h2></div>'
-               '<p>Public sessions are listed here once confirmed. Until then, the session below is a sample '
-               'that shows how events and registration will work.</p></header>')
+               '<p>Public sessions are announced here once confirmed. The session below is a sample of what is coming.</p></header>')
     if not events:
         body = ('<div class="event-empty container" data-reveal><p>No public sessions are listed right now.</p>'
                 '<a class="text-link" href="#contact">Ask about bringing a session to your group</a></div>')
-        return f'<section class="events panel anchored tone-light" id="events" aria-labelledby="events-title">{heading}{body}</section>'
+        return f'<section class="events panel tone-light" id="events" aria-labelledby="events-title">{heading}{body}</section>'
     cards = []
     for event in events:
         tid = f'event-{event["slug"]}-title'
-        action = 'View details &amp; preview registration' if event['registration']['mode'] == 'preview' else 'View details &amp; register'
-        image = ''
+        action = 'View event details' if event['registration']['mode'] == 'preview' else 'View details &amp; register'
+        main, _, sub = event['title'].partition(': ')
+        title = f'<span class="event-title-main">{e(main)}</span>' + (f'<em class="event-title-sub">{e(sub)}</em>' if sub else '')
+        visual = ''
         if event.get('image'):
-            image = ('<div class="stage stage-sand event-stage" data-stage><div class="stage-panel" data-layer="0.35" aria-hidden="true"></div>'
-                     '<div class="stage-line" data-layer="0.6" aria-hidden="true"></div>'
-                     f'<figure class="stage-figure" data-layer="1">{{{{image:{event["image"]}|{e(event.get("imageAlt", "Pau Vicente"))}|'
-                     '(max-width: 900px) 80vw, 30vw|cutout}}</figure></div>')
+            visual = ('<div class="event-visual" data-stage><div class="event-frame" data-layer="0.5" aria-hidden="true"></div>'
+                      f'<figure class="event-figure" data-layer="1">{{{{image:{event["image"]}|{e(event.get("imageAlt", "Pau Vicente"))}|'
+                      '(max-width: 900px) 70vw, 28vw|cutout}}</figure>'
+                      '<p class="event-speaker" aria-hidden="true">With Pau Vicente</p></div>')
+        meta = [('Date', event['date']), ('Format', event['format']), ('For', event.get('audienceShort') or event['audience'])]
+        meta_html = ''.join(f'<li><span>{e(k)}</span><strong{" class=\"is-tba\"" if v == TBA else ""}>{e(v)}</strong></li>' for k, v in meta)
+        topic = e(event.get('topic', ''))
         cards.append(
-            f'<article class="event-card container" aria-labelledby="{tid}" data-reveal>{image}'
+            f'<article class="event-card container" aria-labelledby="{tid}" data-reveal><div class="event-poster tone-dark">{visual}'
             f'<div class="event-body">{status_labels(event)}'
-            f'<h3 id="{tid}">{styled_title(event["title"])}</h3>'
+            f'<h3 id="{tid}">{title}</h3>'
             f'<p class="event-summary">{e(event["summary"])}</p>'
-            f'<h4 class="event-subhead">What you’ll take away</h4>{list_items(event["takeaways"], "event-takeaways")}'
-            f'{details(event)}'
-            f'<div class="actions"><a class="button" href="events/{e(event["slug"])}/">{action}</a></div></div></article>')
-    return f'<section class="events panel anchored tone-light" id="events" aria-labelledby="events-title">{heading}{"".join(cards)}</section>'
+            f'<ul class="event-meta">{meta_html}</ul>'
+            f'<div class="actions"><a class="button" href="events/{e(event["slug"])}/">{action}</a>'
+            f'<a class="text-link" href="#contact" data-topic="{topic}">Bring this session to your group</a></div>'
+            '</div></div></article>')
+    return f'<section class="events panel tone-light" id="events" aria-labelledby="events-title">{heading}{"".join(cards)}</section>'
 
 
 def registration_section(event):

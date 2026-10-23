@@ -1,5 +1,5 @@
 {
-  "_readme": "Single source for public events. scripts/render.py turns this into the homepage event feature, each event page, and the assistant's event facts. Use \"To be announced\" for anything unconfirmed. Set status to \"sample\" for demonstration events and \"confirmed\" only after Pau confirms the details. Optional \"image\" is a key from asset-map.json shown beside the event.",
+  "_readme": "Single source for public events. scripts/render.py turns this into the homepage event feature, each event page, and the assistant's event facts. Use \"To be announced\" for anything unconfirmed. Set status to \"sample\" for demonstration events and \"confirmed\" only after Pau confirms the details. Optional \"image\" is a key from asset-map.json shown beside the event; optional \"audienceShort\" is the one-line audience on the homepage poster.",
   "events": [
     {
       "slug": "freelance-101",
@@ -10,6 +10,7 @@
       "topic": "Freelance 101",
       "summary": "An introductory session for anyone curious about freelancing: what the work really involves, how to find a direction that suits you, and how to prepare for your first client.",
       "audience": "Students, fresh graduates, career shifters, and beginners exploring freelancing.",
+      "audienceShort": "Students, graduates & career shifters",
       "subjects": [
         "What freelancing really is",
         "Different freelance careers",
