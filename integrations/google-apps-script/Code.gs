@@ -632,6 +632,8 @@ function timeLabel_(start, end, startAt, endAt) {
 
 /** Schedule mirrors every ticked row in Inquiries, sorted by date. It is rebuilt, never edited by hand. */
 function rebuildSchedule_() {
+  // The edit trigger writes through the event's sheet handle; flush so this separate handle reads those writes.
+  SpreadsheetApp.flush();
   var book = book_();
   var schedule = book.getSheetByName(SCHEDULE_NAME);
   if (!schedule) return;
