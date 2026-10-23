@@ -35,7 +35,7 @@ function appsScript({ secret = SECRET, mailFails = false } = {}) {
   const context = {
     console: { log() {}, error() {}, warn() {} },
     SpreadsheetApp: {
-      getActiveSpreadsheet: () => spreadsheet, flush() {},
+      getActiveSpreadsheet: () => spreadsheet, openById: () => spreadsheet, flush() {},
       newDataValidation: () => ({ requireValueInList() { return this; }, setAllowInvalid() { return this; }, build() { return {}; } })
     },
     LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },

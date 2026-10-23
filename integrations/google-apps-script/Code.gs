@@ -13,6 +13,9 @@
  * See INQUIRY_SETUP.md in the repository for the full setup steps.
  */
 
+// Leave empty when the script is opened from the Sheet (Extensions → Apps Script).
+// For a standalone script project, put the spreadsheet ID from its URL here.
+var SPREADSHEET_ID = '';
 var SHEET_NAME = 'Inquiries';
 var TIMEZONE = 'Asia/Manila';
 var STATUSES = ['New', 'Contacted', 'In Discussion', 'Confirmed', 'Closed'];
@@ -27,7 +30,7 @@ var MAX_AGE_MS = 10 * 60 * 1000;
 
 /** Run once from the editor after pasting this file. Creates headers, status dropdown and timezone. */
 function setup() {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var spreadsheet = book_();
   spreadsheet.setSpreadsheetTimeZone(TIMEZONE);
   var sheet = spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.insertSheet(SHEET_NAME);
   sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]).setFontWeight('bold');
@@ -177,6 +180,10 @@ function setNotificationStatus_(id, status) {
   sheet.getRange(row, COL['Email notification status']).setValue(status + ' (' + stamp + ')');
 }
 
+function book_() {
+  return SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
+}
+
 function findRow_(sheet, id) {
   var last = sheet.getLastRow();
   if (last < 2) return 0;
@@ -185,7 +192,7 @@ function findRow_(sheet, id) {
 }
 
 function sheet_() {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  var sheet = book_().getSheetByName(SHEET_NAME);
   if (!sheet) throw new Error('Run setup() first.');
   return sheet;
 }
