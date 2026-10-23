@@ -302,10 +302,17 @@
               <div class="field"><label for="inq-type">Inquiry type <span class="req" aria-hidden="true">*</span></label><select id="inq-type" name="inquiryType" required aria-describedby="inq-type-error"><option value="">Choose one</option><option>Speaking invitation</option><option>Workshop or training</option><option>Coaching</option><option>General inquiry</option></select><p class="field-error" id="inq-type-error" hidden></p></div>
               <div class="field"><label for="inq-topic">Topic</label><select id="inq-topic" name="topic"><option>Not sure yet</option><option>Freelance 101</option><option>Social Media Marketing</option><option>Inspirational Leadership</option></select></div>
               <div class="field"><label for="inq-format">Event type</label><select id="inq-format" name="eventType"><option>Not sure yet</option><option>Keynote</option><option>Workshop</option><option>Seminar</option><option>Webinar</option><option>Panel discussion</option><option>Coaching session</option><option>Q&amp;A session</option><option>Other</option></select></div>
-              <div class="field"><label for="inq-date">Preferred date</label><input id="inq-date" name="preferredDate" type="text" maxlength="80" aria-describedby="inq-date-hint"><p class="field-hint" id="inq-date-hint">A date, a month, or “Not yet decided”.</p></div>
               <div class="field"><label for="inq-location">Location or platform</label><select id="inq-location" name="location"><option>Not yet decided</option><option>Online</option><option>Onsite</option></select></div>
               <div class="field"><label for="inq-size">Estimated audience size</label><select id="inq-size" name="audienceSize"><option>Not sure yet</option><option>Under 30</option><option>30–100</option><option>100–300</option><option>More than 300</option></select></div>
-              <div class="field field-wide"><label for="inq-audience">Who will attend?</label><input id="inq-audience" name="audience" type="text" maxlength="200" aria-describedby="inq-audience-hint"><p class="field-hint" id="inq-audience-hint">For example: college students, a church youth group, or a marketing team.</p></div>
+              <div class="field"><label for="inq-audience">Who will attend?</label><input id="inq-audience" name="audience" type="text" maxlength="200" aria-describedby="inq-audience-hint"><p class="field-hint" id="inq-audience-hint">For example: college students, a church youth group, or a marketing team.</p></div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Event date</legend>
+            <div class="field-grid">
+              <div class="field"><label for="inq-date">Preferred date</label><input id="inq-date" name="preferredDate" type="date" aria-describedby="inq-date-hint inq-date-error"><p class="field-hint" id="inq-date-hint">Pick a day from the calendar, if you have one in mind.</p><p class="field-error" id="inq-date-error" hidden></p></div>
+              <div class="field"><label for="inq-date-status">Is the date final?</label><select id="inq-date-status" name="dateStatus" aria-describedby="inq-date-status-hint"><option>Not yet decided</option><option>Tentative</option><option>Final</option></select><p class="field-hint" id="inq-date-status-hint">Tentative is fine. Nothing is booked until you and Pau confirm it.</p></div>
+              <div class="field field-wide"><label for="inq-date-notes">Date notes</label><textarea id="inq-date-notes" name="dateNotes" rows="3" maxlength="300" aria-describedby="inq-date-notes-hint"></textarea><p class="field-hint" id="inq-date-notes-hint">For example: “Any Saturday in March”, “Waiting for venue approval”, or other dates that could work.</p></div>
             </div>
           </fieldset>
           <fieldset>

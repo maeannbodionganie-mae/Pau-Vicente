@@ -1,13 +1,28 @@
 # Inquiry form: email + Google Sheets setup
 
-The contact form posts to the Vercel function `/api/inquiry`. That function validates the inquiry, gives it a reference ID, and forwards a signed record to a private Google Apps Script attached to Pau's Google Sheet. The script **writes the Sheet row first**, then emails Pau from her own Gmail with the visitor as Reply-To. The visitor sees "received" only after the Sheet confirms the row.
+The contact form posts to the Vercel function `/api/inquiry`. That function validates the inquiry, gives it a reference ID, and forwards a signed record to a private Google Apps Script attached to Pau's Google Sheet. The script **writes the Sheet row first**, then emails Pau from her own Gmail with the visitor as Reply-To, then emails the visitor an acknowledgment. The visitor sees "received" only after the Sheet confirms the row.
 
 ```
 Visitor form ─▶ /api/inquiry (Vercel) ─signed─▶ Apps Script (Pau's Google account)
-                  validate, ID, rate limit         1. append row (or find existing ID)
-                                                   2. email Pau, Reply-To = visitor
-                                                   3. record email status on the row
+  date picker,    validate, ID, rate limit         1. append row (or find existing ID)
+  date status,                                     2. branded email to Pau, Reply-To = visitor
+  date notes                                       3. branded acknowledgment to the visitor
+                                                   4. record both statuses + Activity log
+Sheet edit ─▶ onSheetEdit trigger ─▶ Google Calendar event + Schedule tab
 ```
+
+## The spreadsheet
+
+| Tab | What it is |
+|---|---|
+| **Dashboard** | Opens first. Counts for *Needs a reply* (status New, highlighted when above zero), Contacted, In Discussion, Confirmed, Upcoming events, This month, All inquiries. Lists the inquiries waiting for a reply (oldest first), the upcoming schedule, a breakdown by topic and date status, and recent activity. Formulas only, so it is always current. This is where Pau checks what needs a reply; there is no separate reminder email. |
+| **Inquiries** | One row per inquiry. Espresso headers are what the visitor sent; caramel headers are Pau's working columns: Follow-up status, Confirmed date, Start time, End time, **Final & confirmed → Calendar**, Last follow-up date, Internal notes. New rows are highlighted until the status changes. *Date status* shows what the visitor chose: Final, Tentative or Not yet decided. |
+| **Schedule** | Every inquiry ticked for the calendar, sorted by date. Rebuilt automatically; past dates turn grey. |
+| **Activity** | A log of each inquiry: received, emails sent, status changes, calendar added/updated/removed. |
+
+**Putting a date on the calendar.** When the date is final and Pau has spoken with the client, she ticks *Final & confirmed → Calendar* on that row. The script creates the event in the account's Google Calendar (all day, or timed if *Start time* is filled; *End time* defaults to two hours later), sets Follow-up status to Confirmed, and adds it to Schedule. Editing Confirmed date or the times updates the event. Unticking removes it. *Confirmed date* is pre-filled from the visitor's preferred date; ticking a row with no date is refused with a note in *Calendar status*.
+
+**Acknowledgment.** The visitor receives a branded "Thank you" email with their reference and their fixed choices (type, topic, event type, date and its status, location). It never repeats their free text, so the form cannot be used to send arbitrary content to someone else's inbox, and it says plainly that it does not confirm a date or booking. Set the script property `SEND_ACKNOWLEDGMENT` to `false` to stop it.
 
 No paid service, npm package, or Google Cloud project is required.
 
@@ -18,6 +33,7 @@ No paid service, npm package, or Google Cloud project is required.
 | Form, validation, states, reference ID | Yes | n/a | Yes, live on 2026-10-23 |
 | `/api/inquiry` function | Yes | Yes: Production env vars set; `GET /api/inquiry` returns `ready` | Yes, live on 2026-10-23 |
 | Apps Script (Sheet row + email) | Yes (`integrations/google-apps-script/Code.gs`) | Yes: standalone project *Pau Vicente Inquiries* in askspeakerpau@gmail.com, Sheet *Pau Vicente – Inquiries*, 15-minute retry trigger | Yes, live on 2026-10-23 |
+| Branded emails, acknowledgment, Dashboard / Schedule / Activity, calendar checkbox | Yes (v2 of `Code.gs`, covered by `scripts/check-inquiry.cjs`) | See *Updating to v2* below | See the record below |
 
 Until configured, the form shows "The online form isn't available yet" and offers a prefilled email with the visitor's details. Nothing is lost or falsely confirmed.
 
@@ -27,20 +43,28 @@ Do these steps while signed in to **askspeakerpau@gmail.com**, Pau's inquiry acc
 
 1. **Create the Sheet.** In Google Sheets, create a private spreadsheet (for example *Pau Vicente – Inquiries*). Do not share it publicly.
 2. **Add the script.** Go to Extensions → Apps Script. Replace the editor contents with `integrations/google-apps-script/Code.gs` and save.
-3. **Optional script properties.** In Apps Script → Project Settings → Script properties:
+3. **Time zone and optional script properties.** In Apps Script → Project Settings, set the time zone to **(GMT+08:00) Manila** (or paste `appsscript.json` from this folder), so all-day calendar events land on the right day. Script properties:
    - `NOTIFY_EMAIL`: optional. It defaults to the script owner, askspeakerpau@gmail.com.
-   - `SEND_ACKNOWLEDGMENT`: set to `true` to email visitors a receipt. Optional. The receipt states that it does not confirm a booking.
-4. **Run `setup`.** Choose `setup` in the function menu and click Run. Approve the permission prompt (Sheets + send email as you). This creates the *Inquiries* tab, headers, the Follow-up status dropdown (New, Contacted, In Discussion, Confirmed, Closed), and sets the timezone to Asia/Manila. It also creates the `WEBHOOK_SECRET` script property automatically.
-5. **Check email delivery.** Run `testNotificationEmail`. A `[TEST]` email should arrive. It writes nothing to the Sheet.
+   - `SEND_ACKNOWLEDGMENT`: optional. Acknowledgments are on; set to `false` to stop them.
+4. **Run `setup`.** Choose `setup` in the function menu and click Run. Approve the permission prompt (Sheets, send email as you, Calendar, and triggers). This builds the Dashboard, Inquiries, Schedule and Activity tabs, the dropdowns and checkbox, highlighting, and the Asia/Manila timezone. It installs the on-edit trigger (calendar) and the 15-minute retry trigger once, and creates the `WEBHOOK_SECRET` script property. It is safe to run again; it never deletes inquiries.
+5. **Check email delivery.** Run `testEmails`. Two `[TEST]` emails (notification and acknowledgment) should arrive in the owner's inbox. It writes nothing to the Sheet.
 6. **Deploy.** Deploy → New deployment → Web app. Set *Execute as*: **Me**. Set *Who has access*: **Anyone**. The URL is unguessable and every request must carry a valid signature. Copy the URL ending in `/exec`.
-7. **Add a reconciliation trigger.** Triggers (clock icon) → Add trigger → function `retryPendingNotifications`, time-driven, every 15 minutes. This re-sends any notification that failed. It never duplicates rows or changes manual columns.
-8. **Configure Vercel.** In Project → Settings → Environment Variables, set for Production and Preview:
+7. **Configure Vercel.** In Project → Settings → Environment Variables, set for Production and Preview:
    - `INQUIRY_WEBHOOK_URL` = the `/exec` URL
    - `INQUIRY_WEBHOOK_SECRET`: in Apps Script, run `showWebhookSecret`, then copy the value from the execution log. Only the account owner should copy it.
 
    Redeploy so the function picks them up. `GET /api/inquiry` then returns `{"status":"ready"}`.
 
 Never paste the secret into chat, HTML, browser JavaScript, screenshots, or this repository. `.env.example` lists the names with placeholders only.
+
+## Updating to v2 (existing installs)
+
+1. Paste the new `Code.gs` over the old one, keeping your `SPREADSHEET_ID` line, and save. Set the project time zone to Manila (step 3 above).
+2. Run `setup` and approve the new permissions (Calendar and triggers). The old 17-column *Inquiries* layout is copied to an *Inquiries backup …* tab first, then rearranged by header name into the new layout. Nothing is deleted; the backup tab can be removed once you are happy.
+3. Deploy → Manage deployments → edit the existing web app → Version: **New version** → Deploy. The `/exec` URL stays the same, so Vercel needs no change.
+4. Redeploy the website so the form sends the new date fields.
+
+To roll back: restore the previous `Code.gs` from git, deploy a new version, and copy rows back from the backup tab if needed.
 
 ## End-to-end verification (required before calling it live)
 
@@ -69,5 +93,6 @@ Manual columns (Follow-up status, Last follow-up date, Internal notes) are never
 
 ## Limits
 
-- Consumer Gmail accounts can send about 100 emails a day through Apps Script. That is far more than an inquiry form needs.
+- Consumer Gmail accounts can send about 100 emails a day through Apps Script. Each inquiry uses two (notification + acknowledgment), so about 50 inquiries a day. That is far more than an inquiry form needs.
+- Edits made by the script itself do not fire the on-edit trigger; only Pau's own edits in the Sheet do.
 - Burst protection in the Vercel function is per instance. For deployment-wide limits, add a Vercel Firewall rate-limit rule for `/api/inquiry`.

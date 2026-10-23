@@ -14,10 +14,12 @@ const ENUMS = {
   inquiryType: ['Speaking invitation', 'Workshop or training', 'Coaching', 'General inquiry'],
   topic: ['Not sure yet', 'Freelance 101', 'Social Media Marketing', 'Inspirational Leadership'],
   eventType: ['Not sure yet', 'Keynote', 'Workshop', 'Seminar', 'Webinar', 'Panel discussion', 'Coaching session', 'Q&A session', 'Other'],
+  dateStatus: ['Not yet decided', 'Tentative', 'Final'],
   location: ['Not yet decided', 'Online', 'Onsite'],
   audienceSize: ['Not sure yet', 'Under 30', '30–100', '100–300', 'More than 300']
 };
-const LIMITS = { name: 120, email: 160, organization: 160, preferredDate: 80, audience: 200, message: 3000 };
+const LIMITS = { name: 120, email: 160, organization: 160, dateNotes: 300, audience: 200, message: 3000 };
+const DAY_MS = 86400000;
 const EMAIL_PATTERN = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"]{2,}$/;
 const ID_ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 const buckets = new Map();
@@ -47,6 +49,21 @@ function validate(body) {
       if (!options.includes(value)) fields.inquiryType = 'Please choose an inquiry type.';
       data[name] = value;
     } else data[name] = options.includes(value) ? value : options[0];
+  }
+  // Preferred date comes from a date picker: empty, or a real calendar date from today up to five years ahead.
+  data.preferredDate = clean(body.preferredDate);
+  if (data.preferredDate) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(data.preferredDate);
+    const day = match ? Date.UTC(+match[1], +match[2] - 1, +match[3]) : NaN;
+    const real = match && new Date(day).getUTCDate() === +match[3];
+    // A day of slack either side covers visitors in other time zones.
+    if (!real) fields.preferredDate = 'Please choose a date from the calendar.';
+    else if (day < Date.now() - 2 * DAY_MS) fields.preferredDate = 'Please choose a date from today onward.';
+    else if (day > Date.now() + 5 * 366 * DAY_MS) fields.preferredDate = 'Please choose a date within the next five years.';
+  }
+  if (data.preferredDate && data.dateStatus === 'Not yet decided') data.dateStatus = 'Tentative';
+  if (!data.preferredDate && data.dateStatus === 'Final' && !fields.preferredDate) {
+    fields.preferredDate = 'Please choose the final date, or mark the date as tentative.';
   }
   if (data.name.length < 2) fields.name = 'Please enter your full name.';
   if (!data.email) fields.email = 'Please enter your email address.';

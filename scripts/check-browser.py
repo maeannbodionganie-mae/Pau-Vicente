@@ -130,6 +130,19 @@ with serve() as base, sync_playwright() as p:
     assert page.evaluate("document.activeElement.id") == 'inq-name'
 
     fill_inquiry(page)
+    # Date picker: a real date input limited to today onward; "Final" without a date is caught; a picked day becomes Tentative
+    assert page.get_attribute('#inq-date', 'type') == 'date'
+    assert page.get_attribute('#inq-date', 'min') == page.evaluate("(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })()")
+    page.select_option('#inq-date-status', 'Final')
+    page.click('#inquiry-submit')
+    assert page.get_attribute('#inq-date', 'aria-invalid') == 'true' and 'final date' in page.inner_text('#inq-date-error')
+    assert not requests
+    page.select_option('#inq-date-status', 'Not yet decided')
+    assert page.get_attribute('#inq-date', 'aria-invalid') is None
+    page.fill('#inq-date', '2030-03-16')
+    page.dispatch_event('#inq-date', 'change')
+    assert page.input_value('#inq-date-status') == 'Tentative'
+    page.fill('#inq-date-notes', 'Any Saturday in March.')
     page.locator('.pau-launcher').wait_for(state='attached')
     page.focus('#inq-name')
     assert page.evaluate("getComputedStyle(document.querySelector('.pau-launcher')).visibility") == 'hidden'
@@ -145,6 +158,7 @@ with serve() as base, sync_playwright() as p:
     page.wait_for_function("document.querySelector('#inquiry-status').innerText.includes('couldn’t confirm')")
     assert page.input_value('#inq-message').startswith('We would like')
     assert requests[0]['submissionKey'] == requests[1]['submissionKey'], 'retries reuse the same submission key'
+    assert requests[0]['preferredDate'] == '2030-03-16' and requests[0]['dateStatus'] == 'Tentative' and requests[0]['dateNotes'] == 'Any Saturday in March.'
 
     mode['next'] = 'ok'
     page.click('#inquiry-submit')
@@ -153,7 +167,7 @@ with serve() as base, sync_playwright() as p:
     assert 'does not confirm' in status and page.input_value('#inq-name') == ''
     assert requests[2]['submissionKey'] == requests[0]['submissionKey']
     page.close()
-    passed('topic preselection, error summary and focus, assistant tucks during form use, single in-flight request, not-configured/failure states keep data, reference ID on success')
+    passed('date picker with status and notes, topic preselection, error summary and focus, assistant tucks during form use, single in-flight request, not-configured/failure states keep data, reference ID on success')
 
     # 4. Registration preview never sends data
     page = browser.new_page(viewport={'width': 390, 'height': 844})

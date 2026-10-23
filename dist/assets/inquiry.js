@@ -9,7 +9,7 @@
   const summary = document.getElementById('inquiry-summary');
   const EMAIL = 'askspeakerpau@gmail.com';
   const EMAIL_PATTERN = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"]{2,}$/;
-  const labels = { name: 'Full name', email: 'Email', inquiryType: 'Inquiry type', message: 'Event goals or inquiry details' };
+  const labels = { name: 'Full name', email: 'Email', inquiryType: 'Inquiry type', preferredDate: 'Preferred date', message: 'Event goals or inquiry details' };
   const newKey = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`);
   // One key per inquiry: retries of the same inquiry reuse it, so the server records it only once.
   let submissionKey = newKey();
@@ -17,6 +17,25 @@
 
   const field = (name) => form.elements[name];
   const value = (name) => (field(name)?.value || '').trim();
+
+  // Date picker: from today up to five years ahead, in the visitor's own time zone.
+  const isoDay = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const today = () => isoDay(new Date());
+  const dateInput = field('preferredDate');
+  const dateStatus = field('dateStatus');
+  if (dateInput) {
+    const limit = new Date();
+    limit.setFullYear(limit.getFullYear() + 5);
+    dateInput.min = today();
+    dateInput.max = isoDay(limit);
+    // Picking a day means the visitor has a date in mind; it stays tentative unless they say it is final.
+    dateInput.addEventListener('change', () => {
+      if (dateInput.value && dateStatus.value === 'Not yet decided') dateStatus.value = 'Tentative';
+    });
+    dateStatus.addEventListener('change', () => {
+      if (dateInput.getAttribute('aria-invalid') === 'true') setError('preferredDate', rules().preferredDate);
+    });
+  }
 
   function rules() {
     const errors = {};
@@ -26,6 +45,12 @@
     if (!email) errors.email = 'Please enter your email address.';
     else if (!EMAIL_PATTERN.test(email)) errors.email = 'Please enter an email address like name@example.com.';
     if (!value('inquiryType')) errors.inquiryType = 'Please choose an inquiry type.';
+    const date = value('preferredDate');
+    if (dateInput && dateInput.validity && dateInput.validity.badInput) errors.preferredDate = 'Please choose a date from the calendar.';
+    else if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) errors.preferredDate = 'Please choose a date from the calendar.';
+    else if (date && date < today()) errors.preferredDate = 'Please choose a date from today onward.';
+    else if (date && date > dateInput.max) errors.preferredDate = 'Please choose a date within the next five years.';
+    else if (!date && value('dateStatus') === 'Final') errors.preferredDate = 'Please choose the final date, or mark the date as tentative.';
     if (!message) errors.message = 'Please share your event goals or inquiry details.';
     else if (message.length < 20) errors.message = 'Please add a little more detail (at least 20 characters).';
     return errors;
@@ -87,7 +112,8 @@
       'Hello Pau,', '',
       `Name: ${value('name')}`, `Email: ${value('email')}`, `Organization: ${value('organization')}`,
       `Inquiry type: ${value('inquiryType')}`, `Topic: ${value('topic')}`, `Event type: ${value('eventType')}`,
-      `Preferred date: ${value('preferredDate')}`, `Location or platform: ${value('location')}`,
+      `Preferred date: ${value('preferredDate') || 'Not yet decided'} (${value('dateStatus')})`, `Date notes: ${value('dateNotes')}`,
+      `Location or platform: ${value('location')}`,
       `Audience: ${value('audience')}`, `Estimated audience size: ${value('audienceSize')}`, '',
       value('message').slice(0, 1200)
     ];
@@ -125,7 +151,7 @@
 
   function payload() {
     const data = { submissionKey };
-    for (const name of ['name', 'email', 'organization', 'inquiryType', 'topic', 'eventType', 'preferredDate', 'location', 'audience', 'audienceSize', 'message', 'website']) {
+    for (const name of ['name', 'email', 'organization', 'inquiryType', 'topic', 'eventType', 'preferredDate', 'dateStatus', 'dateNotes', 'location', 'audience', 'audienceSize', 'message', 'website']) {
       data[name] = value(name);
     }
     return data;
@@ -161,7 +187,7 @@
       const notified = data.notification === 'sent';
       const box = notice('success', 'Thank you. Your inquiry was received.', [], reference);
       for (const text of [
-        notified ? 'Pau has been notified and will reply to the email address you provided.' : 'It has been recorded for Pau to review, and she will reply to the email address you provided.',
+        notified ? 'Pau has been notified and will reply to the email address you provided. An acknowledgment email with your reference should reach your inbox shortly.' : 'It has been recorded for Pau to review, and she will reply to the email address you provided.',
         'Please keep the reference ID for any follow-up. Sending an inquiry does not confirm Pau’s availability or a booking.'
       ]) { const p = document.createElement('p'); p.textContent = text; box.append(p); }
       form.reset();
