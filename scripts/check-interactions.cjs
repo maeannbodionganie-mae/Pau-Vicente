@@ -75,3 +75,16 @@ assert.equal(s.navigation[0].getAttribute('aria-current'), undefined);
 assert.equal(setup(true).observers.length, 1);
 console.log('PASS: menu toggle, Escape/focus return, anchor/outside/focus-exit close, resize reset, reveal, reduced motion, and active-section navigation.');
 console.log('DOM harness only; real-browser visual and keyboard inspection is still required.');
+
+const live = setup(true);
+assert.equal(live.observers.length, 1);
+live.media['(prefers-reduced-motion: reduce)'].fire('change', {matches:false});
+assert.equal(live.observers.length, 2);
+assert.equal(live.observers[1].observed.length, 1);
+live.observers[1].callback([{isIntersecting:true,target:live.reveal}]);
+assert(live.reveal.classList.contains('is-inview'));
+live.media['(prefers-reduced-motion: reduce)'].fire('change', {matches:true});
+assert(!live.reveal.classList.contains('is-inview'));
+live.media['(prefers-reduced-motion: reduce)'].fire('change', {matches:false});
+assert.equal(live.observers[2].observed.length, 0);
+console.log('PASS: initially reduced motion can re-enable reveal; seen content does not replay.');

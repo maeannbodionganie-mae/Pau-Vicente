@@ -34,22 +34,27 @@
   const year = document.getElementById('copyright-year');
   if (year) year.textContent = String(new Date().getFullYear());
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if ('IntersectionObserver' in window && !motionPreference.matches) {
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-inview');
-          observer.unobserve(entry.target);
+  if ('IntersectionObserver' in window) {
+    const targets = [...document.querySelectorAll('[data-reveal]')];
+    const revealed = new WeakSet();
+    let observer = null;
+    function syncReveals(reduce) {
+      if (observer) observer.disconnect();
+      targets.forEach((element) => element.classList.remove('is-inview'));
+      if (reduce) return;
+      observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            revealed.add(entry.target);
+            entry.target.classList.add('is-inview');
+            observer.unobserve(entry.target);
+          }
         }
-      }
-    }, { threshold: 0.06 });
-    document.querySelectorAll('[data-reveal]').forEach((element) => observer.observe(element));
-    motionPreference.addEventListener('change', (event) => {
-      if (event.matches) {
-        observer.disconnect();
-        document.querySelectorAll('.is-inview').forEach((element) => element.classList.remove('is-inview'));
-      }
-    });
+      }, { rootMargin: '0px 0px -4% 0px', threshold: 0.04 });
+      targets.forEach((element) => { if (!revealed.has(element)) observer.observe(element); });
+    }
+    syncReveals(motionPreference.matches);
+    motionPreference.addEventListener('change', (event) => syncReveals(event.matches));
   }
   if ('IntersectionObserver' in window) {
     const navigation = [...document.querySelectorAll('.nav-links > a:not(.button)')];
