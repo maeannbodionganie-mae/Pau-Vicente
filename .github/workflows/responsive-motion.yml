@@ -1,28 +1,25 @@
-name: Responsive scroll motion
+name: Responsive site checks
 
 on:
+  pull_request:
   push:
-    branches: [codex/cutouts-scroll-polish]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: cutouts-${{ github.ref }}
+  group: responsive-site-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   verify:
-    if: github.ref == 'refs/heads/codex/cutouts-scroll-polish'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    permissions:
-      contents: write
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@v5
@@ -45,53 +42,14 @@ jobs:
           node scripts/check-pau-ui.cjs
           node scripts/check-inquiry.cjs
           node scripts/check-motion.cjs
-          python scripts/check-browser.py work/browser-qa
+          python scripts/check-browser.py
           python scripts/check-motion-browser.py
           git diff --check
-      - name: Save browser review
+      - name: Save responsive browser review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: responsive-motion-review
-          path: |
-            docs/review/responsive-motion
-            work/browser-qa
+          path: docs/review/responsive-motion
           if-no-files-found: warn
-          retention-days: 14
-      - name: Save verified screenshots to the review branch
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          test "$GITHUB_REF" = "refs/heads/codex/cutouts-scroll-polish"
-          python - <<'PY'
-          from pathlib import Path
-          import re
-          review = Path("docs/review/responsive-motion")
-          shots = sorted(
-              p for p in review.iterdir()
-              if p.is_file() and not p.is_symlink()
-              and re.fullmatch(r"motion-[a-z0-9-]+\.(?:jpg|jpeg|png)", p.name)
-          )
-          if len(shots) < 2:
-              raise ValueError("Missing desktop/mobile review screenshots")
-          Path("work").mkdir(exist_ok=True)
-          Path("work/review-paths.z").write_bytes(
-              b"".join(p.as_posix().encode("utf-8") + b"\0" for p in shots)
-          )
-          PY
-          git add --pathspec-from-file=work/review-paths.z --pathspec-file-nul
-          if git diff --cached --quiet; then exit 0; fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Record verified desktop and mobile motion previews"
-          cat > "$RUNNER_TEMP/cutout-askpass.sh" <<'SH'
-          #!/bin/sh
-          case "$1" in
-            *Username*) printf '%s\n' x-access-token ;;
-            *) printf '%s\n' "$GH_TOKEN" ;;
-          esac
-          SH
-          chmod 700 "$RUNNER_TEMP/cutout-askpass.sh"
-          GIT_ASKPASS="$RUNNER_TEMP/cutout-askpass.sh" GIT_TERMINAL_PROMPT=0 \
-            git -c credential.helper= push origin \
-            HEAD:refs/heads/codex/cutouts-scroll-polish
+          retention-days: 7
