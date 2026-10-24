@@ -1,4 +1,4 @@
-name: Cutouts and scroll polish
+name: Responsive scroll motion
 
 on:
   push:
@@ -54,7 +54,7 @@ jobs:
         with:
           name: responsive-motion-review
           path: |
-            docs/review/cutouts-scroll
+            docs/review/responsive-motion
             work/browser-qa
           if-no-files-found: warn
           retention-days: 14
@@ -66,7 +66,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import re
-          review = Path("docs/review/cutouts-scroll")
+          review = Path("docs/review/responsive-motion")
           shots = sorted(
               p for p in review.iterdir()
               if p.is_file() and not p.is_symlink()

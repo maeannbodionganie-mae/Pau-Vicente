@@ -4,7 +4,7 @@ Run from a Git checkout after rendering dist/:
     python scripts/check-motion-browser.py
 
 The server binds only to loopback. API routes are intercepted; no forms are sent.
-Viewport JPEG proofs are saved under docs/review/cutouts-scroll/.
+Viewport JPEG proofs are saved under docs/review/responsive-motion/.
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
-PROOFS = ROOT / "docs" / "review" / "cutouts-scroll"
+PROOFS = ROOT / "docs" / "review" / "responsive-motion"
 VIEWS = [
     ("phone", 360, 740),
     ("phone-wide", 390, 844),
@@ -222,18 +222,44 @@ def capture(page, name):
 
 
 def check_anchor(page):
-    if page.locator(".nav-toggle").is_visible():
-        if page.locator(".nav-toggle").get_attribute("aria-expanded") != "true":
-            page.locator(".nav-toggle").click()
-    page.locator('.nav-links a[href="#speaking-topics"]').click()
-    page.wait_for_timeout(1150)
+    toggle = page.locator(".nav-toggle")
+    mobile = toggle.is_visible()
+    target = page.locator('.nav-links a[href="#speaking-topics"]')
+    if mobile:
+        assert page.evaluate("document.querySelector('.site-header').classList.contains('is-scrolled')"), "exercise the menu after scrolling"
+        if toggle.get_attribute("aria-expanded") != "true":
+            toggle.click()
+        menu = page.locator(".nav-links")
+        menu.wait_for(state="visible")
+        bounds = menu.bounding_box()
+        header = page.locator(".site-header").bounding_box()
+        viewport_height = page.evaluate("document.documentElement.clientHeight")
+        assert bounds and header
+        assert abs(bounds["y"] - header["height"]) <= 3, ("Scrolled menu top", bounds, header)
+        assert bounds["height"] >= viewport_height - header["height"] - 3, ("Scrolled menu does not fill the viewport", bounds, viewport_height)
+        # Both ends of an overflowing landscape menu must remain reachable.
+        for link in (page.locator(".nav-links > a").first, page.locator(".nav-links > a").last):
+            link.scroll_into_view_if_needed()
+            assert link.evaluate("""el => {
+              const r = el.getBoundingClientRect();
+              const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+              return hit === el || el.contains(hit);
+            }"""), "menu endpoint is obscured or outside the scrollable area"
+    target.scroll_into_view_if_needed()
+    assert target.evaluate("""el => {
+      const r = el.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return hit === el || el.contains(hit);
+    }"""), "navigation target does not receive pointer hit testing"
+    target.click()
+    page.wait_for_timeout(1250)
     header = page.locator(".site-header").bounding_box()
     heading = page.locator("#topics-title").bounding_box()
     assert header and heading
     assert heading["y"] >= header["y"] + header["height"] - 3, ("Anchor under header", heading, header)
     assert page.evaluate("location.hash") == "#speaking-topics"
-    if page.locator(".nav-toggle").is_visible():
-        assert page.locator(".nav-toggle").get_attribute("aria-expanded") == "false"
+    if mobile:
+        assert toggle.get_attribute("aria-expanded") == "false"
 
 
 def check_runtime_preferences(page, label):
