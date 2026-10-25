@@ -36,6 +36,10 @@ with serve() as base,sync_playwright() as p:
     for name,width,height in [("desktop",1440,900),("short",1024,620),("phone",390,844),("small-phone",360,740),("landscape",844,390)]:
         ctx=browser.new_context(viewport={"width":width,"height":height},reduced_motion="no-preference")
         page=ctx.new_page();errors=[];writes=[]
+        page.add_init_script("""(()=>{
+          const native=requestAnimationFrame.bind(window);window.__motionFrames=0;
+          window.requestAnimationFrame=callback=>native(time=>{window.__motionFrames++;callback(time)});
+        })()""")
         page.on("pageerror",lambda e:errors.append(str(e)))
         page.on("request",lambda r:writes.append(r.url) if r.method not in ("GET","HEAD") else None)
         page.route("**/api/**",lambda r:r.fulfill(status=200,content_type="application/json",body='{"mode":"portfolio-guide"}'))
@@ -100,6 +104,11 @@ with serve() as base,sync_playwright() as p:
         overflow(page,name+" story")
         if name in ("desktop","phone"):
             page.screenshot(path=str(PROOFS/f"{name}-chapter-turn.jpg"),type="jpeg",quality=86)
+        page.wait_for_timeout(1400)
+        frames_before=page.evaluate("window.__motionFrames")
+        page.wait_for_timeout(300)
+        frames_after=page.evaluate("window.__motionFrames")
+        assert frames_after-frames_before<=2,(name,"scroll work should settle while CSS emoji animation continues",frames_before,frames_after)
         page.emulate_media(reduced_motion="reduce")
         page.wait_for_function("!document.documentElement.classList.contains('immersive')")
         assert page.locator("#chapter-1").evaluate("el=>getComputedStyle(el).position")=="relative"
