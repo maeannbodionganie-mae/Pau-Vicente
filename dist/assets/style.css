@@ -436,7 +436,7 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
 /* Each chapter keeps its natural height. Tall pages pin only after their bottom
    is reachable; the same 3D turn works on phones and short desktop windows. */
 .story-stacked .page{position:sticky;top:var(--page-stick-top,0px);min-height:100svh;height:auto;overflow:visible;box-shadow:0 -34px 60px -24px rgba(0,0,0,.6)}
-.story-stacked .page-inner{min-height:calc(100svh - 1px);will-change:transform,opacity}
+.story-stacked .page-inner{min-height:calc(100svh - 1px);transform-origin:50% 100%;will-change:transform,opacity}
 .motion:not(.cine) .moment{transform-origin:50% 100%}
 /* Desktop section spacing */
 @media(min-width:901px) and (min-height:620px){
