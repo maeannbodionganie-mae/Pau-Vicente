@@ -26,8 +26,10 @@
   <script src="assets/main.js" defer></script>
   <script src="assets/story.js" defer></script>
   <script src="assets/motion.js" defer></script>
+  <script src="assets/premium-motion.js" defer></script>
   <script src="assets/inquiry.js" defer></script>
   <link rel="stylesheet" href="assets/pau-assistant.css">
+  <link rel="stylesheet" href="assets/premium.css">
   <script src="assets/pau-engine.js" defer></script>
   <script src="assets/pau-assistant.js" defer></script>
 </head>
@@ -333,12 +335,16 @@
   </footer>
   <aside id="pau-assistant" class="pau-assistant" hidden aria-label="Pau portfolio assistant">
     <button id="pau-launcher" class="pau-launcher" type="button" aria-label="Ask Pau’s digital assistant. Drag to move, or use Alt and arrow keys." aria-controls="pau-chat" aria-expanded="false" aria-describedby="pau-drag-help">
-      <img class="pau-avatar" src="assets/pau-assistant-icon.svg" width="64" height="64" alt="" draggable="false" aria-hidden="true"><span class="pau-launcher-label">Ask Pau</span>
+      <span class="pau-avatar-stack" aria-hidden="true"><img class="pau-avatar" src="assets/pau-emoji-front.webp" width="256" height="256" alt="" draggable="false"><img class="pau-emoji-frame pau-gaze-left" src="assets/pau-emoji-left.webp" width="256" height="256" alt="" aria-hidden="true" draggable="false"><img class="pau-emoji-frame pau-gaze-right" src="assets/pau-emoji-right.webp" width="256" height="256" alt="" aria-hidden="true" draggable="false"><img class="pau-emoji-frame pau-blink" src="assets/pau-emoji-blink.webp" width="256" height="256" alt="" aria-hidden="true" draggable="false"></span><span class="pau-launcher-label">Ask Pau</span>
     </button>
+    <div id="pau-greeting" class="pau-greeting">
+      <button id="pau-greeting-open" class="pau-greeting-open" type="button" aria-controls="pau-chat"><strong>Hi, I’m Pau 👋</strong><span>Your digital portfolio assistant.<br>How can I help?</span></button>
+      <button id="pau-greeting-dismiss" class="pau-greeting-dismiss" type="button" aria-label="Dismiss introduction">×</button>
+    </div>
     <p id="pau-drag-help" class="pau-sr-only">Drag the button to move it. Use Alt and arrow keys to move it with a keyboard. Reset its position in Options.</p>
     <section id="pau-chat" class="pau-chat" role="dialog" aria-modal="false" aria-labelledby="pau-chat-title" hidden>
       <header class="pau-chat-header">
-        <img class="pau-header-avatar" src="assets/pau-assistant-icon.svg" width="40" height="40" alt="" aria-hidden="true">
+        <span class="pau-header-portrait" aria-hidden="true"><img class="pau-header-avatar" src="assets/pau-emoji-front.webp" width="256" height="256" alt=""><img class="pau-emoji-frame pau-gaze-left" src="assets/pau-emoji-left.webp" width="256" height="256" alt="" aria-hidden="true" draggable="false"><img class="pau-emoji-frame pau-gaze-right" src="assets/pau-emoji-right.webp" width="256" height="256" alt="" aria-hidden="true" draggable="false"><img class="pau-emoji-frame pau-blink" src="assets/pau-emoji-blink.webp" width="256" height="256" alt="" aria-hidden="true" draggable="false"></span>
         <div class="pau-chat-heading"><p class="pau-kicker">Portfolio guide</p><h2 id="pau-chat-title">Pau’s assistant</h2></div>
         <details id="pau-options" class="pau-options">
           <summary id="pau-options-toggle" class="pau-options-toggle">Options <span aria-hidden="true">⌄</span></summary>
