@@ -1,0 +1,71 @@
+/* Continuous depth, without document snapping or scroll interception. */
+html.immersive{scroll-snap-type:none}
+.immersive [data-depth-content]{transform-origin:50% 100%;transform:perspective(1800px) translate3d(0,var(--section-y,0px),var(--section-z,0px)) rotateX(var(--section-tilt,0deg)) scale(var(--section-scale,1));opacity:var(--section-alpha,1)}
+.immersive [data-depth-content].depth-active{will-change:transform,opacity}
+.immersive .page{position:sticky;top:var(--chapter-top,0px);height:auto;min-height:100svh;overflow:visible;box-shadow:0 -28px 64px -30px rgba(0,0,0,.55)}
+.immersive .page-inner{height:auto;min-height:calc(100svh - 1px);transform-origin:50% 100%}
+html:not(.immersive) .page{position:relative;height:auto;overflow:visible}
+html:not(.immersive) .page-inner{height:auto}
+@media(max-width:900px),(max-height:619px){
+ .immersive .page-inner{transform:perspective(1600px) rotateX(var(--chapter-tilt,0deg)) scale(var(--chapter-scale,1));filter:brightness(var(--chapter-light,1))}
+ .immersive:not(.cine) .moment{transform-origin:50% 100%;transform:perspective(1400px) translate3d(0,var(--print-y,0px),0) rotateX(var(--print-tilt,0deg)) scale(var(--print-scale,1))}
+}
+/* A human emoji bust with coordinated gaze/blink frames and soft head movement. */
+.pau-launcher{width:86px;height:92px;right:14px;bottom:12px}
+.pau-avatar-stack{position:relative;display:block;width:86px;height:92px;pointer-events:none;transform-style:preserve-3d;animation:pau-head 7s ease-in-out infinite}
+.pau-launcher .pau-avatar,.pau-launcher:is(:hover,:focus-visible) .pau-avatar{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;transform:none;transition:none;filter:drop-shadow(0 5px 7px rgba(20,14,10,.18))}
+.pau-emoji-frame{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;opacity:0;pointer-events:none}
+.pau-gaze-left{animation:pau-look-left 10s ease-in-out infinite}
+.pau-gaze-right{animation:pau-look-right 10s ease-in-out infinite}
+.pau-blink{animation:pau-eye-blink 6.4s linear infinite}
+.pau-header-portrait{position:relative;display:block;flex:none;width:42px;height:44px}
+.pau-header-portrait .pau-header-avatar{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.pau-header-portrait .pau-emoji-frame{animation-duration:10s}
+.pau-launcher-label{display:none}
+.pau-greeting{position:fixed;z-index:79;right:108px;bottom:27px;width:min(226px,calc(100vw - 122px));border:1px solid rgba(176,138,95,.38);border-radius:14px 14px 4px 14px;background:#fbf8f3;color:#2b201a;box-shadow:0 12px 36px -10px rgba(20,14,10,.28);animation:pau-greeting-in .65s cubic-bezier(.2,.7,.2,1) both}
+.pau-greeting::after{content:'';position:absolute;right:-5px;bottom:17px;width:9px;height:9px;rotate:45deg;background:#fbf8f3;border-top:1px solid rgba(176,138,95,.38);border-right:1px solid rgba(176,138,95,.38)}
+.pau-greeting-open{display:block;width:100%;padding:13px 30px 13px 14px;border:0;border-radius:inherit;background:transparent;text-align:left;color:inherit}
+.pau-greeting-open strong{display:block;margin-bottom:3px;font:500 21px/1.15 'Cormorant Garamond',Georgia,serif}
+.pau-greeting-open span{display:block;font:400 11px/1.5 'DM Sans',sans-serif;color:#5f4e40}
+.pau-greeting-dismiss{position:absolute;right:4px;top:4px;display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:7px;background:transparent;color:#5f4e40;font-size:20px!important}
+.pau-greeting-dismiss:hover{background:#f3ede4}
+.pau-assistant.is-tucked .pau-greeting,html:has(.nav-links.is-open) .pau-greeting{visibility:hidden}
+.pau-assistant:has(.pau-chat:not([hidden])) .pau-greeting{display:none}
+.pau-assistant.is-tucked .pau-avatar-stack{animation-play-state:paused}
+@keyframes pau-head{0%,100%{transform:perspective(600px) rotateY(-5deg) rotateX(2deg) translateY(0)}48%{transform:perspective(600px) rotateY(5deg) rotateX(-2deg) translateY(-3px)}}
+@keyframes pau-look-left{0%,18%,40%,100%{opacity:0}22%,36%{opacity:1}}
+@keyframes pau-look-right{0%,58%,82%,100%{opacity:0}62%,78%{opacity:1}}
+@keyframes pau-eye-blink{0%,45%,48%,91%,94%,100%{opacity:0}46%,47%,92%,93%{opacity:1}}
+@keyframes pau-greeting-in{from{opacity:0;transform:translate3d(0,10px,-20px) scale(.97)}to{opacity:1;transform:none}}
+@media(max-width:600px){.pau-launcher{width:78px;height:84px;right:10px;bottom:10px}.pau-avatar-stack{width:78px;height:84px}.pau-greeting{right:94px;bottom:24px;width:min(222px,calc(100vw - 108px))}.pau-greeting-open strong{font-size:20px}}
+@media(max-height:560px){.pau-greeting{bottom:16px;max-width:216px}.pau-launcher{width:68px;height:74px}.pau-avatar-stack{width:68px;height:74px}}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-snap-type:none!important}
+ .immersive [data-depth-content],.page-inner,.motion [data-layer],.moment,.moment img{transform:none!important;filter:none!important;opacity:1!important}
+ .page{position:relative!important;height:auto!important;min-height:0!important;overflow:visible!important}
+ .page-inner{height:auto!important;min-height:0!important}
+ .motion [data-stage] .stage-panel,.motion [data-curtain].photo{clip-path:none!important}
+ .motion [data-stage] .stage-figure,.motion [data-stage] .stage-line{opacity:1!important;translate:none!important}
+ .motion [data-curtain].photo img{scale:1!important}
+ .pau-avatar-stack,.pau-emoji-frame,.pau-greeting{animation:none!important}
+ .pau-emoji-frame{opacity:0!important}
+}
+@media print{
+ .pau-assistant{display:none!important}
+ [data-depth-content],.page-inner{transform:none!important;opacity:1!important;filter:none!important}
+ .page{position:static!important;height:auto!important;min-height:0!important;overflow:visible!important}
+ .page-inner{height:auto!important;min-height:0!important}
+}
+
+.pau-assistant:has(.pau-chat:not([hidden])) .pau-launcher{visibility:hidden}
+
+@media print,(prefers-reduced-motion:reduce){
+ .cine .moments-track{height:auto}
+ .cine .moments-view{position:relative;top:auto;height:auto;overflow:visible;padding-block:calc(var(--header) + 40px) 64px}
+ .cine .moments-head{position:relative;top:auto;margin-bottom:30px;opacity:1!important}
+ .cine .moments-scene{position:relative;inset:auto;display:flex;gap:24px;overflow-x:auto;padding:12px var(--gutter) 24px;perspective:none}
+ .cine .moment{position:relative;inset:auto;flex:0 0 min(78vw,400px);width:min(78vw,400px);padding:12px;background:var(--espresso-soft);transform:none!important;clip-path:none!important;filter:none!important;box-shadow:none}
+ .cine .moment .photo{position:relative;inset:auto;aspect-ratio:4/3}
+ .cine .moment figcaption{position:relative;inset:auto;max-width:none;padding:16px 6px 6px;font:400 18px/1.4 var(--display);opacity:1!important}
+ .cine .moment::after{display:none}
+}

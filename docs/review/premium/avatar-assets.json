@@ -1,0 +1,22 @@
+[
+  {
+    "state": "front",
+    "bytes": 45002,
+    "sha256": "cf1daf9bca22895eb4f7c64faadb2554d3c410b4b491287e9a268b27e7abd1a0"
+  },
+  {
+    "state": "left",
+    "bytes": 45318,
+    "sha256": "0d591d83c31705751c66b52e4df979f64a2fcbcde9e0a1454d8a295546a06bcd"
+  },
+  {
+    "state": "right",
+    "bytes": 45208,
+    "sha256": "d2281b128a25777b153ef837def073b96efc9e53cfeeff47f2cfc8b796487370"
+  },
+  {
+    "state": "blink",
+    "bytes": 44762,
+    "sha256": "b88f6206b86f86ad4b6928f4b9ee288999fd528de834f9521ffae97db9f332b6"
+  }
+]
