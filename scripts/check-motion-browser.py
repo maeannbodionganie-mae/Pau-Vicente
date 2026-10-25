@@ -41,7 +41,7 @@ def open_page(browser, url, width, height, baseline=False, reduced=False):
             page.route("**/assets/" + filename, (lambda body, name: lambda r:
                        r.fulfill(status=200, content_type="text/css" if name.endswith(".css") else "text/javascript", body=body))(source, filename))
     page.goto(url, wait_until="networkidle")
-    page.evaluate("async () => {await document.fonts.ready; await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));}")
+    page.evaluate("async () => {await document.fonts.ready; await Promise.all([...document.images].filter(i=>i.complete).map(i=>i.decode().catch(()=>{})));}")
     page.wait_for_timeout(2400)
     return ctx, page, errors
 
