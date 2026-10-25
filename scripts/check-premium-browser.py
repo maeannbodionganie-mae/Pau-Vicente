@@ -104,7 +104,8 @@ with serve() as base,sync_playwright() as p:
         page.wait_for_function("!document.documentElement.classList.contains('immersive')")
         assert page.locator("#chapter-1").evaluate("el=>getComputedStyle(el).position")=="relative"
         assert page.locator(".pau-avatar-stack").evaluate("el=>getComputedStyle(el).animationName")=="none"
-        assert page.locator(".moments-view").evaluate("el=>getComputedStyle(el).position")=="relative"
+        position=page.locator(".moments-view").evaluate("el=>getComputedStyle(el).position")
+        assert position in ("static","relative"),(name,"Moments should use readable, unpinned flow",position)
         assert not errors,(name,errors)
         assert not writes,(name,writes)
         ctx.close()
