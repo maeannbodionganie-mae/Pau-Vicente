@@ -167,7 +167,7 @@ knowledge = json.loads((DIST / 'assets/pau-knowledge.json').read_text())
 for fact in knowledge['facts']:
     assert fact['href'][1:] in ids
 assert 'prefers-reduced-motion:reduce' in assistant_css
-assert soup.select_one('#pau-launcher img.pau-avatar[src="assets/pau-assistant-icon.svg"]')
+assert soup.select_one('#pau-launcher img.pau-avatar[src="assets/pau-emoji-front.webp"]')
 assert soup.select_one('#pau-options:not([open]) summary#pau-options-toggle')
 assert soup.select_one('#pau-options #pau-suggestions') and soup.select_one('#pau-options #pau-clear')
 assert soup.select_one('#pau-options #pau-privacy') and soup.select_one('#pau-options #pau-contact')

@@ -24,7 +24,7 @@ class Element{
   focus(){this.focused=true;}
   scrollIntoView(){this.scrolled=true;}
 }
-const ids=['assistant','launcher','chat','question','form','messages','status','send','mode','privacy','close','clear','contact','suggestions','reset-position','options','options-toggle'];
+const ids=['assistant','launcher','chat','question','form','messages','status','send','mode','privacy','close','clear','contact','suggestions','reset-position','options','options-toggle','greeting','greeting-open','greeting-dismiss'];
 const elements=Object.fromEntries(ids.map(id=>['pau-'+id,new Element()]));
 elements['pau-chat'].hidden=true;
 const stored=new Map(),requests=[],viewport={width:390,height:844,addEventListener(){}};
@@ -39,6 +39,9 @@ const text=node=>node.textContent+node.children.map(text).join(' ');
 (async()=>{
   await tick();await tick();
   assert.equal($('assistant').hidden,false);assert.equal($('mode').textContent,'Portfolio guide');
+  $('greeting-open').fire('click');assert.equal($('chat').hidden,false);assert.equal($('greeting').hidden,true);
+  $('close').fire('click');
+  $('greeting').hidden=false;$('greeting-dismiss').fire('click');assert.equal($('greeting').hidden,true);
   $('launcher').fire('click',{detail:1});assert.equal($('chat').hidden,false);assert($('question').focused);
   $('assistant').fire('keydown',{key:'Escape',preventDefault(){}});assert.equal($('chat').hidden,true);assert($('launcher').focused);
   $('launcher').fire('pointerdown',{button:0,pointerId:1,clientX:300,clientY:670});

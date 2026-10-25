@@ -6,6 +6,9 @@
   const launcher=$('pau-launcher'),panel=$('pau-chat'),input=$('pau-question'),form=$('pau-form');
   const messages=$('pau-messages'),status=$('pau-status'),send=$('pau-send');
   const options=$('pau-options'),optionsToggle=$('pau-options-toggle');
+  const greeting=$('pau-greeting');
+  function hideGreeting(){greeting.hidden=true;try{sessionStorage.setItem('pau-intro-dismissed','1');}catch{}}
+  try{greeting.hidden=sessionStorage.getItem('pau-intro-dismissed')==='1';}catch{}
   let knowledge=null,live=false,busy=false,questions=[],generation=0,drag=null,suppressClick=false;
   const welcome='Hi! I’m Pau’s digital assistant. Ask me about her experience, speaking topics, or planning an event.';
   function mode(isLive){
@@ -41,10 +44,12 @@
       mode(result?.mode==='gemini');
     } catch {status.textContent='The guide could not load. Open Options to contact Pau.';}
   })();
-  function open(){options.open=false;panel.hidden=false;launcher.setAttribute('aria-expanded','true');input.focus({preventScroll:true});}
+  function open(){hideGreeting();options.open=false;panel.hidden=false;launcher.setAttribute('aria-expanded','true');input.focus({preventScroll:true});}
   function close(focus=true){options.open=false;panel.hidden=true;launcher.setAttribute('aria-expanded','false');if(focus)launcher.focus({preventScroll:true});}
   launcher.addEventListener('click',event=>{if(suppressClick&&event.detail!==0){suppressClick=false;return;}panel.hidden?open():close();});
   $('pau-close').addEventListener('click',()=>close());
+  $('pau-greeting-open').addEventListener('click',open);
+  $('pau-greeting-dismiss').addEventListener('click',()=>{hideGreeting();launcher.focus({preventScroll:true});});
   widget.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&!panel.hidden){
       event.preventDefault();
@@ -93,6 +98,7 @@
     const {width,height}=bounds(),box=launcher.getBoundingClientRect();
     x=Math.max(8,Math.min(x,width-box.width-8));y=Math.max(8,Math.min(y,height-box.height-8));
     launcher.style.right='auto';launcher.style.bottom='auto';launcher.style.left=x+'px';launcher.style.top=y+'px';
+    if(save)hideGreeting();
     if(save)try{localStorage.setItem('pau-launcher-position',JSON.stringify({x,y}));}catch{}
   }
   launcher.addEventListener('pointerdown',event=>{
@@ -121,7 +127,7 @@
   $('pau-reset-position').addEventListener('click',()=>{options.open=false;input.focus({preventScroll:true});launcher.removeAttribute('style');try{localStorage.removeItem('pau-launcher-position');}catch{}status.textContent='Icon returned to the lower right.';});
   function keepInView(){widget.style.setProperty?.('--pau-viewport-height',bounds().height+'px');if(launcher.style.left){const box=launcher.getBoundingClientRect();position(box.left,box.top);}}
   addEventListener('resize',keepInView);window.visualViewport?.addEventListener('resize',keepInView);
-  try{const saved=JSON.parse(localStorage.getItem('pau-launcher-position'));if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){widget.hidden=false;position(saved.x,saved.y);}}catch{}
+  try{const saved=JSON.parse(localStorage.getItem('pau-launcher-position'));if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){hideGreeting();widget.hidden=false;position(saved.x,saved.y);}}catch{}
   // On small screens, tuck the avatar away while a visitor fills in a page form so it never covers fields or buttons.
   const small=window.matchMedia?matchMedia('(max-width: 600px)'):{matches:false};
   document.addEventListener('focusin',event=>{const field=event.target;if(small.matches&&field?.closest&&field.closest('form')&&!widget.contains(field))widget.classList.add('is-tucked');});
