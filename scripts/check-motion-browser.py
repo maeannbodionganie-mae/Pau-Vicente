@@ -51,8 +51,8 @@ def snapshot(page):
       return {scroll:scrollY, cine:document.documentElement.classList.contains('cine'),
               snap:getComputedStyle(document.documentElement).scrollSnapType,
               elements:selected.map(el=>{
-                const s=getComputedStyle(el);
-                return {transform:s.transform==='none'?[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]:[...new DOMMatrixReadOnly(s.transform).toFloat64Array()],
+                const s=getComputedStyle(el),r=el.getBoundingClientRect();
+                return {visible:r.bottom>0&&r.top<innerHeight&&r.right>0&&r.left<innerWidth,transform:s.transform==='none'?[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]:[...new DOMMatrixReadOnly(s.transform).toFloat64Array()],
                         filter:s.filter, clip:s.clipPath, opacity:s.opacity,
                         position:s.position, origin:s.transformOrigin};
               })};
@@ -63,6 +63,9 @@ def compare(expected, actual, label):
     assert expected["cine"] == actual["cine"] and expected["snap"] == actual["snap"], (label,"mode")
     assert len(expected["elements"]) == len(actual["elements"])
     for i,(before,after) in enumerate(zip(expected["elements"],actual["elements"])):
+        if not before["visible"] and not after["visible"]:
+            continue  # Offscreen layers deliberately retain their last in-view pose.
+        assert before["visible"] == after["visible"],(label,i,"visibility",before,after)
         assert max(abs(a-b) for a,b in zip(before["transform"],after["transform"])) < .002, (label,i,"transform",before,after)
         for prop in ("filter","clip","opacity","position","origin"):
             assert before[prop] == after[prop], (label,i,prop,before[prop],after[prop])
@@ -114,7 +117,7 @@ with server() as url, sync_playwright() as p:
         for ctx,page,errors in contexts:
             assert not errors,errors
             ctx.close()
-        print(f"PASS: {width}x{height}: 10 scroll samples and wheel input match preserved layer and cinematic transforms under the shared section enhancements.",flush=True)
+        print(f"PASS: {width}x{height}: 10 scroll samples and wheel input match visible preserved layer and cinematic transforms under the shared section enhancements.",flush=True)
 
     # Keep the fixed scrolled mobile menu reachable.
     ctx,page,errors=open_page(browser,url,390,844)

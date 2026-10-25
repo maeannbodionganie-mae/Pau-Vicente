@@ -43,9 +43,9 @@ jobs:
           node scripts/check-pau-ui.cjs
           node scripts/check-inquiry.cjs
           python scripts/check-browser.py
-          python scripts/check-motion-browser.py
           python scripts/check-assistant-browser.py
           python scripts/check-premium-browser.py
+          python scripts/check-motion-browser.py
           git diff --check
       - name: Save responsive browser review
         if: always()
