@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" fill="none">
+<defs>
+ <radialGradient id="shell" cx="0" cy="0" r="1" gradientTransform="translate(28 18) rotate(55) scale(78 70)" gradientUnits="userSpaceOnUse"><stop stop-color="#fff5de"/><stop offset=".38" stop-color="#e4c99d"/><stop offset=".78" stop-color="#bc9058"/><stop offset="1" stop-color="#7f5733"/></radialGradient>
+ <linearGradient id="edge" x1="24" y1="14" x2="74" y2="86" gradientUnits="userSpaceOnUse"><stop stop-color="#f8e6bf"/><stop offset=".5" stop-color="#9f7444"/><stop offset="1" stop-color="#5e3d25"/></linearGradient>
+ <linearGradient id="glass" x1="35" y1="29" x2="62" y2="66" gradientUnits="userSpaceOnUse"><stop stop-color="#564337"/><stop offset=".55" stop-color="#2b201a"/><stop offset="1" stop-color="#17100c"/></linearGradient>
+ <filter id="shadow" x="0" y="0" width="96" height="96" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#160e09" flood-opacity=".32"/></filter>
+</defs>
+<ellipse cx="48" cy="83" rx="26" ry="5" fill="#160e09" opacity=".18"/>
+<g filter="url(#shadow)">
+ <path d="M20 42C20 25 30 15 48 15C68 15 79 26 79 44V54C79 71 69 80 53 80H43L29 86L31 73C24 68 20 61 20 51V42Z" fill="url(#edge)"/>
+ <path d="M17 38C17 21 28 11 46 11C65 11 76 22 76 40V50C76 66 66 75 50 75H40L26 81L28 68C21 63 17 56 17 47V38Z" fill="url(#shell)" stroke="#efd8af" stroke-width="1.1"/>
+ <path d="M23 35C24 23 33 17 46 17C58 17 65 21 69 29" stroke="#fff9e9" stroke-width="2.5" stroke-linecap="round" opacity=".72"/>
+ <path d="M29 39C29 31 35 26 46 26C58 26 64 32 64 41V47C64 56 58 61 47 61H42L34 65L35 57C31 55 29 51 29 46V39Z" fill="url(#glass)" stroke="#7e5836" stroke-width="1.2"/>
+ <path d="M33 37C35 32 40 30 47 30" stroke="#a18b70" stroke-linecap="round" opacity=".6"/>
+ <circle cx="38.5" cy="44" r="2.7" fill="#e8ce9f"/><circle cx="47" cy="44" r="2.7" fill="#e8ce9f"/><circle cx="55.5" cy="44" r="2.7" fill="#e8ce9f"/>
+ <path d="M76 15L78.4 21.6L85 24L78.4 26.4L76 33L73.6 26.4L67 24L73.6 21.6L76 15Z" fill="#fff0ce" stroke="#b68e59"/>
+ <circle cx="62" cy="67" r="2" fill="#fff1d4" opacity=".7"/>
+</g></svg>
