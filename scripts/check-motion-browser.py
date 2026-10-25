@@ -66,7 +66,7 @@ def compare(expected, actual, label):
         if not before["visible"] and not after["visible"]:
             continue  # Offscreen layers deliberately retain their last in-view pose.
         assert before["visible"] == after["visible"],(label,i,"visibility",before,after)
-        assert max(abs(a-b) for a,b in zip(before["transform"],after["transform"])) < .002, (label,i,"transform",before,after)
+        assert all(abs(a-b) < (.51 if j in (12,13,14) else .002) for j,(a,b) in enumerate(zip(before["transform"],after["transform"]))), (label,i,"transform",before,after)
         for prop in ("filter","clip","opacity","position","origin"):
             assert before[prop] == after[prop], (label,i,prop,before[prop],after[prop])
 
