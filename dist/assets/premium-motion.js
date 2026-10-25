@@ -23,7 +23,7 @@
   }));
   const cinema=document.querySelector('[data-cinema]');
   const active=new Set();
-  let frame=0,last=0,enabled=false;
+  let frame=0,last=0,enabled=false,legacyRefresh=false;
   const observer=new IntersectionObserver(entries=>{
     entries.forEach(entry=>entry.isIntersecting?active.add(entry.target):active.delete(entry.target));
     schedule();
@@ -71,11 +71,20 @@
       set(cinema,'--print-tilt',((1-entry)*16).toFixed(3)+'deg');
       set(cinema,'--print-scale',(.92+entry*.08).toFixed(5));
     }
-    if(moving)schedule();
+    // The legacy parallax reads stage geometry on scroll. Keep it in step while
+    // the section wrappers ease, then send one final settled refresh.
+    if(moving){
+      legacyRefresh=true;
+      dispatchEvent(new Event('scroll'));
+      schedule();
+    }else if(legacyRefresh){
+      legacyRefresh=false;
+      dispatchEvent(new Event('scroll'));
+    }
   }
   function sync(){
     enabled=!preference.matches;
-    cancelAnimationFrame(frame);frame=0;last=0;active.clear();observer.disconnect();
+    cancelAnimationFrame(frame);frame=0;last=0;legacyRefresh=false;active.clear();observer.disconnect();
     root.classList.toggle('immersive',enabled);
     sections.forEach(s=>{
       s.content.classList.remove('depth-active');
