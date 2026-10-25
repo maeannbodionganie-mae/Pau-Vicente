@@ -1,12 +1,11 @@
-/* Progressive motion: native scrolling, light depth, and an optional desktop storybook.
+/* Progressive 3D motion: native scrolling, layered portraits, and readable storybook pages.
    The document stays complete without JavaScript or when reduced motion is requested. */
 (() => {
   'use strict';
   const root = document.documentElement;
   if (!('IntersectionObserver' in window)) return;
 
-  // A real CSS viewport measurement keeps the fit gate aligned with 100svh pages,
-  // including tablet browser chrome where clientHeight can be larger.
+  // Share the actual CSS viewport between sticky offsets and animation progress.
   const viewportProbe = document.createElement('div');
   viewportProbe.setAttribute('aria-hidden', 'true');
   viewportProbe.setAttribute('data-motion-viewport', '');
@@ -113,18 +112,16 @@
     const usePointer = isDesktop && finePointer.matches;
 
     // Measure all geometry before applying classes or writing transforms.
-    const canStack = isDesktop && pages.length > 0 &&
-      pages.every((page) => page.inner && page.inner.scrollHeight <=
-        Math.max(0, Math.floor(height - (page.el.offsetHeight - page.el.clientHeight))));
+    const canStack = pages.length > 0 && pages.every((page) => page.inner);
     const useCinema = isDesktop && shots.length > 0;
     const stageMeasurements = stages.map((stage) => ({
       stage, box: active.has(stage.el) ? stage.el.getBoundingClientRect() : null
     }));
     const pageMeasurements = pages.map((page) => ({
-      page, box: canStack && active.has(page.el) && page.next ?
+      page, stickyTop: Math.min(0, height - page.el.offsetHeight), box: canStack && active.has(page.el) && page.next ?
         page.next.getBoundingClientRect() : null
     }));
-    const cinemaBox = useCinema && active.has(cinema) ? cinema.getBoundingClientRect() : null;
+    const cinemaBox = cinema && active.has(cinema) ? cinema.getBoundingClientRect() : null;
 
     const layoutChanged = root.classList.contains('story-stacked') !== Boolean(canStack) ||
       root.classList.contains('cine') !== useCinema;
@@ -147,8 +144,8 @@
       stage.el.classList.add('is-motion-active');
       const progress = clamp((box.top + box.height / 2 - height / 2) / height, -1, 1);
       for (const layer of stage.layers) {
-        const x = pointer.x * layer.depth * 12;
-        const y = pointer.y * layer.depth * 8 - progress * layer.depth * (isDesktop ? 28 : 8);
+        const x = pointer.x * layer.depth * 18;
+        const y = pointer.y * layer.depth * 12 - progress * layer.depth * (isDesktop ? 60 : 22);
         layer.x = settle(layer.x, x, amount);
         layer.y = settle(layer.y, y, amount);
         moving = moving || Math.abs(layer.x - x) > 0.001 || Math.abs(layer.y - y) > 0.001;
@@ -157,20 +154,24 @@
       }
     }
 
-    for (const { page, box } of pageMeasurements) {
+    for (const { page, box, stickyTop } of pageMeasurements) {
+      // A tall chapter scrolls normally until its bottom reaches the viewport,
+      // then recedes behind the next chapter. No content is forced into one screen.
+      const top = stickyTop.toFixed(2) + 'px';
+      if (page.el.style.getPropertyValue('--page-stick-top') !== top) page.el.style.setProperty('--page-stick-top', top);
       if (!box || !page.inner) { resetPage(page); continue; }
       const target = clamp(1 - box.top / height);
       page.covered = settle(page.covered, target, amount);
       moving = moving || Math.abs(page.covered - target) > 0.001;
       const covered = page.covered;
       write(page.inner, 'transform', covered > 0.001 ?
-        'perspective(1600px) rotateX(' + (covered * 7).toFixed(2) + 'deg) scale(' +
-        (1 - covered * 0.06).toFixed(4) + ') translateY(' + (-covered * 4).toFixed(2) + '%)' : '');
+        'perspective(1600px) rotateX(' + (covered * (isDesktop ? 9 : 5)).toFixed(2) + 'deg) scale(' +
+        (1 - covered * (isDesktop ? 0.08 : 0.04)).toFixed(4) + ') translateY(' + (-covered * (isDesktop ? 5 : 2)).toFixed(2) + '%)' : '');
       write(page.inner, 'opacity', covered > 0.001 ? (1 - covered * 0.32).toFixed(3) : '');
       write(page.inner, 'filter', '');
     }
 
-    if (cinemaBox && cinemaBox.bottom >= 0 && cinemaBox.top <= height) {
+    if (useCinema && cinemaBox && cinemaBox.bottom >= 0 && cinemaBox.top <= height) {
       const target = clamp(-cinemaBox.top / Math.max(1, cinemaBox.height - height));
       // Arrive at the correct state immediately after an anchor jump or restored scroll position.
       if (!cinemaEntered) { cinemaProgress = target; cinemaEntered = true; }
@@ -200,6 +201,13 @@
       write(cinemaHeading, 'opacity', (1 - clamp(states[0].open * 1.6)).toFixed(3));
     } else {
       cinemaEntered = false;
+      // Touch layouts keep their swipeable prints, with visible scroll-linked depth.
+      if (!useCinema && cinemaBox) {
+        const entry = clamp((height - cinemaBox.top) / Math.max(1, height * 0.8));
+        shots.forEach((shot) => write(shot.el, 'transform',
+          'perspective(1200px) rotateX(' + ((1 - entry) * 14).toFixed(2) +
+          'deg) scale(' + (0.92 + entry * 0.08).toFixed(4) + ')'));
+      }
     }
 
     if (moving) schedule();
@@ -274,6 +282,10 @@
   desktop.addEventListener('change', () => { resetPointer(); schedule(); });
   finePointer.addEventListener('change', resetPointer);
   document.querySelectorAll('img').forEach((image) => image.addEventListener('load', schedule, { once: true }));
+  if ('ResizeObserver' in window) {
+    const contentSize = new window.ResizeObserver(schedule);
+    pages.forEach((page) => { if (page.inner) contentSize.observe(page.inner); });
+  }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
   syncMotion();
 })();

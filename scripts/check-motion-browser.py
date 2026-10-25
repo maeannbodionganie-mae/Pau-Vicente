@@ -317,11 +317,24 @@ def check_long_story_and_resize(page):
       copy.append(extra);
       dispatchEvent(new Event('resize'));
     }""")
-    page.wait_for_function("!document.documentElement.classList.contains('story-stacked')")
+    page.wait_for_function("document.documentElement.classList.contains('story-stacked')")
+    page.evaluate("scrollTo({top: 0, behavior: 'instant'})")
+    page.wait_for_timeout(450)
+    end = page.evaluate("""() => {
+      const next = document.querySelector('#chapter-2');
+      const height = document.querySelector('[data-motion-viewport]').getBoundingClientRect().height;
+      return next.getBoundingClientRect().top + scrollY - height;
+    }""")
+    page.evaluate("(y) => scrollTo({top:y, behavior:'instant'})", end)
+    page.wait_for_timeout(850)
+    assert page.locator("#motion-qa-long-content").evaluate("""el => {
+      const r = el.getBoundingClientRect();
+      return r.bottom > 0 && r.bottom < innerHeight;
+    }"""), "the end of a long chapter must be readable before the next page covers it"
     page.wait_for_timeout(850)
     assert_story_readable(page, "injected long chapter")
     transitions = page.evaluate("window.__motionStackTransitions")
-    assert len(transitions) <= 1, ("Story fit oscillates after overflow", transitions)
+    assert len(transitions) <= 1, ("Story stacking oscillates after overflow", transitions)
     page.evaluate("""() => {
       window.__motionStackObserver.disconnect();
       document.querySelector('#motion-qa-long-content').remove();
@@ -341,7 +354,33 @@ def check_long_story_and_resize(page):
         assert_story_readable(page, f"resize {width}")
         assert_overflow(page, f"resize {width}")
         assert_finite_motion(page, f"resize {width}")
-    passed("long chapters remain readable; story fit does not oscillate; resize crosses 900/901 safely")
+    passed("long chapters remain readable with 3D enabled; resize crosses 900/901 safely")
+
+
+
+def check_story_depth(page, label):
+    page.evaluate("scrollTo({top:0, behavior:'instant'})")
+    page.wait_for_timeout(300)
+    geometry = page.evaluate("""() => ({
+      next: document.querySelector('#chapter-2').getBoundingClientRect().top + scrollY,
+      height: document.querySelector('[data-motion-viewport]').getBoundingClientRect().height
+    })""")
+    page.evaluate("(g) => scrollTo({top:g.next-g.height-20, behavior:'instant'})", geometry)
+    page.wait_for_timeout(850)
+    before = page.locator("#chapter-1 .page-inner").evaluate("el => getComputedStyle(el).transform")
+    page.evaluate("(g) => scrollTo({top:g.next-g.height*.6, behavior:'instant'})", geometry)
+    page.wait_for_timeout(850)
+    result = page.locator("#chapter-1 .page-inner").evaluate("""el => {
+      const matrix = new DOMMatrixReadOnly(getComputedStyle(el).transform);
+      return {transform:getComputedStyle(el).transform, tilt:matrix.m23, scale:matrix.m11};
+    }""")
+    assert result["transform"] != before and abs(result["tilt"]) > .01, (label, "missing visible 3D chapter turn", result)
+    assert result["scale"] < .995, (label, "chapter did not recede", result)
+    assert_story_readable(page, label + " active turn")
+    assert_overflow(page, label + " active turn")
+    if label in ("desktop", "phone", "desktop-short"):
+        capture(page, label + "-3d-turn")
+    passed(label + ": actual scroll changes chapter perspective and scale")
 
 
 with serve() as base, sync_playwright() as playwright:
@@ -376,6 +415,8 @@ with serve() as base, sync_playwright() as playwright:
             capture(page, "desktop-story")
         elif label == "desktop-short":
             capture(page, "desktop-short-story")
+
+        check_story_depth(page, label)
 
         if width >= 901 and height >= 620:
             page.wait_for_function("document.documentElement.classList.contains('cine')")
