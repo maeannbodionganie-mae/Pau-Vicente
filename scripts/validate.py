@@ -90,7 +90,8 @@ dupes = {k for k in used if used.count(k) > 1}
 assert dupes <= REUSED and len(set(used)) >= 14, used
 assert {k for k in manifest if not k.endswith('-cut')} - {'pau-hero', 'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team', 'mentoring-taylin'} <= set(used), 'every documentary photograph is shown'
 assert set(used) <= set(manifest)
-assert len(soup.select('img')) == len(used)
+assert len(soup.select('picture[data-photo] img')) == len(used)
+assert len(soup.select('img.pau-avatar, img.pau-header-avatar')) == 2
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
 assert soup.select_one('picture[data-photo="pau-hero-cut"] img[fetchpriority="high"]')
 assert len(soup.select('img[loading="lazy"]')) == len(used) - 1
