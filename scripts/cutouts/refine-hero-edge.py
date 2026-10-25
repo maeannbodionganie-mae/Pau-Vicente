@@ -31,7 +31,7 @@ def replace_alpha(source, image):
     for kind, payload in original_chunks:
         if kind == b"ALPH":
             payload = alpha
-        body += kind + struct.pack("<I", len(payload)) + payload + b"\\0" * (len(payload) % 2)
+        body += kind + struct.pack("<I", len(payload)) + payload + bytes([0]) * (len(payload) % 2)
     result = b"RIFF" + struct.pack("<I", len(body)) + body
     assert dict(chunks(result))[b"VP8 "] == dict(original_chunks)[b"VP8 "]
     return result
