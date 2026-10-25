@@ -5,8 +5,9 @@
   const $=id=>document.getElementById(id);
   const launcher=$('pau-launcher'),panel=$('pau-chat'),input=$('pau-question'),form=$('pau-form');
   const messages=$('pau-messages'),status=$('pau-status'),send=$('pau-send');
+  const options=$('pau-options'),optionsToggle=$('pau-options-toggle');
   let knowledge=null,live=false,busy=false,questions=[],generation=0,drag=null,suppressClick=false;
-  const welcome='Hi, I’m Pau, your portfolio guide. I can help you explore Pau Vicente’s background, find a speaking topic for your audience, or prepare an event inquiry. I’m her digital assistant, not Pau herself.';
+  const welcome='Hi! I’m Pau’s digital assistant. Ask me about her experience, speaking topics, or planning an event.';
   function mode(isLive){
     live=isLive;
     $('pau-mode').textContent=live?'AI · Gemini':'Portfolio guide';
@@ -14,7 +15,7 @@
   }
   function append(role,text,sources=[]){
     const box=document.createElement('div');box.className='pau-message';box.dataset.role=role;
-    const label=document.createElement('span');label.className='pau-message-label';label.textContent=role==='user'?'You':'Pau';
+    const label=document.createElement('span');label.className='pau-message-label';label.textContent=role==='user'?'You':'Pau’s assistant';
     const p=document.createElement('p');p.textContent=text;box.append(label,p);
     const links=document.createElement('div');links.className='pau-source-links';
     for(const source of sources){
@@ -22,7 +23,11 @@
       const a=document.createElement('a');a.href=fact.href;a.textContent=fact.title+' ↗';
       a.addEventListener('click',()=>{close(false);if(fact.href.startsWith('#'))document.querySelector(fact.href)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});links.append(a);
     }
-    if(links.children.length)box.append(links);
+    if(links.children.length){
+      const details=document.createElement('details');details.className='pau-source-details';
+      const summary=document.createElement('summary');summary.textContent='View sources ('+links.children.length+')';
+      details.append(summary,links);box.append(details);
+    }
     messages.append(box);while(messages.children.length>40)messages.firstElementChild.remove();
     messages.scrollTop=messages.scrollHeight;
   }
@@ -34,17 +39,27 @@
       knowledge=await response.json();
       const result=await fetch('/api/pau',{cache:'no-store',signal:AbortSignal.timeout(8000)}).then(r=>r.ok?r.json():null).catch(()=>null);
       mode(result?.mode==='gemini');
-    } catch {status.textContent='The guide could not load. Please use the contact section.';}
+    } catch {status.textContent='The guide could not load. Open Options to contact Pau.';}
   })();
-  function open(){panel.hidden=false;launcher.setAttribute('aria-expanded','true');input.focus({preventScroll:true});}
-  function close(focus=true){panel.hidden=true;launcher.setAttribute('aria-expanded','false');if(focus)launcher.focus({preventScroll:true});}
+  function open(){options.open=false;panel.hidden=false;launcher.setAttribute('aria-expanded','true');input.focus({preventScroll:true});}
+  function close(focus=true){options.open=false;panel.hidden=true;launcher.setAttribute('aria-expanded','false');if(focus)launcher.focus({preventScroll:true});}
   launcher.addEventListener('click',event=>{if(suppressClick&&event.detail!==0){suppressClick=false;return;}panel.hidden?open():close();});
   $('pau-close').addEventListener('click',()=>close());
-  widget.addEventListener('keydown',event=>{if(event.key==='Escape'&&!panel.hidden){event.preventDefault();close();}});
-  $('pau-clear').addEventListener('click',()=>{generation++;busy=false;send.disabled=false;questions=[];messages.replaceChildren();append('assistant',welcome);status.textContent='Conversation cleared.';input.focus();});
+  widget.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&!panel.hidden){
+      event.preventDefault();
+      if(options.open){options.open=false;optionsToggle.focus({preventScroll:true});}
+      else close();
+    }
+  });
+  document.addEventListener('click',event=>{
+    if(options.open&&!options.contains(event.target))options.open=false;
+  });
+  $('pau-clear').addEventListener('click',()=>{options.open=false;generation++;busy=false;send.disabled=false;questions=[];messages.replaceChildren();append('assistant',welcome);status.textContent='Conversation cleared.';input.focus();});
   $('pau-contact').addEventListener('click',()=>close(false));
   async function ask(question){
     if(busy||!question.trim())return;
+    options.open=false;input.focus({preventScroll:true});
     question=question.trim().slice(0,1000);busy=true;send.disabled=true;status.textContent='Finding the relevant portfolio details…';
     const token=++generation;append('user',question);input.value='';
     await ready;
@@ -68,7 +83,7 @@
       append('assistant',result.answer,result.sources);questions.push(question);questions=questions.slice(-6);
       $('pau-mode').textContent=result.mode==='gemini'?'AI · Gemini':'Portfolio guide';
       status.textContent=result.notice||'';
-    }catch {if(token===generation)status.textContent='The guide is unavailable. Please use “Speak directly with Pau” below.';}
+    }catch {if(token===generation)status.textContent='The guide is unavailable. Open Options to contact Pau.';}
     finally{if(token===generation){busy=false;send.disabled=false;}}
   }
   form.addEventListener('submit',event=>{event.preventDefault();ask(input.value);});
@@ -103,13 +118,14 @@
     const offset={ArrowLeft:[-24,0],ArrowRight:[24,0],ArrowUp:[0,-24],ArrowDown:[0,24]}[event.key];
     if(!event.altKey||!offset)return;event.preventDefault();const box=launcher.getBoundingClientRect();position(box.left+offset[0],box.top+offset[1],true);
   });
-  $('pau-reset-position').addEventListener('click',()=>{launcher.removeAttribute('style');try{localStorage.removeItem('pau-launcher-position');}catch{}status.textContent='Avatar returned to the lower right.';});
-  function keepInView(){if(launcher.style.left){const box=launcher.getBoundingClientRect();position(box.left,box.top);}}
+  $('pau-reset-position').addEventListener('click',()=>{options.open=false;input.focus({preventScroll:true});launcher.removeAttribute('style');try{localStorage.removeItem('pau-launcher-position');}catch{}status.textContent='Icon returned to the lower right.';});
+  function keepInView(){widget.style.setProperty?.('--pau-viewport-height',bounds().height+'px');if(launcher.style.left){const box=launcher.getBoundingClientRect();position(box.left,box.top);}}
   addEventListener('resize',keepInView);window.visualViewport?.addEventListener('resize',keepInView);
   try{const saved=JSON.parse(localStorage.getItem('pau-launcher-position'));if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){widget.hidden=false;position(saved.x,saved.y);}}catch{}
   // On small screens, tuck the avatar away while a visitor fills in a page form so it never covers fields or buttons.
   const small=window.matchMedia?matchMedia('(max-width: 600px)'):{matches:false};
   document.addEventListener('focusin',event=>{const field=event.target;if(small.matches&&field?.closest&&field.closest('form')&&!widget.contains(field))widget.classList.add('is-tucked');});
   document.addEventListener('focusout',()=>widget.classList.remove('is-tucked'));
+  keepInView();
   widget.hidden=false;
 })();

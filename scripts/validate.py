@@ -90,7 +90,8 @@ dupes = {k for k in used if used.count(k) > 1}
 assert dupes <= REUSED and len(set(used)) >= 14, used
 assert {k for k in manifest if not k.endswith('-cut')} - {'pau-hero', 'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team', 'mentoring-taylin'} <= set(used), 'every documentary photograph is shown'
 assert set(used) <= set(manifest)
-assert len(soup.select('img')) == len(used)
+assert len(soup.select('picture[data-photo] img')) == len(used)
+assert len(soup.select('img.pau-avatar, img.pau-header-avatar')) == 2
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
 assert soup.select_one('picture[data-photo="pau-hero-cut"] img[fetchpriority="high"]')
 assert len(soup.select('img[loading="lazy"]')) == len(used) - 1
@@ -166,7 +167,12 @@ knowledge = json.loads((DIST / 'assets/pau-knowledge.json').read_text())
 for fact in knowledge['facts']:
     assert fact['href'][1:] in ids
 assert 'prefers-reduced-motion:reduce' in assistant_css
-passed('assistant dialog/log/input contracts, text launcher, knowledge links, and reduced motion')
+assert soup.select_one('#pau-launcher img.pau-avatar[src="assets/pau-assistant-icon.svg"]')
+assert soup.select_one('#pau-options:not([open]) summary#pau-options-toggle')
+assert soup.select_one('#pau-options #pau-suggestions') and soup.select_one('#pau-options #pau-clear')
+assert soup.select_one('#pau-options #pau-privacy') and soup.select_one('#pau-options #pau-contact')
+assert not soup.select_one('.pau-intro') and not soup.select_one('.pau-chat-toolbar')
+passed('assistant icon, closed options dropdown, conversation/input contracts, knowledge links, and reduced motion')
 
 # Inquiry form: visible labels, described errors, topic context, honest fallback
 form = soup.select_one('#inquiry-form')

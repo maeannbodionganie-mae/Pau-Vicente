@@ -24,7 +24,7 @@ class Element{
   focus(){this.focused=true;}
   scrollIntoView(){this.scrolled=true;}
 }
-const ids=['assistant','launcher','chat','question','form','messages','status','send','mode','privacy','close','clear','contact','suggestions','reset-position'];
+const ids=['assistant','launcher','chat','question','form','messages','status','send','mode','privacy','close','clear','contact','suggestions','reset-position','options','options-toggle'];
 const elements=Object.fromEntries(ids.map(id=>['pau-'+id,new Element()]));
 elements['pau-chat'].hidden=true;
 const stored=new Map(),requests=[],viewport={width:390,height:844,addEventListener(){}};
@@ -48,8 +48,14 @@ const text=node=>node.textContent+node.children.map(text).join(' ');
   $('launcher').fire('click',{detail:1});assert.equal($('chat').hidden,true,'drag must not open chat');
   $('launcher').fire('keydown',{key:'ArrowRight',altKey:true,preventDefault(){}});assert.equal($('launcher').style.left,'32px');
   $('launcher').fire('click',{detail:0});assert.equal($('chat').hidden,false,'keyboard click works after dragging');
+  $('options').open=true;
+  $('assistant').fire('keydown',{key:'Escape',preventDefault(){}});
+  assert.equal($('options').open,false);assert.equal($('chat').hidden,false,'Escape closes options before the chat');assert($('options-toggle').focused);
+  $('options').open=true;
+  fireDocument('click',{target:$('question')});assert.equal($('options').open,false,'outside click closes options');
+  $('options').open=true;
   $('question').value='Which talk suits college students starting freelancing?';$('form').fire('submit',{preventDefault(){}});
-  await tick();assert.match(text($('messages')),/Freelance 101/);assert.equal($('send').disabled,false);
+  await tick();assert.equal($('options').open,false,'asking closes options');assert.match(text($('messages')),/Freelance 101/);assert.equal($('send').disabled,false);
   assert.equal(requests.filter(r=>r.options?.method==='POST').length,0,'guide mode keeps questions in browser');
   $('question').value='<script>alert(1)</script> What is the weather?';$('form').fire('submit',{preventDefault(){}});await tick();
   assert.match(text($('messages')),/Hindi kasama sa scope/);assert.match(text($('messages')),/<script>/,'visitor text is plain text');
