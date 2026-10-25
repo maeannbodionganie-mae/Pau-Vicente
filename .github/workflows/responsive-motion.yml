@@ -43,12 +43,15 @@ jobs:
           node scripts/check-inquiry.cjs
           python scripts/check-browser.py
           python scripts/check-motion-browser.py
+          python scripts/check-assistant-browser.py
           git diff --check
       - name: Save responsive browser review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: responsive-motion-review
-          path: docs/review/responsive-motion
+          path: |
+            docs/review/responsive-motion
+            docs/review/assistant
           if-no-files-found: warn
           retention-days: 7

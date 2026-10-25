@@ -39,7 +39,7 @@
       knowledge=await response.json();
       const result=await fetch('/api/pau',{cache:'no-store',signal:AbortSignal.timeout(8000)}).then(r=>r.ok?r.json():null).catch(()=>null);
       mode(result?.mode==='gemini');
-    } catch {status.textContent='The guide could not load. Please use the contact section.';}
+    } catch {status.textContent='The guide could not load. Open Options to contact Pau.';}
   })();
   function open(){options.open=false;panel.hidden=false;launcher.setAttribute('aria-expanded','true');input.focus({preventScroll:true});}
   function close(focus=true){options.open=false;panel.hidden=true;launcher.setAttribute('aria-expanded','false');if(focus)launcher.focus({preventScroll:true});}
@@ -83,7 +83,7 @@
       append('assistant',result.answer,result.sources);questions.push(question);questions=questions.slice(-6);
       $('pau-mode').textContent=result.mode==='gemini'?'AI · Gemini':'Portfolio guide';
       status.textContent=result.notice||'';
-    }catch {if(token===generation)status.textContent='The guide is unavailable. Please use “Speak directly with Pau” below.';}
+    }catch {if(token===generation)status.textContent='The guide is unavailable. Open Options to contact Pau.';}
     finally{if(token===generation){busy=false;send.disabled=false;}}
   }
   form.addEventListener('submit',event=>{event.preventDefault();ask(input.value);});

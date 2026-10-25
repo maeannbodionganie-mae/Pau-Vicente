@@ -78,6 +78,7 @@ with serve() as base,sync_playwright() as p:
         ask(page,"What qualifies Pau as a speaker?")
         check_layout(page,width,height)
         assert page.locator("#pau-messages").evaluate("el=>el.scrollHeight>el.clientHeight")
+        page.screenshot(path=str(PROOFS/f"{name}-messages.jpg"),type="jpeg",quality=88)
         page.locator("#pau-options-toggle").click()
         page.keyboard.press("Escape")
         assert not page.locator("#pau-options").evaluate("el=>el.open")

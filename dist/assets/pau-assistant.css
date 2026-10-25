@@ -52,10 +52,10 @@
 .pau-form input{width:100%;min-width:0;padding:13px 12px;border:0;background:transparent;color:var(--a-ink);font-size:16px}
 .pau-form input:focus-visible{outline:none}
 .pau-form input::placeholder{color:var(--a-muted)}
-.pau-form button{min-height:48px;padding:0 14px;border:0;background:var(--a-espresso);color:var(--a-ivory);font-size:12px;font-weight:500}
+.pau-form button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;white-space:nowrap;min-height:48px;padding:0 14px;border:0;background:var(--a-espresso);color:var(--a-ivory);font-size:12px;font-weight:500}
 .pau-form button:hover{background:#45342a}
 .pau-form button:disabled{cursor:wait;opacity:.7}
-@media(max-width:600px){.pau-launcher{right:10px;bottom:12px}.pau-chat{right:10px;left:10px;width:auto;bottom:max(90px,calc(env(safe-area-inset-bottom) + 86px));max-height:calc(var(--pau-viewport-height,100dvh) - 104px)}.pau-chat-header{gap:7px;padding:11px 10px}.pau-chat-header h2{font-size:19px}.pau-header-avatar{width:36px;height:36px}.pau-options-toggle{padding:0 6px}.pau-messages{padding:16px 12px 4px}.pau-options-menu{top:64px}}
+@media(max-width:600px){.pau-launcher-label{display:none}.pau-launcher{right:10px;bottom:12px}.pau-chat{right:10px;left:10px;width:auto;bottom:max(90px,calc(env(safe-area-inset-bottom) + 86px));max-height:calc(var(--pau-viewport-height,100dvh) - 104px)}.pau-chat-header{gap:7px;padding:11px 10px}.pau-chat-header h2{font-size:19px}.pau-header-avatar{width:36px;height:36px}.pau-options-toggle{padding:0 6px}.pau-messages{padding:16px 12px 4px}.pau-options-menu{top:64px}}
 @media(max-height:560px){.pau-chat{bottom:8px;max-height:calc(var(--pau-viewport-height,100dvh) - 16px);height:520px}.pau-chat-header{padding-block:8px}.pau-header-avatar{width:32px;height:32px}.pau-options-menu{top:58px}.pau-messages{padding-top:12px}}
 @media(prefers-reduced-motion:reduce){.pau-messages{scroll-behavior:auto}.pau-avatar,.pau-launcher-label{transition:none}}
 .pau-assistant.is-tucked .pau-launcher{visibility:hidden}
