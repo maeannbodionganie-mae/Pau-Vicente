@@ -1,0 +1,42 @@
+[
+  {
+    "file": "dist/assets/photos/pau-hero-cut-1200.webp",
+    "rgb_changed": 0,
+    "face_changed": 0,
+    "alpha_pixels_refined": 24606,
+    "bytes": 146680,
+    "original_bytes": 149364
+  },
+  {
+    "file": "dist/assets/photos/pau-hero-cut-1600.webp",
+    "rgb_changed": 0,
+    "face_changed": 0,
+    "alpha_pixels_refined": 44040,
+    "bytes": 237592,
+    "original_bytes": 240864
+  },
+  {
+    "file": "dist/assets/photos/pau-hero-cut-480.webp",
+    "rgb_changed": 0,
+    "face_changed": 0,
+    "alpha_pixels_refined": 4781,
+    "bytes": 34932,
+    "original_bytes": 35362
+  },
+  {
+    "file": "dist/assets/photos/pau-hero-cut-800.webp",
+    "rgb_changed": 0,
+    "face_changed": 0,
+    "alpha_pixels_refined": 11140,
+    "bytes": 75392,
+    "original_bytes": 76698
+  },
+  {
+    "file": "dist/assets/photos/pau-hero-cut.png",
+    "rgb_changed": 0,
+    "face_changed": 0,
+    "alpha_pixels_refined": 11140,
+    "bytes": 760785,
+    "original_bytes": 762778
+  }
+]
