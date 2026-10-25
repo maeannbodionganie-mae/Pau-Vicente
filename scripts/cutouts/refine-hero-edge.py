@@ -1,6 +1,6 @@
 """Refine only the hero's existing transparency; never regenerate photographic pixels."""
 from pathlib import Path
-import json
+import json, io, struct, subprocess
 import numpy as np
 from PIL import Image, ImageDraw
 from scipy import ndimage as ndi
@@ -8,11 +8,40 @@ from scipy import ndimage as ndi
 ROOT = Path("dist/assets/photos")
 OUT = Path("docs/review/hero-edge")
 OUT.mkdir(parents=True, exist_ok=True)
+BASE = "c72ea2aa895d558982b704bb851e78fe6f733f45"
+
+def chunks(data):
+    assert data[:4] == b"RIFF" and data[8:12] == b"WEBP"
+    at = 12
+    while at < len(data):
+        kind = data[at:at+4]
+        size = struct.unpack_from("<I", data, at+4)[0]
+        yield kind, data[at+8:at+8+size]
+        at += 8 + size + (size % 2)
+
+def replace_alpha(source, image):
+    # Encode the mask losslessly, then transplant only its ALPH chunk.
+    # The original VP8 photographic bitstream stays byte-for-byte unchanged.
+    encoded = io.BytesIO()
+    image.save(encoded, format="WEBP", quality=80, alpha_quality=100, method=6)
+    alpha = dict(chunks(encoded.getvalue()))[b"ALPH"]
+    original_chunks = list(chunks(source))
+    assert b"VP8 " in dict(original_chunks) and b"ALPH" in dict(original_chunks)
+    body = b"WEBP"
+    for kind, payload in original_chunks:
+        if kind == b"ALPH":
+            payload = alpha
+        body += kind + struct.pack("<I", len(payload)) + payload + b"\\0" * (len(payload) % 2)
+    result = b"RIFF" + struct.pack("<I", len(body)) + body
+    assert dict(chunks(result))[b"VP8 "] == dict(original_chunks)[b"VP8 "]
+    return result
+
 report = []
 for path in sorted(ROOT.glob("pau-hero-cut*")):
     if path.suffix not in (".png", ".webp"):
         continue
-    original = Image.open(path).convert("RGBA")
+    source = subprocess.check_output(["git", "show", BASE + ":" + path.as_posix()])
+    original = Image.open(io.BytesIO(source)).convert("RGBA")
     pixels = np.array(original)
     a = pixels[..., 3].astype(np.float32) / 255
     h, w = a.shape
@@ -44,7 +73,7 @@ for path in sorted(ROOT.glob("pau-hero-cut*")):
     assert np.array_equal(result[opaque_core], pixels[opaque_core])
     image = Image.fromarray(result)
     if path.suffix == ".webp":
-        image.save(path, lossless=True, exact=True, method=6)
+        path.write_bytes(replace_alpha(source, image))
     else:
         image.save(path, optimize=True)
     decoded = np.array(Image.open(path).convert("RGBA"))
@@ -52,7 +81,7 @@ for path in sorted(ROOT.glob("pau-hero-cut*")):
     assert np.array_equal(decoded[visible], result[visible])
     report.append({"file": str(path), "rgb_changed": 0, "face_changed": 0,
                    "alpha_pixels_refined": int(np.count_nonzero(result[...,3] != pixels[...,3])),
-                   "bytes": path.stat().st_size})
+                   "bytes": path.stat().st_size, "original_bytes": len(source)})
     if w == 1600:
         for name, colour in [("dark", "#2b201a"), ("light", "#eadbc8")]:
             boards = []
