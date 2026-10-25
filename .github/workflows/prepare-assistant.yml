@@ -2,7 +2,10 @@ name: Prepare assistant review
 on:
   push:
     branches: [codex/assistant-icon-dropdown]
-    paths: [src/index.html, dist/assets/pau-assistant.css, dist/assets/pau-assistant.js, dist/assets/pau-assistant-icon.svg, scripts/check-assistant-browser.py, .github/workflows/prepare-assistant.yml]
+    paths: [src/index.html, dist/assets/pau-assistant.css, dist/assets/pau-assistant.js, dist/assets/pau-assistant-icon.svg, scripts/check-assistant-browser.py, scripts/validate.py, .github/workflows/prepare-assistant.yml]
+concurrency:
+  group: assistant-preparation
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:
