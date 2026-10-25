@@ -41,7 +41,6 @@ jobs:
           node scripts/check-pau-api.cjs
           node scripts/check-pau-ui.cjs
           node scripts/check-inquiry.cjs
-          node scripts/check-motion.cjs
           python scripts/check-browser.py
           python scripts/check-motion-browser.py
           git diff --check

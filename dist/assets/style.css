@@ -145,7 +145,7 @@ figcaption{margin-top:12px;font-size:13px;line-height:1.55;color:var(--fg-muted)
 .story{background:var(--espresso-deep)}
 .page{position:relative;background:var(--paper);border-top:1px solid rgba(232,223,208,.1)}
 .page:nth-child(even){background:var(--espresso-soft)}
-.page-inner{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,6vw,96px);align-items:center;padding-block:clamp(80px,10vw,120px);transform-origin:50% 0%}
+.page-inner{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,6vw,96px);align-items:center;padding-block:clamp(80px,10vw,120px);transform-origin:50% 0%;will-change:transform}
 .chapter{scroll-margin-top:0}
 .chapter-media{position:relative}
 .media-stack{position:relative}
@@ -190,10 +190,9 @@ figcaption{margin-top:12px;font-size:13px;line-height:1.55;color:var(--fg-muted)
 .cine .moments-view{position:sticky;top:0;height:100svh;padding:0;overflow:hidden}
 .cine .moments-head{position:absolute;left:0;right:0;top:calc(var(--header) + 5vh);z-index:1;margin:0 auto}
 .cine .moments-scene{position:absolute;inset:0;display:block;overflow:visible;padding:0;perspective:1600px;perspective-origin:50% 40%}
-.cine .moment{position:absolute;inset:0;width:auto;padding:0;background:#120d0a;box-shadow:0 60px 120px -40px rgba(0,0,0,.9);transform-origin:50% 100%;will-change:transform}
+.cine .moment{position:absolute;inset:0;width:auto;padding:0;background:#120d0a;box-shadow:0 60px 120px -40px rgba(0,0,0,.9);transform-origin:50% 100%;will-change:transform,clip-path,filter}
 .cine .moment:nth-child(1){z-index:2}.cine .moment:nth-child(2){z-index:3}.cine .moment:nth-child(3){z-index:4}
 .cine .moment .photo{position:absolute;inset:0;aspect-ratio:auto;background:none}
-.cine .moment .photo::after{content:'';position:absolute;inset:0;background:#120d0a;opacity:var(--moment-dim,0);pointer-events:none}
 .cine .moment .photo img{width:100%;height:100%;object-fit:cover;will-change:transform}
 .cine .moment::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,13,10,.0) 45%,rgba(18,13,10,.82) 100%);pointer-events:none}
 .cine .moment figcaption{position:absolute;left:var(--gutter);right:var(--gutter);bottom:clamp(40px,9vh,90px);z-index:2;padding:0;font:italic 400 clamp(32px,4.2vw,68px)/1.05 var(--display);color:var(--ink);max-width:20ch}
@@ -419,30 +418,28 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
 .motion .hero-copy .eyebrow{animation-delay:.05s}.motion .hero-subtitle{animation-delay:.35s}.motion .hero .actions{animation-delay:.5s}.motion .hero-proof{animation-delay:.7s}
 @keyframes rise{from{transform:translateY(105%)}to{transform:none}}
 @keyframes fade{from{opacity:.001;transform:translateY(14px)}to{opacity:1;transform:none}}
-.motion [data-stage] .stage-panel{transition:clip-path .9s var(--ease)}
-.motion [data-stage] .stage-line{transition:opacity .65s var(--ease) .12s}
-.motion [data-stage] .stage-figure{transition:opacity .8s var(--ease) .08s,translate .9s var(--ease) .08s}
+.motion [data-stage] .stage-panel{transition:clip-path 1.3s var(--ease)}
+.motion [data-stage] .stage-line{transition:opacity 1s var(--ease) .6s}
+.motion [data-stage] .stage-figure{transition:opacity 1.1s var(--ease) .25s,translate 1.5s var(--ease) .25s}
 .motion [data-stage]:not(.is-revealed) .stage-panel{clip-path:inset(100% 0 0 0)}
 .motion [data-stage]:not(.is-revealed) .stage-line{opacity:.001}
-.motion [data-stage]:not(.is-revealed) .stage-figure{opacity:.001;translate:0 24px}
-.motion [data-curtain].photo{clip-path:inset(6%);transition:clip-path .9s var(--ease)}
-.motion [data-curtain].photo img{scale:1.06;transition:scale 1.1s var(--ease)}
+.motion [data-stage]:not(.is-revealed) .stage-figure{opacity:.001;translate:0 60px}
+.motion [data-curtain].photo{clip-path:inset(10% 8% 10% 8%);transition:clip-path 1.5s var(--ease)}
+.motion [data-curtain].photo img{scale:1.14;transition:scale 2s var(--ease)}
 .motion [data-curtain].photo.is-revealed{clip-path:inset(0)}
 .motion [data-curtain].photo.is-revealed img{scale:1}
-.motion .stage.is-motion-active [data-layer]{will-change:transform}
-.motion [data-reveal].is-inview{animation:settle .64s var(--ease) both}
+[data-layer]{will-change:transform}
+[data-reveal].is-inview{animation:settle 1s var(--ease) both}
 @keyframes settle{from{opacity:.2;transform:translateY(18px)}to{opacity:1;transform:none}}
 
-/* Each chapter keeps its natural height. Tall pages pin only after their bottom
-   is reachable; the same 3D turn works on phones and short desktop windows. */
-.story-stacked .page{position:sticky;top:var(--page-stick-top,0px);min-height:100svh;height:auto;overflow:visible;box-shadow:0 -34px 60px -24px rgba(0,0,0,.6)}
-.story-stacked .page-inner{min-height:calc(100svh - 1px);transform-origin:50% 100%;will-change:transform,opacity}
-.motion:not(.cine) .moment{transform-origin:50% 100%}
-/* Desktop section spacing */
+/* Desktop: one section per screen; story pages stack and turn */
 @media(min-width:901px) and (min-height:620px){
+  html{scroll-snap-type:y proximity}
   .topics.panel,.events.panel{padding-top:calc(var(--header) + clamp(14px,2.6vh,32px));padding-bottom:clamp(20px,3vh,40px)}
   .topics .row-head,.events .row-head{margin-bottom:clamp(18px,3vh,36px)}
-  .page-inner{padding-block:calc(var(--header) + 24px) 40px}
+  .panel,.page{scroll-snap-align:start}
+  .page{position:sticky;top:0;height:100svh;overflow:hidden;box-shadow:0 -34px 60px -24px rgba(0,0,0,.6)}
+  .page-inner{height:100%;padding-block:calc(var(--header) + 24px) 40px}
 }
 @media(max-width:1180px){
   .nav-links{gap:16px}
@@ -464,16 +461,15 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
   .hero-grid,.split,.split-reverse,.outcomes-grid,.coaching,.audience-grid,.formats,.event-card,.contact-grid,.event-page-layout,.registration-grid,.row-head,.page-inner{grid-template-columns:1fr}
   .hero{padding-bottom:0}
   .hero-copy{text-align:left}
-  .stage{height:min(74svh,520px);max-width:420px}
-  .motion [data-stage]:not(.is-revealed) .stage-figure{translate:0 12px}
-  .anchored .stage{order:2;height:min(78svh,560px);min-height:0;margin-top:8px}
+  .stage{height:min(74vh,520px);max-width:420px}
+  .anchored .stage{order:2;height:min(78vh,560px);min-height:0;margin-top:8px}
   .anchored .hero-copy,.anchored .about-text,.anchored .approach-text,.anchored .event-body{padding-bottom:0}
   .page-inner{padding-block:72px;gap:30px}
   .chapter-media .media-stack>.photo img{max-height:none}
   .media-inset{right:-3%;bottom:-8%;width:30%;border-width:4px}
   .media-inset-wide{width:42%}
   .chapter-media figcaption{max-width:62%}
-  .chapter-media-cut .media-stack{height:min(70svh,480px)}
+  .chapter-media-cut .media-stack{height:min(70vh,480px)}
   .folio{bottom:24px}
   .moments-scene{justify-content:flex-start}
   .topic-grid{grid-template-columns:1fr;border-bottom:0}
@@ -525,20 +521,15 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
   .brand{letter-spacing:.2em;font-size:14px}
 }
 @media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
+  html{scroll-behavior:auto;scroll-snap-type:none}
+  .page{position:relative;height:auto;overflow:visible}
+  .page-inner{height:auto;transform:none!important;filter:none!important}
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  .story-stacked .page{position:relative;min-height:0;height:auto;overflow:visible}
-  .story-stacked .page-inner{min-height:0;height:auto;transform:none!important;opacity:1!important}
-  .motion [data-layer]{transform:none!important}
-  .motion [data-stage] .stage-panel,.motion [data-curtain].photo{clip-path:none!important}
-  .motion [data-stage] .stage-line,.motion [data-stage] .stage-figure{opacity:1!important;translate:none!important}
-  .motion [data-curtain].photo img{scale:1!important}
 }
 @media print{
   .site-header,.actions,.button,.text-link,.chapter-index,.site-footer,.inquiry-form,.registration-panel,.pau-assistant,.band,.scroll-cue{display:none!important}
   .tone-dark,.tone-light,.tone-sand,.page,.story{background:#fff;color:#000}
   .panel{min-height:0;padding-block:28px}
-  .page,.story-stacked .page{position:static;min-height:0;height:auto;overflow:visible}
-  .story-stacked .page-inner{min-height:0;height:auto;transform:none!important;opacity:1!important;filter:none!important}
+  .page{position:static;height:auto;overflow:visible}
   figure{break-inside:avoid}
 }

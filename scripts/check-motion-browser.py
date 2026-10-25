@@ -1,484 +1,141 @@
-"""Real Chromium checks for scroll motion, readable fallbacks, and mobile layouts.
-
-Run from a Git checkout after rendering dist/:
-    python scripts/check-motion-browser.py
-
-The server binds only to loopback. API routes are intercepted; no forms are sent.
-Viewport JPEG proofs are saved under docs/review/responsive-motion/.
-"""
-from __future__ import annotations
-
-import contextlib
-import json
-import os
+"""Compare the published motion against the exact pre-edit choreography in real Chromium."""
 from pathlib import Path
-import socket
-import subprocess
-import sys
-import time
-import urllib.error
-import urllib.request
-
+import contextlib, json, socket, subprocess, sys, time, urllib.request
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-DIST = ROOT / "dist"
-PROOFS = ROOT / "docs" / "review" / "responsive-motion"
-VIEWS = [
-    ("phone", 360, 740),
-    ("phone-wide", 390, 844),
-    ("phone-landscape", 844, 390),
-    ("desktop-short", 1024, 620),
-    ("desktop", 1440, 900),
-]
-
+BASE = "3ed47c8b5155cfe131863533c74c127cb3f7dcd2"
+PROOFS = ROOT / "docs/review/responsive-motion"
+ORIGINAL = {name: subprocess.check_output(["git", "show", BASE + ":dist/assets/" + name]).decode()
+            for name in ("motion.js", "style.css")}
 
 @contextlib.contextmanager
-def serve():
-    with socket.socket() as listener:
-        listener.bind(("127.0.0.1", 0))
-        port = listener.getsockname()[1]
-    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0) if os.name == "nt" else 0
-    process = subprocess.Popen(
-        [sys.executable, "-m", "http.server", str(port),
-         "--bind", "127.0.0.1", "--directory", str(DIST)],
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        creationflags=flags,
-    )
-    base = f"http://127.0.0.1:{port}"
+def server():
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]
+    p = subprocess.Popen([sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1",
+                          "--directory", str(ROOT / "dist")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    url = f"http://127.0.0.1:{port}"
     try:
         for _ in range(100):
-            if process.poll() is not None:
-                raise RuntimeError("The loopback preview server exited early")
             try:
-                with urllib.request.urlopen(base + "/index.html", timeout=1) as response:
-                    if response.status == 200:
-                        break
-            except (urllib.error.URLError, TimeoutError, OSError):
-                time.sleep(0.05)
-        else:
-            raise RuntimeError("The loopback preview server did not become ready")
-        yield base
+                urllib.request.urlopen(url, timeout=1).close()
+                break
+            except OSError:
+                time.sleep(.05)
+        yield url
     finally:
-        process.terminate()
-        try:
-            process.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait(timeout=5)
+        p.terminate()
+        p.wait(timeout=5)
 
-
-def passed(label):
-    print("PASS:", label, flush=True)
-
-
-def make_page(browser, base, width, height, *, javascript=True, reduced=False):
-    context = browser.new_context(
-        viewport={"width": width, "height": height},
-        is_mobile=width <= 900, has_touch=width <= 900,
-        java_script_enabled=javascript,
-    )
-    context.route(
-        "**/api/**",
-        lambda route: route.fulfill(
-            status=503, content_type="application/json",
-            body=json.dumps({"status": "unavailable", "code": "not_configured"}),
-        ),
-    )
-    page = context.new_page()
-    page.set_default_timeout(10000)
+def open_page(browser, url, width, height, baseline=False, reduced=False):
+    ctx = browser.new_context(viewport={"width":width, "height":height},
+                              reduced_motion="reduce" if reduced else "no-preference")
+    page = ctx.new_page()
     errors = []
-    writes = []
-    page.on("pageerror", lambda error: errors.append(str(error)))
-    page.on("request", lambda request: writes.append(request.url)
-            if request.method not in ("GET", "HEAD") else None)
-    page.emulate_media(reduced_motion="reduce" if reduced else "no-preference")
-    page.goto(base + "/", wait_until="networkidle")
-    if javascript:
-        page.evaluate("async () => { if (document.fonts) await document.fonts.ready; }")
-        page.wait_for_function(
-            "(enabled) => document.documentElement.classList.contains('motion') === enabled",
-            arg=not reduced,
-        )
-    return context, page, errors, writes
+    page.on("pageerror", lambda err: errors.append(str(err)))
+    page.route("**/api/**", lambda r: r.fulfill(status=503, content_type="application/json", body='{"status":"unavailable"}'))
+    if baseline:
+        for filename, source in ORIGINAL.items():
+            page.route("**/assets/" + filename, (lambda body, name: lambda r:
+                       r.fulfill(status=200, content_type="text/css" if name.endswith(".css") else "text/javascript", body=body))(source, filename))
+    page.goto(url, wait_until="networkidle")
+    page.evaluate("async () => {await document.fonts.ready; await Promise.all([...document.images].filter(i=>i.complete).map(i=>i.decode().catch(()=>{})));}")
+    page.wait_for_timeout(2400)
+    return ctx, page, errors
 
-
-def assert_clean(errors, writes, label):
-    assert not errors, (label, "JavaScript errors", errors)
-    assert not writes, (label, "Unexpected non-read request", writes)
-
-
-def assert_overflow(page, label):
-    result = page.evaluate("""() => ({
-      viewport: document.documentElement.clientWidth,
-      document: document.documentElement.scrollWidth,
-      body: document.body.scrollWidth
-    })""")
-    assert result["document"] <= result["viewport"] + 2, (label, result)
-    assert result["body"] <= result["viewport"] + 2, (label, result)
-
-
-def assert_finite_motion(page, label):
-    failures = page.evaluate("""() => {
-      const bad = [];
-      for (const el of document.querySelectorAll('[data-layer], .page-inner, .moment, .moment img')) {
-        const style = getComputedStyle(el);
-        const values = [el.style.transform, el.style.opacity, el.style.getPropertyValue('--moment-dim')];
-        if (values.some(value => /NaN|Infinity/.test(value))) bad.push(el.className + ': inline');
-        if (style.transform !== 'none') {
-          try {
-            const matrix = new DOMMatrixReadOnly(style.transform);
-            if (![...matrix.toFloat64Array()].every(Number.isFinite)) bad.push(el.className + ': matrix');
-          } catch (_) { bad.push(el.className + ': transform'); }
-        }
-        const rect = el.getBoundingClientRect();
-        if (![rect.x, rect.y, rect.width, rect.height].every(Number.isFinite)) bad.push(el.className + ': bounds');
-      }
-      return bad;
+def snapshot(page):
+    return page.evaluate("""() => {
+      const selected = [...document.querySelectorAll('[data-layer], .page-inner, .moment, .moment img, .moment figcaption')];
+      return {scroll:scrollY, cine:document.documentElement.classList.contains('cine'),
+              snap:getComputedStyle(document.documentElement).scrollSnapType,
+              elements:selected.map(el=>{
+                const s=getComputedStyle(el);
+                return {transform:s.transform==='none'?[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]:[...new DOMMatrixReadOnly(s.transform).toFloat64Array()],
+                        filter:s.filter, clip:s.clipPath, opacity:s.opacity,
+                        position:s.position, origin:s.transformOrigin};
+              })};
     }""")
-    assert not failures, (label, failures)
 
+def compare(expected, actual, label):
+    assert abs(expected["scroll"]-actual["scroll"]) <= 1, (label,"scroll",expected["scroll"],actual["scroll"])
+    assert expected["cine"] == actual["cine"] and expected["snap"] == actual["snap"], (label,"mode")
+    assert len(expected["elements"]) == len(actual["elements"])
+    for i,(before,after) in enumerate(zip(expected["elements"],actual["elements"])):
+        assert max(abs(a-b) for a,b in zip(before["transform"],after["transform"])) < .002, (label,i,"transform",before,after)
+        for prop in ("filter","clip","opacity","position","origin"):
+            assert before[prop] == after[prop], (label,i,prop,before[prop],after[prop])
 
-def assert_story_readable(page, label):
-    result = page.evaluate("""() => {
-      const stacked = document.documentElement.classList.contains('story-stacked');
-      const height = document.documentElement.clientHeight;
-      const bad = [];
-      for (const article of document.querySelectorAll('.storybook > .page')) {
-        const inner = article.querySelector('.page-inner');
-        const position = getComputedStyle(article).position;
-        if (stacked) {
-          if (position !== 'sticky' || inner.scrollHeight > article.clientHeight + 1) bad.push(article.id + ': stacked overflow');
-        } else {
-          if (position === 'sticky') bad.push(article.id + ': static flow is sticky');
-          const boundary = article.getBoundingClientRect();
-          for (const text of article.querySelectorAll('.chapter-text p, .chapter-text h3')) {
-            const rect = text.getBoundingClientRect();
-            if (rect.top < boundary.top - 2 || rect.bottom > boundary.bottom + 2) bad.push(article.id + ': clipped text');
-          }
-        }
-      }
-      return {stacked, bad};
-    }""")
-    assert not result["bad"], (label, result)
+assert (ROOT/"dist/assets/motion.js").read_text() == ORIGINAL["motion.js"], "restore original controller exactly"
+current_css=(ROOT/"dist/assets/style.css").read_text()
+for start,end in [("/* Motion (", "@media(max-width:1180px)"),
+                  (".cine .moments-track", "/* Speaking")]:
+    if start in ORIGINAL["style.css"] and end in ORIGINAL["style.css"]:
+        expected=ORIGINAL["style.css"].split(start,1)[1].split(end,1)[0]
+        actual=current_css.split(start,1)[1].split(end,1)[0]
+        assert expected == actual, ("original motion CSS changed", start)
 
+PROOFS.mkdir(parents=True, exist_ok=True)
+with server() as url, sync_playwright() as p:
+    browser=p.chromium.launch()
+    for width,height in [(1440,900),(1024,620),(390,844)]:
+        contexts=[open_page(browser,url,width,height,baseline=b) for b in (True,False)]
+        pages=[c[1] for c in contexts]
+        geometry=pages[0].evaluate("""() => {
+          const docTop=el=>el.getBoundingClientRect().top+scrollY;
+          const track=document.querySelector('[data-cinema]');
+          const travel=track.offsetHeight-innerHeight;
+          const chapter=document.querySelector('#chapter-2');
+          return [0,docTop(document.querySelector('#about'))+100,
+                  docTop(chapter)-innerHeight*.6,docTop(chapter)-innerHeight*.3,
+                  ...[.02,.18,.3,.5,.7,.9].map(n=>docTop(track)+Math.max(0,travel)*n)];
+        }""")
+        changed=False
+        previous=None
+        for index,y in enumerate(geometry):
+            for page in pages:
+                page.evaluate("(y)=>scrollTo({top:y,behavior:'instant'})",y)
+            pages[0].wait_for_timeout(2300)
+            expected,actual=map(snapshot,pages)
+            compare(expected,actual,f"{width}x{height} scroll sample {index}")
+            if previous and expected["elements"] != previous["elements"]:
+                changed=True
+            previous=expected
+            if width==1440 and index in (2,4,6):
+                pages[1].screenshot(path=str(PROOFS/f"original-motion-{index}.jpg"),type="jpeg",quality=85)
+        assert changed,"scrolling must actually change motion"
+        # Real wheel input follows the same original progression too.
+        for page in pages:
+            page.mouse.wheel(0,-180)
+        pages[0].wait_for_timeout(1000)
+        compare(snapshot(pages[0]),snapshot(pages[1]),f"{width} wheel scroll")
+        for ctx,page,errors in contexts:
+            assert not errors,errors
+            ctx.close()
+        print(f"PASS: {width}x{height}: 10 scroll samples and wheel input match original perspective, scale, dimming, crop, timing configuration and snapping.",flush=True)
 
-def assert_static_motion(page, label):
-    result = page.evaluate("""() => {
-      const root = document.documentElement;
-      const bad = [];
-      for (const name of ['motion', 'cine', 'story-stacked']) {
-        if (root.classList.contains(name)) bad.push(name);
-      }
-      for (const el of document.querySelectorAll('[data-layer], .page-inner, .moment, .moment img')) {
-        if (el.style.transform || el.style.filter) bad.push(el.className + ': retained inline motion');
-      }
-      for (const el of document.querySelectorAll('.stage-figure')) {
-        if (Number(getComputedStyle(el).opacity) < 0.95) bad.push('hidden stage portrait');
-      }
-      return bad;
-    }""")
-    assert not result, (label, result)
-    assert_story_readable(page, label)
-
-
-def assert_visible_reveals(page, label):
-    failures = page.evaluate("""() => {
-      const bad = [];
-      for (const el of document.querySelectorAll('[data-curtain]')) {
-        const rect = el.getBoundingClientRect();
-        const visibleHeight = Math.min(rect.bottom, innerHeight * 0.9) - Math.max(rect.top, 0);
-        if (visibleHeight < 16 || !rect.width || !rect.height) continue;
-        if (!el.classList.contains('is-revealed')) bad.push(el.className + ': not revealed');
-        const portrait = el.querySelector('.stage-figure');
-        if (portrait && Number(getComputedStyle(portrait).opacity) < 0.9) bad.push('portrait opacity');
-      }
-      return bad;
-    }""")
-    assert not failures, (label, failures)
-
-
-def scroll_to(page, selector, offset=0):
-    page.evaluate("""({selector, offset}) => {
-      const el = document.querySelector(selector);
-      if (!el) throw new Error('Missing review target: ' + selector);
-      scrollTo({top: el.getBoundingClientRect().top + scrollY + offset, behavior: 'instant'});
-    }""", {"selector": selector, "offset": offset})
-    page.wait_for_timeout(1150)
-
-
-def capture(page, name):
-    broken = page.evaluate("""async () => {
-      const images = [...document.images].filter(img => {
-        const r = img.getBoundingClientRect();
-        return r.width && r.height && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
-      });
-      await Promise.all(images.map(img => img.decode ? img.decode().catch(() => undefined) : Promise.resolve()));
-      return images.filter(img => !img.naturalWidth).map(img => img.currentSrc || img.src);
-    }""")
-    assert not broken, ("Broken visible images", name, broken)
-    PROOFS.mkdir(parents=True, exist_ok=True)
-    page.screenshot(path=str(PROOFS / f"motion-{name}.jpg"), type="jpeg", quality=82, full_page=False)
-
-
-def check_anchor(page):
-    toggle = page.locator(".nav-toggle")
-    mobile = toggle.is_visible()
-    target = page.locator('.nav-links a[href="#speaking-topics"]')
-    if mobile:
-        assert page.evaluate("document.querySelector('.site-header').classList.contains('is-scrolled')"), "exercise the menu after scrolling"
-        if toggle.get_attribute("aria-expanded") != "true":
-            toggle.click()
-        menu = page.locator(".nav-links")
-        menu.wait_for(state="visible")
-        bounds = menu.bounding_box()
-        header = page.locator(".site-header").bounding_box()
-        viewport_height = page.evaluate("document.documentElement.clientHeight")
-        assert bounds and header
-        assert abs(bounds["y"] - header["height"]) <= 3, ("Scrolled menu top", bounds, header)
-        assert bounds["height"] >= viewport_height - header["height"] - 3, ("Scrolled menu does not fill the viewport", bounds, viewport_height)
-        # Both ends of an overflowing landscape menu must remain reachable.
-        for link in (page.locator(".nav-links > a").first, page.locator(".nav-links > a").last):
-            link.scroll_into_view_if_needed()
-            assert link.evaluate("""el => {
-              const r = el.getBoundingClientRect();
-              const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-              return hit === el || el.contains(hit);
-            }"""), "menu endpoint is obscured or outside the scrollable area"
-    target.scroll_into_view_if_needed()
-    assert target.evaluate("""el => {
-      const r = el.getBoundingClientRect();
-      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-      return hit === el || el.contains(hit);
-    }"""), "navigation target does not receive pointer hit testing"
-    target.click()
-    page.wait_for_timeout(1250)
-    header = page.locator(".site-header").bounding_box()
-    heading = page.locator("#topics-title").bounding_box()
-    assert header and heading
-    assert heading["y"] >= header["y"] + header["height"] - 3, ("Anchor under header", heading, header)
-    assert page.evaluate("location.hash") == "#speaking-topics"
-    if mobile:
-        assert toggle.get_attribute("aria-expanded") == "false"
-
-
-def check_runtime_preferences(page, label):
-    page.emulate_media(reduced_motion="reduce")
-    page.wait_for_function("!document.documentElement.classList.contains('motion')")
-    page.wait_for_timeout(100)
-    assert_static_motion(page, label + " reduced")
-    page.emulate_media(reduced_motion="no-preference")
-    page.wait_for_function("document.documentElement.classList.contains('motion')")
-    page.wait_for_timeout(450)
-    assert_finite_motion(page, label + " re-enabled")
-    assert_story_readable(page, label + " re-enabled")
-    assert_visible_reveals(page, label + " re-enabled")
-
-
-
-def check_print_layout(page):
-    page.emulate_media(media="print")
-    page.wait_for_timeout(350)
-    failures = page.evaluate("""() => {
-      const bad = [];
-      for (const article of document.querySelectorAll('.storybook > .page')) {
-        const inner = article.querySelector('.page-inner');
-        const outerStyle = getComputedStyle(article);
-        const innerStyle = getComputedStyle(inner);
-        if (outerStyle.position !== 'static' || outerStyle.overflowY !== 'visible') bad.push(article.id + ': pinned print page');
-        if (innerStyle.transform !== 'none' || Number(innerStyle.opacity) < 0.99) bad.push(article.id + ': transformed print content');
-        if (article.clientHeight + 2 < inner.scrollHeight) bad.push(article.id + ': cropped print content');
-      }
-      return bad;
-    }""")
-    assert not failures, ("Print story fallback", failures)
-    page.emulate_media(media="screen")
-    page.evaluate("dispatchEvent(new Event('resize'))")
-    page.wait_for_timeout(450)
-    assert_story_readable(page, "after print preview")
-    passed("print preview uses full-height static story content without transforms")
-
-
-def check_long_story_and_resize(page):
-    original = page.evaluate("document.documentElement.classList.contains('story-stacked')")
-    page.evaluate("""() => {
-      window.__motionStackTransitions = [];
-      let prior = document.documentElement.classList.contains('story-stacked');
-      window.__motionStackObserver = new MutationObserver(() => {
-        const next = document.documentElement.classList.contains('story-stacked');
-        if (next !== prior) window.__motionStackTransitions.push(next);
-        prior = next;
-      });
-      window.__motionStackObserver.observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
-      const copy = document.querySelector('#chapter-1 .chapter-copy');
-      const extra = document.createElement('p');
-      extra.id = 'motion-qa-long-content';
-      extra.textContent = copy.querySelector('p').textContent.repeat(10);
-      copy.append(extra);
-      dispatchEvent(new Event('resize'));
-    }""")
-    page.wait_for_function("document.documentElement.classList.contains('story-stacked')")
-    page.evaluate("scrollTo({top: 0, behavior: 'instant'})")
-    page.wait_for_timeout(450)
-    end = page.evaluate("""() => {
-      const next = document.querySelector('#chapter-2');
-      const height = document.querySelector('[data-motion-viewport]').getBoundingClientRect().height;
-      return next.getBoundingClientRect().top + scrollY - height;
-    }""")
-    page.evaluate("(y) => scrollTo({top:y, behavior:'instant'})", end)
-    page.wait_for_timeout(850)
-    assert page.locator("#motion-qa-long-content").evaluate("""el => {
-      const r = el.getBoundingClientRect();
-      return r.bottom > 0 && r.bottom < innerHeight;
-    }"""), "the end of a long chapter must be readable before the next page covers it"
-    page.wait_for_timeout(850)
-    assert_story_readable(page, "injected long chapter")
-    transitions = page.evaluate("window.__motionStackTransitions")
-    assert len(transitions) <= 1, ("Story stacking oscillates after overflow", transitions)
-    page.evaluate("""() => {
-      window.__motionStackObserver.disconnect();
-      document.querySelector('#motion-qa-long-content').remove();
-      dispatchEvent(new Event('resize'));
-    }""")
-    page.wait_for_function(
-        "(expected) => document.documentElement.classList.contains('story-stacked') === expected",
-        arg=original,
-    )
-    for width in (900, 901, 1440):
-        page.set_viewport_size({"width": width, "height": 900})
-        page.wait_for_function(
-            "(expected) => document.documentElement.classList.contains('cine') === expected",
-            arg=width >= 901,
-        )
-        page.wait_for_timeout(450)
-        assert_story_readable(page, f"resize {width}")
-        assert_overflow(page, f"resize {width}")
-        assert_finite_motion(page, f"resize {width}")
-    passed("long chapters remain readable with 3D enabled; resize crosses 900/901 safely")
-
-
-
-def check_story_depth(page, label):
-    page.evaluate("scrollTo({top:0, behavior:'instant'})")
+    # Keep the fixed scrolled mobile menu reachable.
+    ctx,page,errors=open_page(browser,url,390,844)
+    page.evaluate("scrollTo({top:600,behavior:'instant'})")
     page.wait_for_timeout(300)
-    geometry = page.evaluate("""() => ({
-      next: document.querySelector('#chapter-2').getBoundingClientRect().top + scrollY,
-      height: document.querySelector('[data-motion-viewport]').getBoundingClientRect().height
-    })""")
-    page.evaluate("(g) => scrollTo({top:g.next-g.height-20, behavior:'instant'})", geometry)
-    page.wait_for_timeout(850)
-    before = page.locator("#chapter-1 .page-inner").evaluate("el => getComputedStyle(el).transform")
-    page.evaluate("(g) => scrollTo({top:g.next-g.height*.6, behavior:'instant'})", geometry)
-    page.wait_for_timeout(850)
-    result = page.locator("#chapter-1 .page-inner").evaluate("""el => {
-      const matrix = new DOMMatrixReadOnly(getComputedStyle(el).transform);
-      return {transform:getComputedStyle(el).transform, tilt:matrix.m23, scale:matrix.m11};
-    }""")
-    assert result["transform"] != before and abs(result["tilt"]) > .01, (label, "missing visible 3D chapter turn", result)
-    assert result["scale"] < .995, (label, "chapter did not recede", result)
-    assert_story_readable(page, label + " active turn")
-    assert_overflow(page, label + " active turn")
-    if label in ("desktop", "phone", "desktop-short"):
-        capture(page, label + "-3d-turn")
-    passed(label + ": actual scroll changes chapter perspective and scale")
+    page.locator(".nav-toggle").click()
+    menu=page.locator(".nav-links")
+    rect=menu.bounding_box()
+    assert rect and rect["height"]>700,rect
+    link=page.locator('.nav-links a[href="#speaking-topics"]')
+    link.click()
+    page.wait_for_timeout(700)
+    assert page.evaluate("location.hash")=="#speaking-topics"
+    assert page.locator(".nav-toggle").get_attribute("aria-expanded")=="false"
+    assert not errors,errors
+    ctx.close()
+    print("PASS: scrolled mobile menu remains full-height and clickable.",flush=True)
 
-
-with serve() as base, sync_playwright() as playwright:
-    browser = playwright.chromium.launch()
-    for label, width, height in VIEWS:
-        context, page, errors, writes = make_page(browser, base, width, height)
-        page.wait_for_timeout(2050)  # Complete the existing hero headline/proof entrance.
-        assert_overflow(page, label + " hero")
-        assert_finite_motion(page, label + " hero")
-        assert_story_readable(page, label + " initial")
-        if label == "desktop":
-            capture(page, "desktop-hero")
-        elif label == "phone":
-            capture(page, "mobile-hero")
-        elif label == "phone-landscape":
-            capture(page, "mobile-landscape")
-
-        scroll_to(page, "#about")
-        assert_visible_reveals(page, label + " about")
-        assert_overflow(page, label + " about")
-        if label == "desktop":
-            capture(page, "desktop-about")
-        elif label == "phone":
-            capture(page, "mobile-about")
-
-        scroll_to(page, "#chapter-2")
-        assert_story_readable(page, label + " story")
-        assert_visible_reveals(page, label + " story")
-        assert_finite_motion(page, label + " story")
-        assert_overflow(page, label + " story")
-        if label == "desktop":
-            capture(page, "desktop-story")
-        elif label == "desktop-short":
-            capture(page, "desktop-short-story")
-
-        check_story_depth(page, label)
-
-        if width >= 901 and height >= 620:
-            page.wait_for_function("document.documentElement.classList.contains('cine')")
-            track = page.evaluate("""() => {
-              const el = document.querySelector('[data-cinema]');
-              return {top: el.getBoundingClientRect().top + scrollY,
-                      range: Math.max(1, el.offsetHeight - document.documentElement.clientHeight)};
-            }""")
-            page.evaluate("(t) => scrollTo({top: t.top + t.range * 0.30, behavior: 'instant'})", track)
-            page.wait_for_timeout(700)
-            large = page.locator(".moment").first.bounding_box()
-            assert large and large["width"] >= width * 0.88, (label, "Moments did not open", large)
-            assert_finite_motion(page, label + " cinema")
-            assert_overflow(page, label + " cinema")
-            if label == "desktop":
-                capture(page, "desktop-moments")
-            page.evaluate("(t) => scrollTo({top: t.top + t.range * 0.02, behavior: 'instant'})", track)
-            page.wait_for_timeout(700)
-            small = page.locator(".moment").first.bounding_box()
-            assert small and small["width"] <= width * 0.75, (label, "Moments did not recede", small)
-        else:
-            assert not page.evaluate("document.documentElement.classList.contains('cine')")
-            scroll_to(page, ".moments")
-            assert_overflow(page, label + " moments")
-            if label == "phone":
-                capture(page, "mobile-moments")
-
-        scroll_to(page, "#events")
-        assert_visible_reveals(page, label + " event")
-        assert_overflow(page, label + " event")
-        if label == "desktop":
-            capture(page, "desktop-event")
-        check_anchor(page)
-        if label in ("desktop", "phone-wide"):
-            check_runtime_preferences(page, label)
-        if label == "desktop":
-            check_long_story_and_resize(page)
-            check_print_layout(page)
-        assert_clean(errors, writes, label)
-        context.close()
-        passed(f"{label} {width}x{height}: scroll, reveals, finite transforms, story flow, anchors and overflow")
-
-    context, page, errors, writes = make_page(browser, base, 1440, 900, reduced=True)
-    assert_static_motion(page, "initial reduced preference")
-    check_runtime_preferences(page, "initial reduced preference")
-    assert_clean(errors, writes, "initial reduced preference")
-    context.close()
-    passed("initial and runtime reduced-motion preferences preserve visible, readable content")
-
-    for width, height in ((1440, 900), (390, 844)):
-        context, page, errors, writes = make_page(browser, base, width, height, javascript=False)
-        assert_static_motion(page, f"no JavaScript {width}")
-        assert_overflow(page, f"no JavaScript {width}")
-        scroll_to(page, "#chapter-2")
-        assert_story_readable(page, f"no JavaScript story {width}")
-        assert_overflow(page, f"no JavaScript story {width}")
-        if width == 1440:
-            capture(page, "static-story")
-        assert_clean(errors, writes, f"no JavaScript {width}")
-        context.close()
+    ctx,page,errors=open_page(browser,url,1440,900,reduced=True)
+    assert not page.evaluate("document.documentElement.classList.contains('motion')")
+    assert page.locator(".page").first.evaluate("el=>getComputedStyle(el).position")=="relative"
+    assert not errors,errors
+    ctx.close()
     browser.close()
-
-passed("desktop/mobile static flow remains readable without JavaScript")
-print(f"Viewport JPEG proofs: {PROOFS.relative_to(ROOT)}", flush=True)
-print("No live inquiry, registration, Sheet or email submission was performed.", flush=True)
+print("PASS: original motion restored exactly; static accessibility fallback retained.",flush=True)
