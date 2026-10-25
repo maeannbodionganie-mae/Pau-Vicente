@@ -433,13 +433,16 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
 .motion [data-reveal].is-inview{animation:settle .64s var(--ease) both}
 @keyframes settle{from{opacity:.2;transform:translateY(18px)}to{opacity:1;transform:none}}
 
-/* Desktop: one section per screen; story pages stack and turn */
+/* Each chapter keeps its natural height. Tall pages pin only after their bottom
+   is reachable; the same 3D turn works on phones and short desktop windows. */
+.story-stacked .page{position:sticky;top:var(--page-stick-top,0px);min-height:100svh;height:auto;overflow:visible;box-shadow:0 -34px 60px -24px rgba(0,0,0,.6)}
+.story-stacked .page-inner{min-height:calc(100svh - 1px);will-change:transform,opacity}
+.motion:not(.cine) .moment{transform-origin:50% 100%}
+/* Desktop section spacing */
 @media(min-width:901px) and (min-height:620px){
   .topics.panel,.events.panel{padding-top:calc(var(--header) + clamp(14px,2.6vh,32px));padding-bottom:clamp(20px,3vh,40px)}
   .topics .row-head,.events .row-head{margin-bottom:clamp(18px,3vh,36px)}
-  .story-stacked .page{position:sticky;top:0;height:100svh;overflow:hidden;box-shadow:0 -34px 60px -24px rgba(0,0,0,.6)}
   .page-inner{padding-block:calc(var(--header) + 24px) 40px}
-  .story-stacked .page-inner{height:100%;will-change:transform,opacity}
 }
 @media(max-width:1180px){
   .nav-links{gap:16px}
@@ -524,8 +527,8 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  .story-stacked .page{position:relative;height:auto;overflow:visible}
-  .story-stacked .page-inner{height:auto;transform:none!important;opacity:1!important}
+  .story-stacked .page{position:relative;min-height:0;height:auto;overflow:visible}
+  .story-stacked .page-inner{min-height:0;height:auto;transform:none!important;opacity:1!important}
   .motion [data-layer]{transform:none!important}
   .motion [data-stage] .stage-panel,.motion [data-curtain].photo{clip-path:none!important}
   .motion [data-stage] .stage-line,.motion [data-stage] .stage-figure{opacity:1!important;translate:none!important}
@@ -535,7 +538,7 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
   .site-header,.actions,.button,.text-link,.chapter-index,.site-footer,.inquiry-form,.registration-panel,.pau-assistant,.band,.scroll-cue{display:none!important}
   .tone-dark,.tone-light,.tone-sand,.page,.story{background:#fff;color:#000}
   .panel{min-height:0;padding-block:28px}
-  .page,.story-stacked .page{position:static;height:auto;overflow:visible}
-  .story-stacked .page-inner{height:auto;transform:none!important;opacity:1!important;filter:none!important}
+  .page,.story-stacked .page{position:static;min-height:0;height:auto;overflow:visible}
+  .story-stacked .page-inner{min-height:0;height:auto;transform:none!important;opacity:1!important;filter:none!important}
   figure{break-inside:avoid}
 }
