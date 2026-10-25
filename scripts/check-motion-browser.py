@@ -95,6 +95,7 @@ with server() as url, sync_playwright() as p:
         previous=None
         for index,y in enumerate(geometry):
             for page in pages:
+                page.mouse.move(width / 2, height / 2)
                 page.evaluate("(y)=>scrollTo({top:y,behavior:'instant'})",y)
             pages[0].wait_for_timeout(2300)
             expected,actual=map(snapshot,pages)
