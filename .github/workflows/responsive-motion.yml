@@ -31,7 +31,8 @@ jobs:
       - name: Install development checks
         run: |
           python -m pip install -r scripts/requirements-qa.txt
-          python -m playwright install --with-deps chromium
+          python -m playwright install chromium
+          python -c "from playwright.sync_api import sync_playwright; p=sync_playwright().start(); b=p.chromium.launch(); b.close(); p.stop()" || python -m playwright install-deps chromium
       - name: Render and validate site
         run: |
           python scripts/export-assistant-emoji.py
