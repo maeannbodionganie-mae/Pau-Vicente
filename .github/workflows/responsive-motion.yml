@@ -34,6 +34,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Render and validate site
         run: |
+          python scripts/export-assistant-emoji.py
           python scripts/render.py
           python scripts/validate.py
           for file in dist/assets/*.js; do node --check "$file"; done
@@ -44,6 +45,7 @@ jobs:
           python scripts/check-browser.py
           python scripts/check-motion-browser.py
           python scripts/check-assistant-browser.py
+          python scripts/check-premium-browser.py
           git diff --check
       - name: Save responsive browser review
         if: always()
@@ -53,5 +55,6 @@ jobs:
           path: |
             docs/review/responsive-motion
             docs/review/assistant
+            docs/review/premium
           if-no-files-found: warn
           retention-days: 7

@@ -1,4 +1,4 @@
-"""Compare the published motion against the exact pre-edit choreography in real Chromium."""
+"""Compare the preserved legacy choreography under the shared section enhancements."""
 from pathlib import Path
 import contextlib, json, socket, subprocess, sys, time, urllib.request
 from playwright.sync_api import sync_playwright
@@ -114,7 +114,7 @@ with server() as url, sync_playwright() as p:
         for ctx,page,errors in contexts:
             assert not errors,errors
             ctx.close()
-        print(f"PASS: {width}x{height}: 10 scroll samples and wheel input match original perspective, scale, dimming, crop, timing configuration and snapping.",flush=True)
+        print(f"PASS: {width}x{height}: 10 scroll samples and wheel input match preserved layer and cinematic transforms under the shared section enhancements.",flush=True)
 
     # Keep the fixed scrolled mobile menu reachable.
     ctx,page,errors=open_page(browser,url,390,844)
@@ -139,4 +139,4 @@ with server() as url, sync_playwright() as p:
     assert not errors,errors
     ctx.close()
     browser.close()
-print("PASS: original motion restored exactly; static accessibility fallback retained.",flush=True)
+print("PASS: original controller retained; shared enhancements and static accessibility fallback verified.",flush=True)

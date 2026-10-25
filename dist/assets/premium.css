@@ -2,7 +2,7 @@
 html.immersive{scroll-snap-type:none}
 .immersive [data-depth-content]{transform-origin:50% 100%;transform:perspective(1800px) translate3d(0,var(--section-y,0px),var(--section-z,0px)) rotateX(var(--section-tilt,0deg)) scale(var(--section-scale,1));opacity:var(--section-alpha,1)}
 .immersive [data-depth-content].depth-active{will-change:transform,opacity}
-.immersive .page{position:sticky;top:var(--chapter-top,0px);height:auto;min-height:100svh;overflow:visible}
+.immersive .page{position:sticky;top:var(--chapter-top,0px);height:auto;min-height:100svh;overflow:visible;box-shadow:0 -28px 64px -30px rgba(0,0,0,.55)}
 .immersive .page-inner{height:auto;min-height:calc(100svh - 1px);transform-origin:50% 100%}
 html:not(.immersive) .page{position:relative;height:auto;overflow:visible}
 html:not(.immersive) .page-inner{height:auto}
@@ -55,4 +55,17 @@ html:not(.immersive) .page-inner{height:auto}
  [data-depth-content],.page-inner{transform:none!important;opacity:1!important;filter:none!important}
  .page{position:static!important;height:auto!important;min-height:0!important;overflow:visible!important}
  .page-inner{height:auto!important;min-height:0!important}
+}
+
+.pau-assistant:has(.pau-chat:not([hidden])) .pau-launcher{visibility:hidden}
+
+@media print,(prefers-reduced-motion:reduce){
+ .cine .moments-track{height:auto}
+ .cine .moments-view{position:relative;top:auto;height:auto;overflow:visible;padding-block:calc(var(--header) + 40px) 64px}
+ .cine .moments-head{position:relative;top:auto;margin-bottom:30px;opacity:1!important}
+ .cine .moments-scene{position:relative;inset:auto;display:flex;gap:24px;overflow-x:auto;padding:12px var(--gutter) 24px;perspective:none}
+ .cine .moment{position:relative;inset:auto;flex:0 0 min(78vw,400px);width:min(78vw,400px);padding:12px;background:var(--espresso-soft);transform:none!important;clip-path:none!important;filter:none!important;box-shadow:none}
+ .cine .moment .photo{position:relative;inset:auto;aspect-ratio:4/3}
+ .cine .moment figcaption{position:relative;inset:auto;max-width:none;padding:16px 6px 6px;font:400 18px/1.4 var(--display);opacity:1!important}
+ .cine .moment::after{display:none}
 }
