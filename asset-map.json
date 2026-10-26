@@ -532,34 +532,34 @@
   },
   "cross-core-team-cut": {
     "original": "01-24 CCA_2511.jpg",
-    "width": 1600,
-    "height": 2200,
+    "width": 1070,
+    "height": 1470,
     "webp": [
       {
         "src": "assets/photos/cross-core-team-cut-480.webp",
         "width": 480,
-        "height": 660
+        "height": 659
       },
       {
         "src": "assets/photos/cross-core-team-cut-800.webp",
         "width": 800,
-        "height": 1100
+        "height": 1099
       },
       {
         "src": "assets/photos/cross-core-team-cut-1200.webp",
         "width": 1200,
-        "height": 1650
+        "height": 1649
       },
       {
         "src": "assets/photos/cross-core-team-cut-1600.webp",
         "width": 1600,
-        "height": 2200
+        "height": 2198
       }
     ],
     "fallback": "assets/photos/cross-core-team-cut.png",
-    "fallback_width": 800,
-    "fallback_height": 1100,
-    "processing": "Background removed by backdrop-difference matting at full resolution: IS-Net silhouette, a smooth plate of the studio backdrop, per-pixel alpha from the colour difference, and the backdrop unmixed from every edge pixel (no painted edges). Thin metal returned to neutral; warm-lit hair toned to natural dark brown inside a face-parsing hair mask, skin untouched. Framing matches the previous cut. Original photograph unchanged."
+    "fallback_width": 1070,
+    "fallback_height": 1470,
+    "processing": "Imagegen background-extraction edit: removed yellow background residue along right trouser edge and between legs; transparent PNG with responsive WebP derivatives."
   },
   "pau-hero-cut": {
     "original": "01-24 CCA_2006.jpg",

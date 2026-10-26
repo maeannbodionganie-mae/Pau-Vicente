@@ -84,11 +84,11 @@ passed('all anchors, public contacts, safe external links, and prefilled email f
 
 assert len(manifest) >= 15
 used = [pic['data-photo'] for pic in soup.select('picture[data-photo]')]
-# The owner asked for her professional portrait to appear again in chapter 3, replacing the second call screenshot.
+# Chapter 3 shows both owner-supplied meeting screenshots.
 REUSED = {'pau-contact-cut'}
 dupes = {k for k in used if used.count(k) > 1}
 assert dupes <= REUSED and len(set(used)) >= 14, used
-assert {k for k in manifest if not k.endswith('-cut')} - {'pau-hero', 'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team', 'mentoring-taylin'} <= set(used), 'every documentary photograph is shown'
+assert {k for k in manifest if not k.endswith('-cut')} - {'pau-hero', 'pau-about', 'pau-speaking-style', 'pau-why', 'pau-contact', 'cross-core-team'} <= set(used), 'every documentary photograph is shown'
 assert set(used) <= set(manifest)
 assert len(soup.select('picture[data-photo] img')) == len(used)
 assert len(soup.select('img.pau-avatar, img.pau-header-avatar')) == 2
