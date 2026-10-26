@@ -97,10 +97,11 @@
   async function ask(question){
     if(busy||!question.trim())return;
     options.open=false;input.focus({preventScroll:true});
-    question=question.trim().slice(0,1000);const view=pageContext();busy=true;send.disabled=true;status.textContent='Finding the relevant portfolio details…';
+    question=question.trim().slice(0,1000);busy=true;send.disabled=true;status.textContent='Finding the relevant portfolio details…';
     const token=++generation;append('user',question);input.value='';
     await ready;
     if(token!==generation)return;
+    const view=pageContext();
     try {
       if(!knowledge)throw new Error('Knowledge unavailable');
       let result;
