@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-22",
+  "version": "2026-10-26",
   "provenance": "Reviewed public copy of Pau Vicente’s speaker portfolio, based on the owner-supplied source and requirements. No private administrative notes.",
   "facts": [
     {"id":"profile","title":"Meet Pau","href":"#about","text":"Pau Vicente is a speaker, freelance coach, and social media marketing & branding strategist. Her message is ‘Lead with Love. Grow with Purpose.’ She helps aspiring freelancers build with confidence."},
@@ -28,5 +28,6 @@
     {"from":"style","relation":"supports","to":"outcomes"},
     {"from":"audiences","relation":"can_discuss","to":"formats"},
     {"from":"coaching","relation":"confirm_with","to":"contact"}
-  ]
+  ],
+  "site": {"events":[{"slug":"freelance-101","registrationMode":"preview"}]}
 }

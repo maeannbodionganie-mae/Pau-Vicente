@@ -10,17 +10,34 @@ The Vercel function at `/api/pau` supports Gemini when `GEMINI_API_KEY` is confi
 
 Gemini reasons about audience fit and selects approved knowledge IDs and a suitable introduction. The server renders factual copy from the reviewed knowledge map rather than displaying arbitrary model prose. This prevents invented qualifications from reaching visitors. Source links let visitors review the relevant portfolio section. Unknown fees, credentials, schedules, and other unprovided details are referred to Pau. The assistant cannot send inquiries or confirm bookings.
 
-Only the last six visitor questions accompany a current Gemini question; no client-supplied system or assistant messages are accepted. When AI is active, the interface explains that questions go to Google Gemini. The app does not intentionally persist or log chat transcripts. Hosting and provider processing policies still apply. Provider failures fall back to approved facts with a visible notice. Burst protection is per function instance; configure Vercel Firewall and provider spending limits for deployment-wide abuse control.
+The last six visitor questions and bounded page context accompany a current Gemini question; no client-supplied system or assistant messages are accepted. When AI is active, the interface explains that questions go to Google Gemini. The app does not intentionally persist or log chat transcripts. Hosting and provider processing policies still apply. Provider failures fall back to approved facts with a visible notice. Burst protection is per function instance; configure Vercel Firewall and provider spending limits for deployment-wide abuse control.
 
 ## Events and inquiries
 
 The `event` and `registration` facts are generated from `src/content/events.json` by `scripts/render.py`, so the assistant always describes the same event as the page. The sample event is described as a sample, and the registration preview as reserving nothing. Questions about events, registering, or attending route to these facts. The assistant still cannot send inquiries or register anyone. It points visitors to the contact form or the event page. On small screens, the avatar hides while a visitor is filling in a page form so it never covers fields or buttons.
 
-## Graphify: pending service identification
+## Graphify knowledge graph
 
-No Graphify connection is claimed. The Graphify product found during research describes a software/code knowledge-graph platform. The requested service URL, workspace or graph, authentication method, and supported query/export contract were not supplied. A working integration requires the exact intended Graphify service and an approved graph containing only Pau's public portfolio facts. Do not connect an unrestricted graph containing internal notes or credentials.
+The official project is [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify), distributed as `graphifyy`. The website uses a **Graphify-built export**, not a hosted Graphify Cloud connection. No Graphify account, OAuth token, or additional production service is needed for this deployment.
 
-`dist/assets/pau-knowledge.json` contains reviewed public fact nodes and explicit relationships. This is the site's own knowledge-map format, not a claim of Graphify API compatibility. It can serve as a reviewed import source once the intended Graphify integration is identified. The status endpoint honestly returns `graphify: "not_connected"`.
+`scripts/build-pau-graph.py` validates the reviewed public facts and their explicit relationships, assembles them with Graphify `build_from_json`, and exports `dist/assets/pau-graph.json` with Graphify `to_json`. It does not scrape the repository, ingest private notes, or infer additional qualifications. Graphify is a development dependency; production remains a dependency-free Node function.
+
+`pau-retrieval.js` ranks relevant graph nodes, traverses their explicit one-hop relationships, and sends that evidence to Gemini. Answers are rendered from the referenced approved facts, with source links. The exported graph records source provenance and a canonical SHA-256 of the knowledge document, so line-ending differences do not invalidate it. If the knowledge source changes without a graph rebuild, the endpoint reports `stale_export` and uses the approved snapshot instead of claiming the graph is current. `export_ready` means a valid bundled graph, not a live Cloud connection.
+
+Rebuild after changing portfolio facts or events:
+
+```bash
+python -m pip install -r scripts/requirements-graph.txt
+python scripts/render.py
+python scripts/build-pau-graph.py
+node scripts/check-pau-api.cjs
+```
+
+## Page-aware navigation
+
+The assistant is available on the homepage, event pages, and the not-found page. A “Viewing” label follows the visible section. “Guide me here” explains that section; questions about the inquiry form get step-by-step instructions. The last focused field ID can request field-specific help. Only allowlisted page, section, and field identifiers accompany questions; no field values, arbitrary DOM content, screen images, URLs, or other browser tabs are read.
+
+Navigation suggestions are explicit visitor-clicked links selected from a shared destination registry. Same-page links close the panel, scroll to and focus the destination, and briefly outline it. Cross-page links use the normal browser navigation. The assistant does not automatically redirect, fill fields, submit inquiries, or register a visitor. Registration guidance uses the event’s actual preview/live/closed state from the same generated source as the event page.
 
 ## Deployment and checks
 
@@ -36,7 +53,7 @@ node scripts/check-pau-api.cjs
 node scripts/check-pau-ui.cjs
 ```
 
-The API suite uses a stub provider, not a real Gemini key. Browser screenshots remain unavailable in the current managed environment; DOM tests and CSS parsing do not replace visual mobile/tablet/desktop review.
+The API suite stubs Gemini and exercises the real Graphify export, retrieval, context validation, and navigation contracts. Browser review also covers section detection, the contact destination link, step-by-step inquiry guidance, and event-page registration guidance. Live production verification must confirm the deployed knowledge version, `graphify: "export_ready"`, and an actual Gemini-mode answer; a GET showing configured mode alone does not prove a provider call succeeded.
 
 ## Avatar
 

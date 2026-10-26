@@ -29,13 +29,30 @@ async function request(body,options={}){
     for(const message of ['What is Pau’s degree?','How much is her fee?','Is she available on Friday?','Does she guarantee income?']){
       const reply=await request({message});assert.equal(reply.data.sources[0].id,'unverified');assert.match(reply.data.answer,/ask Pau directly/);
     }
-    for(const message of ['Is there an upcoming event I can join?','How do I register for Freelance 101?']){
+    for(const message of ['Is there an upcoming event I can join?','Tell me about registration for Freelance 101']){
       const reply=await request({message});assert.deepEqual(reply.data.sources.map(s=>s.id),['event','registration']);
       assert.match(reply.data.answer,/not a confirmed session/);assert.match(reply.data.answer,/no seat is reserved/);
     }
     const ids=new Set(knowledge.facts.map(f=>f.id));
     for(const edge of knowledge.relationships){assert(ids.has(edge.from));assert(ids.has(edge.to));}
     assert.throws(()=>engine.render({kind:'answer',ids:['invented']},knowledge));
+    const navigation=require('../dist/assets/pau-navigation.js');
+    const retrieval=require('../dist/assets/pau-retrieval.js');
+    assert.equal(retrieval.status(),'export_ready');
+    const context={page:'home',section:'contact',focus:'inq-email'};
+    const guide=await request({message:'What can I do here?',context});
+    assert.match(guide.data.answer,/Contact & Invitations/);
+    assert.match(guide.data.answer,/email address/);
+    assert.equal(guide.data.actions[0].id,'contact');
+    assert.equal(guide.data.graphify,'export_ready');
+    const registrationGuide=await request({message:'Paano mag register?',context:{page:'event',section:'register',focus:''}});
+    assert.match(registrationGuide.data.answer,/walang mare-reserve/);
+    assert.equal(navigation.target('register',knowledge).href,'/events/freelance-101/#register');
+    assert.equal((await request({message:'Help me here',context:{...context,formValues:'private'}})).code,400);
+    assert.equal((await request({message:'Help me here',context:{...context,section:'javascript:alert(1)'}})).code,400);
+    const retrieved=retrieval.retrieve('social media branding',['marketing']);
+    assert(retrieved.facts.some(f=>f.id==='marketing'));
+    assert.equal(retrieved.source,'graphify_export');
     let count=0;
     process.env.GEMINI_API_KEY='unit-test-placeholder';
     global.fetch=async(url,options)=>{
@@ -66,6 +83,6 @@ async function request(body,options={}){
     for(let i=0;i<13;i++)last=await request({message:'hi'},{headers:{'x-forwarded-for':'same-test-client'}});
     assert.equal(last.code,429);assert.equal(last.headers['Retry-After'],'60');
     console.log('PASS: input/origin validation, scope refusal, unverified claims, sample-event and registration answers, knowledge references, grounded Gemini routing, hidden reasoning exclusion, provider failure fallback, and burst limit.');
-    console.log('Provider calls are mocked. Live Gemini/Graphify integration is not claimed.');
+    console.log('Provider calls are mocked. Real Graphify export and navigation paths are tested; live Gemini still needs deployment verification.');
   }finally{if(oldKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=oldKey;global.fetch=oldFetch;}
 })().catch(error=>{console.error(error);process.exitCode=1;});

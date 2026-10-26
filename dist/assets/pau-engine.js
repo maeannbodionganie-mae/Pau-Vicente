@@ -12,7 +12,7 @@
     invitation: 'You can discuss the fit and arrangements directly with Pau:',
     greeting: 'Hi! I’m Pau, the portfolio assistant—not Pau Vicente herself. I can help you explore her experience, speaking topics, and event fit.'
   };
-  const decline = 'Ang scope ko ay tungkol lang kay Pau Vicente—her background, qualifications shared in her portfolio, speaking topics, and event inquiries. Hindi kasama sa scope ko ang tanong na iyon. You can ask which Pau talk fits your audience.';
+  const decline = 'Hindi kasama sa scope ko ang tanong na iyon, at wala akong verified information para sagutin ito. I can help with Pau’s background, talks, events, or guide you around this website.';
   function render(plan, knowledge, mode = 'portfolio-guide') {
     if (plan.kind === 'off_topic') return {answer:decline,sources:[],mode};
     if (plan.kind === 'greeting') return {answer:leads.greeting,sources:[],mode};

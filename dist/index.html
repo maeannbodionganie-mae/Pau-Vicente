@@ -30,6 +30,7 @@
   <script src="assets/inquiry.js" defer></script>
   <link rel="stylesheet" href="assets/pau-assistant.css">
   <link rel="stylesheet" href="assets/premium.css">
+  <script src="assets/pau-navigation.js" defer></script>
   <script src="assets/pau-engine.js" defer></script>
   <script src="assets/pau-assistant.js" defer></script>
 </head>
@@ -351,6 +352,8 @@
           <div class="pau-options-menu">
             <p class="pau-options-label">Start a conversation</p>
             <div id="pau-suggestions" class="pau-suggestions" aria-label="Suggested questions">
+              <button type="button" data-question="Give me a tour of this website">Website tour</button>
+              <button type="button" data-question="How do I fill in the inquiry form?">Help with the form</button>
               <button type="button" data-question="What qualifies Pau as a speaker?">Why invite Pau?</button>
               <button type="button" data-question="Which talk suits college students starting freelancing?">Find a talk</button>
               <button type="button" data-question="How can I invite Pau to our event?">Plan an event</button>
@@ -362,6 +365,7 @@
         </details>
         <button id="pau-close" class="pau-icon-button" type="button" aria-label="Close chat">×</button>
       </header>
+      <div class="pau-location"><span id="pau-location-label">Viewing this website</span><button id="pau-guide-here" type="button">Guide me here</button></div>
       <div id="pau-messages" class="pau-messages" role="log" aria-label="Conversation with Pau’s assistant" aria-live="polite" aria-relevant="additions"></div>
       <p id="pau-status" class="pau-status" role="status"></p>
       <form id="pau-form" class="pau-form"><label for="pau-question" class="pau-sr-only">Your question about Pau</label><input id="pau-question" name="question" type="text" maxlength="1000" autocomplete="off" placeholder="Ask about Pau…" required><button type="submit" id="pau-send" aria-label="Send question">Send <span aria-hidden="true">↗</span></button></form>

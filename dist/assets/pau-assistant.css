@@ -60,3 +60,9 @@
 @media(prefers-reduced-motion:reduce){.pau-messages{scroll-behavior:auto}.pau-avatar,.pau-launcher-label{transition:none}}
 .pau-assistant.is-tucked .pau-launcher{visibility:hidden}
 html:has(.nav-links.is-open) .pau-launcher{visibility:hidden}
+
+.pau-location{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;border-bottom:1px solid var(--a-rule);font-size:11px;color:var(--a-muted)}
+.pau-location button{flex:none;min-height:36px;padding:6px 10px;border:1px solid var(--a-rule);border-radius:6px;background:var(--a-card);color:var(--a-ink);font-size:11px}
+.pau-navigation-action{display:block;margin-top:12px;padding:10px 12px;border:1px solid var(--a-accent);border-radius:6px;background:var(--a-cream);color:var(--a-ink);font-size:12px;line-height:1.5;text-decoration:none}
+.pau-navigation-action:hover{background:var(--a-ivory)}
+.pau-navigation-target{outline:2px solid #b08a5f;outline-offset:6px;scroll-margin-top:110px}

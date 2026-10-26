@@ -24,14 +24,14 @@ class Element{
   focus(){this.focused=true;}
   scrollIntoView(){this.scrolled=true;}
 }
-const ids=['assistant','launcher','chat','question','form','messages','status','send','mode','privacy','close','clear','contact','suggestions','reset-position','options','options-toggle','greeting','greeting-open','greeting-dismiss'];
+const ids=['assistant','launcher','chat','question','form','messages','status','send','mode','privacy','close','clear','contact','suggestions','reset-position','options','options-toggle','greeting','greeting-open','greeting-dismiss','location-label','guide-here'];
 const elements=Object.fromEntries(ids.map(id=>['pau-'+id,new Element()]));
 elements['pau-chat'].hidden=true;
 const stored=new Map(),requests=[],viewport={width:390,height:844,addEventListener(){}};
 const documentListeners={};
-const document={getElementById:id=>elements[id],createElement:()=>new Element(),querySelector:()=>new Element(),addEventListener(type,fn){(documentListeners[type]||=[]).push(fn);}};
+const document={body:new Element(),getElementById:id=>elements[id],createElement:()=>new Element(),querySelector:()=>new Element(),addEventListener(type,fn){(documentListeners[type]||=[]).push(fn);}};
 const fireDocument=(type,event)=>(documentListeners[type]||[]).forEach(fn=>fn(event));
-const context={document,window:{PauEngine:engine,visualViewport:viewport,matchMedia:()=>({matches:true})},innerWidth:390,innerHeight:844,addEventListener(){},localStorage:{getItem:k=>stored.get(k)||null,setItem:(k,v)=>stored.set(k,v),removeItem:k=>stored.delete(k)},AbortSignal,matchMedia:()=>({matches:true}),fetch:async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>url.includes('knowledge')?knowledge:{mode:'portfolio-guide'}};}};
+const context={document,location:{pathname:'/',origin:'https://pau.example'},URL,setTimeout,window:{PauEngine:engine,PauNavigator:require('../dist/assets/pau-navigation.js'),visualViewport:viewport,matchMedia:()=>({matches:true})},innerWidth:390,innerHeight:844,addEventListener(){},localStorage:{getItem:k=>stored.get(k)||null,setItem:(k,v)=>stored.set(k,v),removeItem:k=>stored.delete(k)},AbortSignal,matchMedia:()=>({matches:true}),fetch:async(url,options)=>{requests.push({url,options});return {ok:true,json:async()=>url.includes('knowledge')?knowledge:{mode:'portfolio-guide'}};}};
 vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../dist/assets/pau-assistant.js'),'utf8'),context);
 const $=id=>elements['pau-'+id];
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -70,6 +70,10 @@ const text=node=>node.textContent+node.children.map(text).join(' ');
   $('question').value='Is there an upcoming event I can join?';$('form').fire('submit',{preventDefault(){}});await tick();
   assert.match(text($('messages')),/sample listing/);assert.match(text($('messages')),/no seat is reserved/);
   $('reset-position').fire('click');assert.equal($('launcher').style.left,undefined);assert(!stored.has('pau-launcher-position'));
+  $('question').value='What can I do here?';$('form').fire('submit',{preventDefault(){}});await tick();
+  assert.match(text($('messages')),/viewing Welcome/);
+  assert.match(text($('messages')),/Open Welcome/);
+  $('guide-here').fire('click');await tick();assert.match(text($('messages')),/main menu/);
   console.log('PASS: opening/Escape/focus, pointer drag and clamping, drag-click suppression, keyboard movement, reset, form-aware tucking, event answers, local guide answers, scope refusal, plain-text rendering, and clear chat.');
   console.log('DOM harness only; browser viewport screenshots remain unverified.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

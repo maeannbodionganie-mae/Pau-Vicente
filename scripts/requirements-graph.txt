@@ -1,0 +1,2 @@
+# Development only: build the reviewed public knowledge graph.
+graphifyy==0.9.95

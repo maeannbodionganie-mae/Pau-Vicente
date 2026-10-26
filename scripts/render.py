@@ -256,16 +256,19 @@ def write_knowledge():
     insert_at = next((i for i, f in enumerate(facts) if f['id'] == 'contact'), len(facts))
     facts[insert_at:insert_at] = list(generated.values())
     data['facts'] = facts
+    data['site'] = {'events': [{'slug': event['slug'], 'registrationMode': event['registration']['mode']} for event in events]}
     compact = lambda obj: json.dumps(obj, ensure_ascii=False, separators=(',', ':'))
     lines = ['{', f'  "version": {json.dumps(data["version"])},', f'  "provenance": {json.dumps(data["provenance"], ensure_ascii=False)},',
              '  "facts": [', ',\n'.join('    ' + compact(f) for f in facts), '  ],',
-             '  "relationships": [', ',\n'.join('    ' + compact(r) for r in data['relationships']), '  ]', '}']
+             '  "relationships": [', ',\n'.join('    ' + compact(r) for r in data['relationships']), '  ],', '  "site": ' + compact(data['site']), '}']
     path.write_text('\n'.join(lines) + '\n')
 
 
 validate_events()
 template = (SRC / 'index.html').read_text()
 header, footer = subpage_chrome(template)
+assistant = re.search(r'<aside id="pau-assistant".*?</aside>', template, re.S).group(0)
+assistant = assistant.replace('src="assets/', 'src="/assets/').replace('href="#contact"', 'href="/#contact"')
 
 page = template.replace('{{events_feature}}', events_feature())
 page = re.sub(r'\{\{image:([^}]+)\}\}', picture, page)
@@ -280,7 +283,7 @@ assert '{{' not in page
 event_template = (SRC / 'event.html').read_text()
 for event in events:
     html = (event_template
-            .replace('{{site_header}}', header).replace('{{site_footer}}', footer)
+            .replace('{{site_header}}', header).replace('{{site_footer}}', footer).replace('{{assistant}}', assistant)
             .replace('{{event_page}}', event_page(event))
             .replace('{{page_title}}', e(event['shortTitle'] + (' (sample event)' if event['status'] == 'sample' else '')))
             .replace('{{meta_description}}', e(event['summary']))
@@ -292,7 +295,7 @@ for event in events:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html)
 
-notfound = (SRC / '404.html').read_text().replace('{{site_header}}', header).replace('{{site_footer}}', footer)
+notfound = (SRC / '404.html').read_text().replace('{{site_header}}', header).replace('{{site_footer}}', footer).replace('{{assistant}}', assistant)
 assert '{{' not in notfound
 (DIST / '404.html').write_text(notfound)
 
