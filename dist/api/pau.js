@@ -39,7 +39,8 @@ async function webAnswer(question, history, models, deadline) {
       });
       if (!response.ok) throw new Error(`gemini_http_${response.status}`);
       const candidate = (await response.json()).candidates?.[0];
-      if (candidate?.finishReason !== 'STOP') throw new Error('Incomplete provider response');
+      if (!candidate?.content?.parts) throw new Error('web_empty');
+      if (candidate.finishReason !== 'STOP') throw new Error('web_finish_'+String(candidate.finishReason||'NONE').replace(/[^A-Z_]/g,'').slice(0,30));
       const text = candidate.content.parts.filter(p=>!p.thought&&typeof p.text==='string').map(p=>p.text).join('').trim().slice(0,1800);
       const seen = new Set();
       const sources = (candidate.groundingMetadata?.groundingChunks||[]).map(c=>c.web).filter(w=>w&&/^https:\/\//.test(w.uri||'')&&!seen.has(w.uri)&&seen.add(w.uri)).slice(0,4).map(w=>({title:String(w.title||new URL(w.uri).hostname).slice(0,80),href:w.uri}));
@@ -141,10 +142,10 @@ module.exports = async function handler(req, res) {
       if(!answer)throw new Error('Unavailable navigation destination');
     }else if(plan.kind==='web'){
       let web;
-      try{web=await webAnswer(question,(body.history||[]).slice(-2),[usedModel,models.find(m=>m!==usedModel)],started+20000);}
+      try{web=await webAnswer(question,(body.history||[]).slice(-2),[usedModel,models.find(m=>m!==usedModel),usedModel],started+20000);}
       catch(error){
         // Allowlisted diagnostic only; never provider text.
-        const diagnostic=/^gemini_http_[0-9]{3}$/.test(error?.message||'')?error.message:['TimeoutError','AbortError'].includes(error?.name)?'gemini_timeout':error?.message==='no_grounding'?'web_no_sources':'web_failed';
+        const diagnostic=/^gemini_http_[0-9]{3}$/.test(error?.message||'')?error.message:['TimeoutError','AbortError'].includes(error?.name)?'gemini_timeout':error?.message==='no_grounding'?'web_no_sources':/^web_(?:empty|finish_[A-Z_]{1,30})$/.test(error?.message||'')?error.message:'web_failed';
         return res.status(200).json({...engine.render({kind:'off_topic'},knowledge),...status(),knowledgeSource:evidence.source,model:usedModel,diagnostic,notice:'I couldn’t find reliable web sources for that, so I’d rather not guess. I can help with Pau’s background, talks and events. (Web lookup: '+diagnostic+')'});
       }
       const own=plan.ids.length?engine.render({kind:'answer',ids:plan.ids,lead:'general'},knowledge,'gemini'):null;
