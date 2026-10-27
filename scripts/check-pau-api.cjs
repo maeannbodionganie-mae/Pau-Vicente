@@ -106,6 +106,29 @@ async function request(body,options={}){
     assert.equal(translated,1);assert.equal(tagalogReply.data.language,'Tagalog');assert.match(tagalogReply.data.answer,/isang speaker/);
     const englishReply=await request({message:'Sino si Pau?'});
     assert.equal(translated,1);assert.match(englishReply.data.answer,/Pau Vicente is a speaker/);assert.equal(englishReply.data.language,undefined);
+    // Programmable Search path: results come from the search API, Gemini only summarizes them.
+    process.env.GOOGLE_SEARCH_API_KEY='unit-search-key';process.env.GOOGLE_SEARCH_CX='unit-cx';
+    global.fetch=async(url,options)=>{
+      const u=String(url);
+      if(u.startsWith('https://www.googleapis.com/customsearch/v1')){
+        const q=new URL(u).searchParams;assert.equal(q.get('cx'),'unit-cx');assert.equal(q.get('num'),'5');
+        return {ok:true,json:async()=>({items:[{title:'Tracking income',link:'https://example.org/income',snippet:'Use a spreadsheet.'},{title:'bad',link:'http://insecure.example/x',snippet:'x'}]})};
+      }
+      const payload=JSON.parse(options.body);
+      if(payload.generationConfig.responseMimeType)return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'{"kind":"web","lead":"general","ids":[]}'}]}}]})};
+      assert(!payload.tools,'search path must not use grounding');
+      return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'Many freelancers use a spreadsheet.'}]}}]})};
+    };
+    const cse=await request({message:'How do freelancers track income?'});
+    assert.equal(cse.data.origin,'web');assert.match(cse.data.answer,/spreadsheet/);
+    assert.deepEqual(cse.data.webSources,[{title:'Tracking income',href:'https://example.org/income'}]);
+    assert(!JSON.stringify(cse.data).includes('unit-search-key'));
+    const routeOnly={ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'{"kind":"web","lead":"general","ids":[]}'}]}}]})};
+    global.fetch=async(url)=>String(url).includes('customsearch')?{ok:true,json:async()=>({items:[]})}:routeOnly;
+    assert.equal((await request({message:'Obscure question nobody indexed?'})).data.diagnostic,'web_no_sources');
+    global.fetch=async(url)=>String(url).includes('customsearch')?{ok:false,status:403}:routeOnly;
+    assert.equal((await request({message:'Another general question?'})).data.diagnostic,'search_http_403');
+    delete process.env.GOOGLE_SEARCH_API_KEY;delete process.env.GOOGLE_SEARCH_CX;
     let last;
     for(let i=0;i<13;i++)last=await request({message:'hi'},{headers:{'x-forwarded-for':'same-test-client'}});
     assert.equal(last.code,429);assert.equal(last.headers['Retry-After'],'60');
