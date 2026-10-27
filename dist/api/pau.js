@@ -47,7 +47,11 @@ async function webAnswer(question, history, models, deadline) {
       // An answer with no search evidence behind it is not shown.
       if (!text || !sources.length) throw new Error('no_grounding');
       return {text,sources,model};
-    } catch (error) {lastError = error;}
+    } catch (error) {
+      lastError = error;
+      // Quota and permission errors are account-wide; retrying only spends more quota.
+      if (/^gemini_http_(?:403|429)$/.test(error?.message||'')) break;
+    }
   }
   throw lastError || new Error('no_grounding');
 }
