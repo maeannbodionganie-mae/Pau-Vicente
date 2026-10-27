@@ -12,6 +12,14 @@ Gemini reasons about audience fit and selects approved knowledge IDs and a suita
 
 The last six visitor questions and bounded page context accompany a current Gemini question; no client-supplied system or assistant messages are accepted. When AI is active, the interface explains that questions go to Google Gemini. The app does not intentionally persist or log chat transcripts. Hosting and provider processing policies still apply. Provider failures fall back to approved facts with a visible notice. Burst protection is per function instance; configure Vercel Firewall and provider spending limits for deployment-wide abuse control.
 
+## Questions outside the portfolio (web lookup)
+
+With Gemini configured, a benign informational question that the Graphify knowledge cannot answer (for example general freelancing advice or a public fact) is routed as `web`. The server then makes a second Gemini call with Google Search grounding. The reply is labelled **From the web (not part of Pau’s portfolio)**, shown in English, and lists the source links (https only). Rules: no web text is shown unless search evidence backs it; personal details about Pau (fees, degrees, schedule, years, clients) are never taken from the web and stay “ask Pau”; code/homework tasks and prompt-injection attempts are still declined. Without a key, or if the lookup fails, the assistant uses approved facts only. The visitor’s question is sent to Google Gemini and Google Search; the privacy line in the panel says so.
+
+## Reply language
+
+Replies are English by default, even when the visitor writes in Tagalog, Taglish or another language; Gemini understands the question either way. If the visitor explicitly asks for another language (for example “please reply in Tagalog”), Gemini sets `replyLanguage` and the server translates the finished answer with a separate, instruction-locked call (no facts added or removed; names, emails, URLs and numbers unchanged). `replyLanguage` is validated as a short plain language name. If translation fails the reply stays English with a notice. The offline fallback is English only.
+
 ## Events and inquiries
 
 The `event` and `registration` facts are generated from `src/content/events.json` by `scripts/render.py`, so the assistant always describes the same event as the page. The sample event is described as a sample, and the registration preview as reserving nothing. Questions about events, registering, or attending route to these facts. The assistant still cannot send inquiries or register anyone. It points visitors to the contact form or the event page. On small screens, the avatar hides while a visitor is filling in a page form so it never covers fields or buttons.

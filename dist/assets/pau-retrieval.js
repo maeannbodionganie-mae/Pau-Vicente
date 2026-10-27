@@ -12,7 +12,8 @@ function retrieve(question,seeds=[]){
   const words=question.toLowerCase().match(/[a-z]{3,}/g)||[];
   const stop=new Set(['what','which','the','for','and','how','pau','can','about','does','with','your','this','that']);
   const ranked=graph.nodes.map(n=>({n,score:words.filter(w=>!stop.has(w)&&(`${n.label} ${n.text}`).toLowerCase().includes(w)).length+(seeds.includes(n.fact_id)?20:0)})).filter(v=>v.score>0).sort((a,b)=>b.score-a.score);
-  const selected=new Set(ranked.slice(0,5).map(v=>v.n.id));
+  // Keyword matching only sees Latin-script English words; for other languages, give Gemini the full graph to reason over.
+  const selected=new Set((ranked.length?ranked.slice(0,5):graph.nodes).map(v=>(v.n||v).id));
   // One hop retains explicit relationship evidence without expanding to the whole corpus.
   const frontier=new Set(selected);
   for(const e of graph.links||[])if(frontier.has(e.source)||frontier.has(e.target)){

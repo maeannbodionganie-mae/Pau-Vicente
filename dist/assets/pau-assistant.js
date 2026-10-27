@@ -31,9 +31,9 @@
   function mode(isLive){
     live=isLive;
     $('pau-mode').textContent=live?'AI · Gemini':'Portfolio guide';
-    $('pau-privacy').textContent=live?'Questions and the section you’re viewing are sent to Google Gemini, using Pau’s public knowledge graph. Form values are not read. Chat stays in this tab; avoid sensitive information.':'Uses approved portfolio facts; live AI is not active. Chat stays in this tab. Please avoid sensitive information.';
+    $('pau-privacy').textContent=live?'Questions and the section you’re viewing are sent to Google Gemini, using Pau’s public knowledge graph. Questions outside her portfolio may be answered with Google Search, clearly labelled and sourced. Form values are not read. Chat stays in this tab; avoid sensitive information.':'Uses approved portfolio facts; live AI is not active. Chat stays in this tab. Please avoid sensitive information.';
   }
-  function append(role,text,sources=[],actions=[]){
+  function append(role,text,sources=[],actions=[],webSources=[]){
     const box=document.createElement('div');box.className='pau-message';box.dataset.role=role;
     const label=document.createElement('span');label.className='pau-message-label';label.textContent=role==='user'?'You':'Pau’s assistant';
     const p=document.createElement('p');p.textContent=text;box.append(label,p);
@@ -42,6 +42,10 @@
       const fact=knowledge?.facts.find(f=>f.id===source.id);if(!fact)continue;
       const a=document.createElement('a');a.href=fact.href.startsWith('#')?(location.pathname==='/'?fact.href:'/'+fact.href):fact.href;a.textContent=fact.title+' ↗';
       a.addEventListener('click',()=>{close(false);if(location.pathname==='/'&&fact.href.startsWith('#'))document.querySelector(fact.href)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});links.append(a);
+    }
+    for(const source of webSources.slice(0,4)){
+      if(typeof source.href!=='string'||!/^https:\/\//.test(source.href))continue;
+      const a=document.createElement('a');a.href=source.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=String(source.title||'Web source').slice(0,80)+' ↗';links.append(a);
     }
     if(links.children.length){
       const details=document.createElement('details');details.className='pau-source-details';
@@ -118,8 +122,8 @@
         }
       }else result=navigator.guide(question,view,knowledge)||window.PauEngine.render(window.PauEngine.plan(question),knowledge);
       if(token!==generation)return;
-      append('assistant',result.answer,result.sources,result.actions||[]);questions.push(question);questions=questions.slice(-6);
-      $('pau-mode').textContent=(result.navigation?'Website guide':result.mode==='gemini'?'AI · Gemini':'Portfolio guide')+(graphReady?' · Knowledge graph':'');
+      append('assistant',result.answer,result.sources,result.actions||[],Array.isArray(result.webSources)?result.webSources:[]);questions.push(question);questions=questions.slice(-6);
+      $('pau-mode').textContent=(result.navigation?'Website guide':result.origin==='web'?'AI · Gemini + web':result.mode==='gemini'?'AI · Gemini':'Portfolio guide')+(graphReady?' · Knowledge graph':'');
       status.textContent=result.notice||'';
     }catch {if(token===generation)status.textContent='The guide is unavailable. Open Options to contact Pau.';}
     finally{if(token===generation){busy=false;send.disabled=false;}}

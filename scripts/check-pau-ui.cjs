@@ -61,7 +61,7 @@ const text=node=>node.textContent+node.children.map(text).join(' ');
   await tick();assert.equal($('options').open,false,'asking closes options');assert.match(text($('messages')),/Freelance 101/);assert.equal($('send').disabled,false);
   assert.equal(requests.filter(r=>r.options?.method==='POST').length,0,'guide mode keeps questions in browser');
   $('question').value='<script>alert(1)</script> What is the weather?';$('form').fire('submit',{preventDefault(){}});await tick();
-  assert.match(text($('messages')),/Hindi kasama sa scope/);assert.match(text($('messages')),/<script>/,'visitor text is plain text');
+  assert.match(text($('messages')),/outside what I can help with/);assert.match(text($('messages')),/<script>/,'visitor text is plain text');
   $('clear').fire('click');assert.equal($('messages').children.length,1);assert(!text($('messages')).includes('<script>'));
   const pageForm=new Element();pageForm.isForm=true;const pageField=new Element();pageForm.append(pageField);
   fireDocument('focusin',{target:pageField});assert($('assistant').classList.contains('is-tucked'),'avatar tucks away while a page form is in use on small screens');

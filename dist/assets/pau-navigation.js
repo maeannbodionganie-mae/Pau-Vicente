@@ -71,17 +71,17 @@
   function guide(question,rawContext,knowledge,chosen){
     const view=context(rawContext),id=chosen||intent(question,view);if(!id)return null;
     const route=target(id,knowledge);if(!route)return null;
-    const tl=tagalog(question),current=routes[view.section];
-    let answer=(tl?'Nasa ':'You’re viewing ')+current.title+(tl?' section ka ngayon.':' right now.');
+    const current=routes[view.section];
+    let answer='You’re viewing '+current.title+' right now.';
     answer+='\n\n'+(id===view.section&&view.focus&&fields[view.focus]?fields[view.focus]:route.tip);
     if(id==='register'){
       const event=knowledge.site?.events?.[0];
-      if(event?.registrationMode==='preview')answer+='\n\n'+(tl?'Preview lang ang registration: walang mare-reserve na seat at walang ipapadala o ise-save.':'Registration is a preview: no seat is reserved and nothing is sent or saved.');
+      if(event?.registrationMode==='preview')answer+='\n\n'+'Registration is a preview: no seat is reserved and nothing is sent or saved.';
       else if(event?.registrationMode==='closed')answer+='\n\nRegistration is closed. Contact Pau about future sessions.';
     }
     if(/\btour\b/i.test(question))answer+='\n\n1. About: meet Pau.\n2. My Story: read her journey.\n3. Speaking Topics: compare her talks.\n4. Events: check session and registration status.\n5. Contact: send your event inquiry.';
-    const actions=[{id,label:(tl?'Pumunta sa ':'Open ')+route.title}];
-    if(id===view.section&&id!=='contact')actions.push({id:'contact',label:tl?'Magtanong kay Pau':'Ask Pau about an event'});
+    const actions=[{id,label:'Open '+route.title}];
+    if(id===view.section&&id!=='contact')actions.push({id:'contact',label:'Ask Pau about an event'});
     return {answer,actions,sources:route.facts.map(id=>knowledge.facts.find(f=>f.id===id)).filter(Boolean).map(f=>({id:f.id,title:f.title,href:f.href})),mode:'portfolio-guide',navigation:true};
   }
   return {routes,fields,sectionIds,context,target,intent,guide,tagalog};
