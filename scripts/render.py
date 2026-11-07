@@ -52,6 +52,11 @@ def validate_events():
             assert reg['mode'] != 'live', 'a sample event cannot take live registrations'
         if event.get('image'):
             assert event['image'] in photos, f'unknown image {event["image"]}'
+        if event.get('poster'):
+            poster = event['poster']
+            for key in ('src', 'width', 'height', 'alt'):
+                assert poster.get(key), f'poster missing {key}'
+            assert (ROOT / 'dist' / poster['src']).is_file(), f'missing poster file {poster["src"]}'
 
 
 def picture(match):
@@ -116,7 +121,9 @@ def list_items(items, cls):
 def events_feature():
     heading = ('<header class="row-head container" data-reveal><div><p class="eyebrow">Events</p>'
                '<h2 id="events-title">Upcoming <em>sessions.</em></h2></div>'
-               '<p>Public sessions are announced here once confirmed. The session below is a sample of what is coming.</p></header>')
+               + ('<p>Public sessions are announced here once confirmed. The session below is a sample of what is coming.</p></header>'
+                  if any(ev['status'] == 'sample' for ev in events)
+                  else '<p>Public sessions are announced here once confirmed.</p></header>'))
     if not events:
         body = ('<div class="event-empty container" data-reveal><p>No public sessions are listed right now.</p>'
                 '<a class="text-link" href="#contact">Ask about bringing a session to your group</a></div>')
@@ -128,7 +135,12 @@ def events_feature():
         main, _, sub = event['title'].partition(': ')
         title = f'<span class="event-title-main">{e(main)}</span>' + (f'<em class="event-title-sub">{e(sub)}</em>' if sub else '')
         visual = ''
-        if event.get('image'):
+        poster = event.get('poster')
+        if poster:
+            visual = ('<div class="event-visual event-visual-poster">'
+                      f'<img class="event-poster-img" src="{e(poster["src"])}" width="{int(poster["width"])}" height="{int(poster["height"])}" '
+                      f'alt="{e(poster["alt"])}" loading="lazy" decoding="async"></div>')
+        elif event.get('image'):
             visual = ('<div class="event-visual" data-stage><div class="event-frame" data-layer="0.5" aria-hidden="true"></div>'
                       f'<figure class="event-figure" data-layer="1">{{{{image:{event["image"]}|{e(event.get("imageAlt", "Pau Vicente"))}|'
                       '(max-width: 900px) 70vw, 28vw|cutout}}</figure>'
@@ -136,13 +148,17 @@ def events_feature():
         meta = [('Date', event['date']), ('Format', event['format']), ('For', event.get('audienceShort') or event['audience'])]
         meta_html = ''.join(f'<li><span>{e(k)}</span><strong{" class=\"is-tba\"" if v == TBA else ""}>{e(v)}</strong></li>' for k, v in meta)
         topic = e(event.get('topic', ''))
+        reg = event['registration']
+        register = (f'<a class="button" href="{e(reg["url"])}" target="_blank" rel="noopener noreferrer">Register now'
+                    '<span class="sr-only"> (opens in a new tab)</span></a>') if reg['mode'] == 'live' else ''
+        action_class = 'text-link' if register else 'button'
         cards.append(
             f'<article class="event-card container" aria-labelledby="{tid}" data-reveal><div class="event-poster tone-dark">{visual}'
             f'<div class="event-body">{status_labels(event)}'
             f'<h3 id="{tid}">{title}</h3>'
             f'<p class="event-summary">{e(event["summary"])}</p>'
             f'<ul class="event-meta">{meta_html}</ul>'
-            f'<div class="actions"><a class="button" href="events/{e(event["slug"])}/">{action}</a>'
+            f'<div class="actions">{register}<a class="{action_class}" href="events/{e(event["slug"])}/">{action}</a>'
             f'<a class="text-link" href="#contact" data-topic="{topic}">Bring this session to your group</a></div>'
             '</div></div></article>')
     return f'<section class="events panel tone-light" id="events" aria-labelledby="events-title">{heading}{"".join(cards)}</section>'
@@ -291,6 +307,7 @@ for event in events:
             .replace('{{slug}}', e(event['slug'])))
     html = re.sub(r'\{\{image:([^}]+)\}\}', picture, html).replace('src="assets/', 'src="/assets/').replace('srcset="assets/', 'srcset="/assets/')
     assert '{{' not in html
+    html = re.sub(r'[ \t]+\n', '\n', html)
     out = DIST / 'events' / event['slug'] / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html)

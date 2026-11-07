@@ -569,3 +569,13 @@ legend{width:100%;margin-bottom:18px;padding:0 0 10px;border-bottom:1px solid va
   .event-meta li{border-bottom:0}
   .event-poster .actions .button{width:100%;text-align:center}
 }
+/* Event card: supplied poster shown at its natural aspect ratio (events.json "poster") */
+.event-visual-poster{display:flex;align-items:center;justify-content:center;min-height:0;padding:clamp(28px,3.4vw,48px) 0 clamp(28px,3.4vw,48px) clamp(28px,3.4vw,48px);background:none}
+.event-poster-img{display:block;width:100%;height:auto;max-width:560px}
+@media (max-width:900px){
+  .event-visual-poster{min-height:0;padding:28px 28px 0}
+  .event-poster-img{max-width:520px}
+}
+@media (max-width:700px){
+  .event-visual-poster{min-height:0}
+}

@@ -1,42 +1,44 @@
 {
-  "_readme": "Single source for public events. scripts/render.py turns this into the homepage event feature, each event page, and the assistant's event facts. Use \"To be announced\" for anything unconfirmed. Set status to \"sample\" for demonstration events and \"confirmed\" only after Pau confirms the details. Optional \"image\" is a key from asset-map.json shown beside the event; optional \"audienceShort\" is the one-line audience on the homepage poster.",
+  "_readme": "Single source for public events. scripts/render.py turns this into the homepage event feature, each event page, and the assistant's event facts. Use \"To be announced\" for anything unconfirmed. Set status to \"sample\" for demonstration events and \"confirmed\" only after Pau confirms the details. Optional \"image\" is a key from asset-map.json shown beside the event; optional \"audienceShort\" is the one-line audience on the homepage poster. Optional \"poster\" ({src,width,height,alt}) shows a supplied poster image at its natural aspect ratio in place of the portrait.",
   "events": [
     {
       "slug": "freelance-101",
-      "status": "sample",
-      "statusLabel": "Sample event",
-      "title": "Freelance 101: Start Your Freelancing Journey with Confidence",
-      "shortTitle": "Freelance 101",
+      "status": "confirmed",
+      "statusLabel": "Confirmed session",
+      "title": "Beyond the 9-to-5: How to Start Your Freelancing Journey as a Virtual Assistant",
+      "shortTitle": "Beyond the 9-to-5",
       "topic": "Freelance 101",
-      "summary": "An introductory session for anyone curious about freelancing: what the work really involves, how to find a direction that suits you, and how to prepare for your first client.",
-      "audience": "Students, fresh graduates, career shifters, and beginners exploring freelancing.",
-      "audienceShort": "Students, graduates & career shifters",
+      "summary": "Learn the truth about working freelance, which virtual assistant path fits you, how to showcase your skills the right way, and how to win your first client.",
+      "audience": "Anyone ready to start a freelancing journey as a virtual assistant.",
+      "audienceShort": "Aspiring virtual assistants",
       "subjects": [
-        "What freelancing really is",
-        "Different freelance careers",
-        "Finding your niche",
-        "Preparing your portfolio",
-        "Getting your first client",
-        "Common mistakes beginners make"
+        "The truth about working freelance",
+        "Which VA path fits you",
+        "Showcase your skills the right way",
+        "Win that first client"
       ],
       "takeaways": [
-        "Understand how freelancing works",
-        "Identify a niche that suits you",
-        "Build confidence in starting your freelance journey",
-        "Take clear next steps toward becoming a freelancer"
+        "Understand the truth about working freelance",
+        "Identify which VA path fits you",
+        "Know how to showcase your skills the right way",
+        "Know how to win your first client"
       ],
       "format": "To be announced",
-      "date": "To be announced",
-      "time": "To be announced",
+      "date": "December 5, 2026",
+      "time": "1:30 PM – 3:00 PM and 6:30 PM – 8:00 PM",
       "timezone": "",
       "venue": "To be announced",
       "registration": {
-        "mode": "preview",
-        "statusLabel": "Registration preview",
-        "url": ""
+        "mode": "live",
+        "statusLabel": "Registration open",
+        "url": "https://forms.gle/EH7MXsFvSQVUkXqC9"
       },
-      "image": "pau-about-cut",
-      "imageAlt": "Pau standing in her light blazer and black outfit."
+      "poster": {
+        "src": "assets/photos/beyond-the-9-to-5-poster.png",
+        "width": 1080,
+        "height": 1440,
+        "alt": "Poster for Beyond the 9-to-5: How to Start Your Freelancing Journey as a Virtual Assistant, conducted by Pau Vicente, CEO and Social Media Specialist, on December 5, 2026, with sessions from 1:30 to 3:00 PM and 6:30 to 8:00 PM. Topics: the truth about working freelance, which VA path fits you, showcasing your skills the right way, and winning that first client."
+      }
     }
   ]
 }
