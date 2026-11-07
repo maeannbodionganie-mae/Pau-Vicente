@@ -9,7 +9,7 @@
     about:{title:'About Pau',href:'/#about',facts:['profile','style'],tip:'Read Pau’s introduction and what she helps her audiences achieve.'},
     story:{title:'My Story',href:'/#my-story',facts:['experience','mentoring'],tip:'Follow the four chapters, from corporate work to freelancing and Cross Core.'},
     topics:{title:'Speaking Topics',href:'/#speaking-topics',facts:['freelance','marketing','leadership'],tip:'Compare the three talks. Choose a topic’s inquiry link to discuss it with Pau.'},
-    freelance:{title:'Freelance 101',href:'/#topic-one',facts:['freelance'],tip:'Read the beginner topics, then choose the inquiry link to ask about this talk.'},
+    freelance:{title:'Beyond the 9-to-5',href:'/#topic-one',facts:['freelance'],tip:'Read the topics, then choose the inquiry link to ask about this talk.'},
     marketing:{title:'Social Media Marketing',href:'/#topic-two',facts:['marketing'],tip:'Review the content and branding topics, then use the inquiry link to discuss audience fit.'},
     leadership:{title:'Inspirational Leadership',href:'/#topic-three',facts:['leadership'],tip:'Review the leadership topics and use the inquiry link to discuss your group’s goals.'},
     events:{title:'Events',href:'/#events',facts:['event','registration'],tip:'Check the event status first, then select “View event details” to read the session information.'},

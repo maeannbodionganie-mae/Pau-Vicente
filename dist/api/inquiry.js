@@ -12,7 +12,7 @@ const crypto = require('node:crypto');
 
 const ENUMS = {
   inquiryType: ['Speaking invitation', 'Workshop or training', 'Coaching', 'General inquiry'],
-  topic: ['Not sure yet', 'Freelance 101', 'Social Media Marketing', 'Inspirational Leadership'],
+  topic: ['Not sure yet', 'Beyond the 9-to-5', 'Social Media Marketing', 'Inspirational Leadership'],
   eventType: ['Not sure yet', 'Keynote', 'Workshop', 'Seminar', 'Webinar', 'Panel discussion', 'Coaching session', 'Q&A session', 'Other'],
   dateStatus: ['Not yet decided', 'Tentative', 'Final'],
   location: ['Not yet decided', 'Online', 'Onsite'],

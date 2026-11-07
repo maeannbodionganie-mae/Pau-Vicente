@@ -6,7 +6,7 @@
   'use strict';
   const leads = {
     general: 'Here’s what Pau shares in her portfolio:',
-    beginner: 'Freelance 101 is a relevant starting point for an audience exploring freelancing. Its beginner-focused topics can help you plan that conversation:',
+    beginner: 'Beyond the 9-to-5 is a relevant starting point for an audience exploring freelancing as a virtual assistant. Its topics can help you plan that conversation:',
     marketing: 'For an audience exploring content, branding, and working with businesses, Pau’s Social Media Marketing topic is a relevant option:',
     leadership: 'For a conversation about purpose, resilience, and service, consider Pau’s Inspirational Leadership topic:',
     invitation: 'You can discuss the fit and arrangements directly with Pau:',

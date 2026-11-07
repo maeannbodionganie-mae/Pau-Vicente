@@ -2,12 +2,12 @@
   "_readme": "Single source for public events. scripts/render.py turns this into the homepage event feature, each event page, and the assistant's event facts. Use \"To be announced\" for anything unconfirmed. Set status to \"sample\" for demonstration events and \"confirmed\" only after Pau confirms the details. Optional \"image\" is a key from asset-map.json shown beside the event; optional \"audienceShort\" is the one-line audience on the homepage poster. Optional \"poster\" ({src,width,height,alt}) shows a supplied poster image at its natural aspect ratio in place of the portrait.",
   "events": [
     {
-      "slug": "freelance-101",
+      "slug": "beyond-the-9-to-5",
       "status": "confirmed",
       "statusLabel": "Confirmed session",
       "title": "Beyond the 9-to-5: How to Start Your Freelancing Journey as a Virtual Assistant",
       "shortTitle": "Beyond the 9-to-5",
-      "topic": "Freelance 101",
+      "topic": "Beyond the 9-to-5",
       "summary": "Learn the truth about working freelance, which virtual assistant path fits you, how to showcase your skills the right way, and how to win your first client.",
       "audience": "Anyone ready to start a freelancing journey as a virtual assistant.",
       "audienceShort": "Aspiring virtual assistants",

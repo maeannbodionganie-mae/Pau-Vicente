@@ -33,7 +33,7 @@ var TIMEZONE = 'Asia/Manila';
 var SITE_URL = 'https://pau-vicente-speaker.vercel.app';
 var STATUSES = ['New', 'Contacted', 'In Discussion', 'Confirmed', 'Closed'];
 var DATE_STATUSES = ['Final', 'Tentative', 'Not yet decided'];
-var TOPICS = ['Freelance 101', 'Social Media Marketing', 'Inspirational Leadership', 'Not sure yet'];
+var TOPICS = ['Beyond the 9-to-5', 'Social Media Marketing', 'Inspirational Leadership', 'Not sure yet'];
 var CAL = 'Final & confirmed → Calendar';
 var HEADERS = [
   'Inquiry ID', 'Submitted at', 'Name', 'Follow-up status', 'Email', 'Organization', 'Inquiry type', 'Speaking topic',
@@ -956,7 +956,7 @@ function testEmails() {
   var me = Session.getEffectiveUser().getEmail();
   var sample = {
     id: 'PV-TEST-TEST', submittedAt: new Date().toISOString(), isTest: true, name: '[TEST] Setup check', email: me,
-    organization: 'Sample organization', inquiryType: 'Speaking invitation', topic: 'Freelance 101', eventType: 'Seminar',
+    organization: 'Sample organization', inquiryType: 'Speaking invitation', topic: 'Beyond the 9-to-5', eventType: 'Seminar',
     preferredDate: Utilities.formatDate(new Date(Date.now() + 30 * 864e5), TIMEZONE, 'yyyy-MM-dd'), dateStatus: 'Tentative',
     dateNotes: 'Sample note: any Saturday that month works.', location: 'Onsite', audience: 'Graduating students',
     audienceSize: '100–300', message: 'This is a setup test from the Apps Script editor.'

@@ -170,7 +170,7 @@ async function call(body, { method = 'POST', headers = {} } = {}) {
 const inDays = (n) => formatDate(Date.now() + n * 864e5, '', 'yyyy-MM-dd');
 const valid = (extra = {}) => ({
   submissionKey: crypto.randomUUID(), name: 'Maria Santos', email: 'maria@example.org', organization: 'Sample University',
-  inquiryType: 'Speaking invitation', topic: 'Freelance 101', eventType: 'Seminar', preferredDate: inDays(60),
+  inquiryType: 'Speaking invitation', topic: 'Beyond the 9-to-5', eventType: 'Seminar', preferredDate: inDays(60),
   dateStatus: 'Tentative', dateNotes: 'Any Saturday that month works for us.',
   location: 'Onsite', audience: 'Graduating students', audienceSize: '100–300',
   message: 'We would like a session on getting started with freelancing.', website: '', ...extra
@@ -368,7 +368,7 @@ const valid = (extra = {}) => ({
     let event = [...script.events.values()][0];
     assert.equal(event.allDay, true);
     assert.equal(formatDate(event.start, '', 'yyyy-MM-dd'), body.preferredDate);
-    assert.match(event.title, /^Pau Vicente · Freelance 101 · /);
+    assert.match(event.title, /^Pau Vicente · Beyond the 9-to-5 · /);
     assert.ok(event.options.description.includes(first.data.id));
     assert.equal(event.options.location, 'Onsite');
     assert.match(script.cell(1, 'Calendar status'), /^On calendar · .* · all day$/);

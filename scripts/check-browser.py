@@ -59,7 +59,7 @@ with serve() as base, sync_playwright() as p:
 
     # 1. Layout at representative widths
     for width in WIDTHS:
-        for path in ['/', '/events/freelance-101/', '/404.html']:
+        for path in ['/', '/events/beyond-the-9-to-5/', '/404.html']:
             page = browser.new_page(viewport={'width': width, 'height': 860})
             page.emulate_media(reduced_motion='reduce')
             page.goto(base + path, wait_until='networkidle')
@@ -76,7 +76,7 @@ with serve() as base, sync_playwright() as p:
                     assert cta['y'] + cta['height'] <= 860, 'primary hero action is visible without scrolling on mobile'
             if SHOTS:
                 SHOTS.mkdir(parents=True, exist_ok=True)
-                name = {'/': 'home', '/events/freelance-101/': 'event', '/404.html': '404'}[path]
+                name = {'/': 'home', '/events/beyond-the-9-to-5/': 'event', '/404.html': '404'}[path]
                 page.screenshot(path=str(SHOTS / f'{name}-{width}.png'), full_page=True)
             page.close()
     passed(f'no horizontal overflow or clipped controls at {", ".join(map(str, WIDTHS))}px; mobile hero action above the fold')
@@ -169,25 +169,17 @@ with serve() as base, sync_playwright() as p:
     page.close()
     passed('date picker with status and notes, topic preselection, error summary and focus, assistant tucks during form use, single in-flight request, not-configured/failure states keep data, reference ID on success')
 
-    # 4. Registration preview never sends data
+    # 4. Live registration is an external, keyboard-reachable link
     page = browser.new_page(viewport={'width': 390, 'height': 844})
-    sent = []
-    page.on('request', lambda r: sent.append(r.url) if r.method != 'GET' else None)
-    page.goto(base + '/events/freelance-101/', wait_until='networkidle')
-    assert 'sample event' in page.inner_text('.event-hero').lower()
-    page.click('#registration-form button[type="submit"]')
-    assert page.locator('#register-summary').is_visible() and page.locator('[aria-invalid="true"]').count() == 2
-    page.fill('#reg-name', 'Juan Dela Cruz')
-    page.fill('#reg-email', 'juan@example.org')
-    page.click('#registration-form button[type="submit"]')
-    assert page.locator('#registration-complete').is_visible()
-    assert page.evaluate('document.activeElement.id') == 'registration-complete'
-    assert 'No seat has been reserved' in page.inner_text('#registration-complete')
-    assert not sent, sent
-    page.click('#registration-restart')
-    assert page.locator('#registration-form').is_visible() and page.input_value('#reg-name') == ''
+    page.goto(base + '/events/beyond-the-9-to-5/', wait_until='networkidle')
+    assert 'confirmed session' in page.inner_text('.event-hero').lower()
+    link = page.locator('#register a.button')
+    assert link.get_attribute('href') == 'https://forms.gle/EH7MXsFvSQVUkXqC9'
+    assert link.get_attribute('target') == '_blank' and 'noopener' in link.get_attribute('rel')
+    link.focus()
+    assert page.evaluate('document.activeElement.href') == 'https://forms.gle/EH7MXsFvSQVUkXqC9'
     page.close()
-    passed('registration preview validates, completes truthfully, clears entries and makes no network submission')
+    passed('live registration links to the external form, opens safely in a new tab and is keyboard-focusable')
 
     # 5. Storybook pages, stage depth and the Moments deck (desktop)
     page = browser.new_page(viewport={'width': 1440, 'height': 900})

@@ -66,7 +66,7 @@ with serve() as base,sync_playwright() as p:
         page.locator('#pau-suggestions button[data-question^="Which talk"]').click()
         page.wait_for_function("!document.getElementById('pau-send').disabled")
         assert not page.locator("#pau-options").evaluate("el=>el.open")
-        assert page.locator("#pau-messages").inner_text().find("Freelance 101")>=0
+        assert page.locator("#pau-messages").inner_text().find("Beyond the 9-to-5")>=0
         sources=page.locator(".pau-source-details").first
         assert sources.count()>0
         assert not sources.evaluate("el=>el.open")

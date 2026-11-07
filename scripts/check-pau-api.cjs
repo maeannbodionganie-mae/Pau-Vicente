@@ -29,9 +29,9 @@ async function request(body,options={}){
     for(const message of ['What is Pau’s degree?','How much is her fee?','Is she available on Friday?','Does she guarantee income?']){
       const reply=await request({message});assert.equal(reply.data.sources[0].id,'unverified');assert.match(reply.data.answer,/ask Pau directly/);
     }
-    for(const message of ['Is there an upcoming event I can join?','Tell me about registration for Freelance 101']){
+    for(const message of ['Is there an upcoming event I can join?','Tell me about registration for Beyond the 9-to-5']){
       const reply=await request({message});assert.deepEqual(reply.data.sources.map(s=>s.id),['event','registration']);
-      assert.match(reply.data.answer,/not a confirmed session/);assert.match(reply.data.answer,/no seat is reserved/);
+      assert.match(reply.data.answer,/confirmed session/);assert.match(reply.data.answer,/Registration is open/);
     }
     const ids=new Set(knowledge.facts.map(f=>f.id));
     for(const edge of knowledge.relationships){assert(ids.has(edge.from));assert(ids.has(edge.to));}
@@ -46,8 +46,8 @@ async function request(body,options={}){
     assert.equal(guide.data.actions[0].id,'contact');
     assert.equal(guide.data.graphify,'export_ready');
     const registrationGuide=await request({message:'Paano mag register?',context:{page:'event',section:'register',focus:''}});
-    assert.match(registrationGuide.data.answer,/no seat is reserved/);
-    assert.equal(navigation.target('register',knowledge).href,'/events/freelance-101/#register');
+    assert.match(registrationGuide.data.answer,/registration status/);assert.doesNotMatch(registrationGuide.data.answer,/no seat is reserved/);
+    assert.equal(navigation.target('register',knowledge).href,'/events/beyond-the-9-to-5/#register');
     assert.equal((await request({message:'Help me here',context:{...context,formValues:'private'}})).code,400);
     assert.equal((await request({message:'Help me here',context:{...context,section:'javascript:alert(1)'}})).code,400);
     const retrieved=retrieval.retrieve('social media branding',['marketing']);

@@ -12,7 +12,7 @@ The presentation now follows a speaker’s invitation journey: meet Pau, underst
 | Freelancing leap | Turning-point feature with first-client meeting, personal early-work image, and the full narrative |
 | Becoming a mentor | Statement-led introduction and connected meeting images at different sizes |
 | Cross Core | Deeper taupe culmination with a team portrait, mission copy, and community evidence |
-| Speaking topics | Featured Freelance 101 program followed by two complementary topic columns; all details remain visible |
+| Speaking topics | Featured Beyond the 9-to-5 program followed by two complementary topic columns; all details remain visible |
 | Speaking style | Muted charcoal-olive statement spread with a compact portrait and personal approach |
 | Participant outcomes | Six numbered learning outcomes in two columns, becoming one column on mobile |
 | Free coaching | Understated warm feature band explaining participant support |
@@ -94,7 +94,7 @@ The Vercel `dist/` root and existing hosting metadata remain intact. The editori
 
 ## October 22 update: events, inquiries and refinements
 
-- **Events.** Added the *Upcoming sessions* section, a clearly labelled sample event (*Freelance 101: Start Your Freelancing Journey with Confidence*), and its own page at `/events/freelance-101/`. All unconfirmed details read "To be announced". The page has a local-only registration preview that reserves nothing and sends nothing. Everything comes from `src/content/events.json`.
+- **Events.** Added the *Upcoming sessions* section, an event (*Beyond the 9-to-5: How to Start Your Freelancing Journey as a Virtual Assistant*), and its own page at `/events/beyond-the-9-to-5/`. All unconfirmed details read "To be announced". The page has a local-only registration preview that reserves nothing and sends nothing. Everything comes from `src/content/events.json`.
 - **Inquiries.** The contact section now has a full inquiry form: visible labels, an error summary, recoverable failure states, duplicate-safe retries, and a reference ID. The form feeds a private Google Sheet and an email notification through Apps Script (`INQUIRY_SETUP.md`). The prefilled email link remains as a fallback. Each topic has an *Invite Pau for this topic* link that preselects the topic.
 - **Navigation.** Added Events to the header and footer. The hero's second action is now *Explore Events*. Speaking areas stay one step below in the hero index. The footer now carries navigation and verified contacts.
 - **Readability.** Body copy moved to 15–16px across sections; captions, notes and labels went up 1–2px.
