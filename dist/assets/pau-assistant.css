@@ -69,3 +69,4 @@ html:has(.nav-links.is-open) .pau-launcher{visibility:hidden}
 .pau-navigation-action{display:block;margin-top:12px;padding:10px 12px;border:1px solid var(--a-accent);border-radius:6px;background:var(--a-cream);color:var(--a-ink);font-size:12px;line-height:1.5;text-decoration:none}
 .pau-navigation-action:hover{background:var(--a-ivory)}
 .pau-navigation-target{outline:2px solid #b08a5f;outline-offset:6px;scroll-margin-top:110px}
+@media(max-height:560px){.pau-location{padding:4px 14px}.pau-location button{min-height:30px;padding:3px 10px}.pau-form{margin:6px 12px 8px}.pau-form input{padding-block:9px}.pau-form button{min-height:40px}.pau-chat-header h2{white-space:nowrap}}

@@ -188,8 +188,11 @@ with serve() as base, sync_playwright() as p:
     page.evaluate("document.getElementById('chapter-3').scrollIntoView({block:'start', behavior:'instant'})")
     page.wait_for_timeout(600)
     assert page.evaluate("document.querySelector('.storybook > .page').id") == 'chapter-1', 'the story opens on chapter one, no cover page'
-    inset = page.locator('#chapter-3 .media-inset').bounding_box(); pau_tile = page.locator('#chapter-3 .media-stack > .photo').bounding_box()
-    assert inset['y'] + inset['height'] < pau_tile['y'] + pau_tile['height'] / 2, 'the portrait inset stays clear of the lower call tiles'
+    meetings = page.locator('#chapter-3 .meeting-photos > .photo')
+    assert meetings.count() == 2, 'chapter 3 shows both meeting screenshots'
+    a, b = meetings.nth(0).bounding_box(), meetings.nth(1).bounding_box()
+    apart = a['y'] + a['height'] <= b['y'] + 1 or b['y'] + b['height'] <= a['y'] + 1 or a['x'] + a['width'] <= b['x'] + 1 or b['x'] + b['width'] <= a['x'] + 1
+    assert apart, 'the two meeting screenshots do not overlap'
     page.evaluate("scrollBy({top: -300, behavior: 'instant'})")
     page.wait_for_timeout(400)
     assert 'rotateX' in page.evaluate("document.querySelector('#chapter-2 .page-inner').style.transform"), 'the previous page settles back in 3D'
@@ -209,7 +212,7 @@ with serve() as base, sync_playwright() as p:
     assert 'translate3d' in page.evaluate("document.querySelector('.hero .stage-figure').style.transform")
     assert page.evaluate("document.querySelector('.site-header').classList.contains('is-scrolled')") is False
     page.close()
-    passed('storybook opens on chapter one, pages stack and turn in 3D, chapter 3 inset clear of the call tiles, stage layers move in depth, Moments prints rise tilted and open to full screen')
+    passed('storybook opens on chapter one, pages stack and turn in 3D, chapter 3 meeting photos clear of each other, stage layers move in depth, Moments prints rise tilted and open to full screen')
 
     browser.close()
 print('Browser checks use intercepted API responses; live Apps Script, Sheet and email delivery are verified separately.')

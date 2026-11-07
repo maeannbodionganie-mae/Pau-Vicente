@@ -48,15 +48,22 @@ for cls in ['about-copy', 'style-copy']:
             assert normalized(paragraph) in normalized(after)
 passed('complete four-chapter story, introduction, and speaking-style copy preserved')
 
-for selector, counts in [('.topic-list', [6, 6, 7]), ('.outcome-list', [6]),
+for selector, counts in [('.topic-list', [4, 6, 7]), ('.outcome-list', [6]),
                          ('.audience-list', [9]), ('.format-index ul', [7])]:
     found = soup.select(selector)
     assert [len(x.find_all('li', recursive=False)) for x in found] == counts
     old_selector = '.formats ul' if selector == '.format-index ul' else selector
-    old_items = [normalized(x) for block in baseline.select(old_selector) for x in block.select('li')]
-    new_items = [normalized(x) for block in found for x in block.select('li')]
+    old_blocks, new_blocks = baseline.select(old_selector), list(found)
+    if selector == '.topic-list':
+        # The first topic was intentionally replaced by "Beyond the 9-to-5"; the other two stay exactly as baseline.
+        assert [normalized(x) for x in new_blocks[0].select('li')] == [
+            'The truth about working freelance', 'Which VA path fits you',
+            'Showcase your skills the right way', 'Win that first client']
+        old_blocks, new_blocks = old_blocks[1:], new_blocks[1:]
+    old_items = [normalized(x) for block in old_blocks for x in block.select('li')]
+    new_items = [normalized(x) for block in new_blocks for x in block.select('li')]
     assert old_items == new_items, selector
-passed('19 topic subpoints, 6 outcomes, 9 audiences, and 7 formats match the baseline exactly')
+passed('Beyond the 9-to-5 topic (4 subpoints) plus 13 baseline topic subpoints, 6 outcomes, 9 audiences, and 7 formats match')
 
 for link in soup.select('a'):
     href = link.get('href', '')
@@ -94,7 +101,7 @@ assert len(soup.select('picture[data-photo] img')) == len(used)
 assert len(soup.select('img.pau-avatar, img.pau-header-avatar')) == 2
 assert len(soup.select('img[fetchpriority="high"][loading="eager"]')) == 1
 assert soup.select_one('picture[data-photo="pau-hero-cut"] img[fetchpriority="high"]')
-assert len(soup.select('img[loading="lazy"]')) == len(used) - 1
+assert len(soup.select('img[loading="lazy"]:not(.event-poster-img)')) == len(used) - 1
 for key, photo in manifest.items():
     for variant in photo['webp']:
         with Image.open(DIST / variant['src']) as asset:
@@ -201,14 +208,18 @@ events_source = json.loads((ROOT / 'src/content/events.json').read_text())['even
 feature = soup.select('#events .event-card')
 assert len(feature) == len(events_source) == 1
 event = events_source[0]
-assert event['status'] == 'sample' and event['statusLabel'] in normalized(feature[0])
+assert event['status'] == 'confirmed' and event['statusLabel'] in normalized(feature[0])
+assert 'Freelance 101' not in page, 'the old Freelance 101 content is fully removed'
 assert soup.select_one('.hero a[href="#events"]') and soup.select_one('.nav-links a[href="#events"]')
 event_page = BeautifulSoup((DIST / 'events' / event['slug'] / 'index.html').read_text(), 'html.parser')
 assert '{{' not in str(event_page) and len(event_page.select('h1')) == 1
-assert event_page.select_one('meta[name="robots"][content="noindex"]'), 'sample events stay out of search results'
-reg = event_page.select_one('#registration-form[data-mode="preview"]')
-assert reg and not reg.get('action') and 'no seat will be reserved' in normalized(event_page.select_one('.registration .notice'))
-assert 'Nothing was sent' in normalized(event_page.select_one('#registration-complete'))
+assert not event_page.select_one('meta[name="robots"][content="noindex"]'), 'confirmed events are indexable'
+poster = feature[0].select_one('img.event-poster-img')
+assert poster and poster.get('alt') and (DIST / poster['src']).is_file()
+assert (int(poster['width']), int(poster['height'])) == Image.open(DIST / poster['src']).size, 'poster keeps its natural size'
+register = event_page.select_one('#register a.button')
+assert register and register['href'] == event['registration']['url'] and register['target'] == '_blank' and 'noopener' in register['rel']
+assert feature[0].select_one('a.button[href="%s"]' % event['registration']['url'])
 for value in [event['date'], event['time'], event['venue'], event['format']]:
     assert value in normalized(event_page.select_one('.event-details'))
 for tag, attr in [('script', 'src'), ('link', 'href'), ('a', 'href')]:
@@ -222,9 +233,9 @@ for tag, attr in [('script', 'src'), ('link', 'href'), ('a', 'href')]:
 notfound = BeautifulSoup((DIST / '404.html').read_text(), 'html.parser')
 assert '{{' not in str(notfound) and notfound.select_one('meta[name="robots"][content="noindex"]') and notfound.select_one('a[href="/"]')
 facts = {f['id']: f for f in json.loads((DIST / 'assets/pau-knowledge.json').read_text())['facts']}
-assert event['title'] in facts['event']['text'] and 'not a confirmed session' in facts['event']['text']
-assert 'no seat is reserved' in facts['registration']['text']
+assert event['title'] in facts['event']['text'] and 'confirmed session' in facts['event']['text']
+assert 'Registration is open' in facts['registration']['text']
 assert not re.search(r'countdown|sold out|limited seats|hurry', page + str(event_page), re.I)
-passed('sample event labelled everywhere, preview registration is local-only, event page links resolve, 404 page, and matching assistant facts')
+passed('confirmed event with poster and live registration link, event page links resolve, 404 page, and matching assistant facts')
 
 print('Static checks only. Run scripts/check-browser.py for real-browser viewport and interaction checks.')
